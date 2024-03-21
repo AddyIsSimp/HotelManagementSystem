@@ -1,11 +1,17 @@
 package Main;
 
 import Entity.*;
+import Rooms.*;
+import Menus.*;
+import Amenity.*;
 
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
+
+    //CONCERNS: Remove the addAppliance() in Rooms for easy no hassle
+    //          Ask if pwede ba ang ArrayList
 
     //INSTANCE VARIABLES
     private static Scanner sc = new Scanner(System.in);            //For string inputs
@@ -15,8 +21,19 @@ public class Main {
     static CustomerPage customerP = new CustomerPage();
     static Methods method = new Methods();
 
+    //LISTS
+    public static ArrayList<ArrayList> all = new ArrayList<>();
     public static ArrayList<Customer> customersList = new ArrayList<>();
     public static ArrayList<Staff> staffsList = new ArrayList<>();
+    public static ArrayList<Room> rooms = new ArrayList<>();
+    public static ArrayList<Amenity> amenities = new ArrayList<Amenity>();
+    public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity
+    public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
+    public static ArrayList<Order> orders = new ArrayList<>();
+    public static ArrayList<Reservation> reservations = new ArrayList<>();
+
+    public static Staff staffAcct = null;
+    public static Customer customerAcct = null;
 
     //MAIN METHOD
     public static void main(String[] args) {
@@ -26,6 +43,11 @@ public class Main {
         customersList.add(new Customer("Beth", "Sophia"));
         staffsList.add(new Staff("Dave", "Gaga-a", "Gaga-a"));
 
+        //Add all arraylist in all
+        all.add(customersList); all.add(staffsList);
+        all.add(rooms); all.add(reservations);
+        all.add(foods); all.add(menus);
+
         //Local Main.Methods
         Scanner sc = new Scanner(System.in);    //Use for string inputs
         Scanner in = new Scanner(System.in);    //Use for int /double inputs
@@ -34,6 +56,7 @@ public class Main {
 
         System.out.println("HOTEL MANAGEMENT SYSTEM");
 
+        //MAIN LOOP
         while(main) {
             Person loginPerson;             //stores the person that Login
             boolean isAdmin = false;
@@ -54,8 +77,8 @@ public class Main {
                     else continue;
                     break;
                 case 2:
-                    isStaff = method.loginStaff(staffsList);
-                    if(isStaff==true) StaffPage();
+                    isStaff = staffP.loginStaff(staffsList);
+                    if(isStaff==true) StaffPage(staffAcct);
                     break;
                 case 3:
                     isCustomer = EnterCustomer();
@@ -93,19 +116,19 @@ public class Main {
                     admin.manageAccounts(customersList, staffsList, admin);
                     break;
                 case 2:
-                    System.out.println("=====MANAGE-ROOMS======");
+                    admin.manageRoom(rooms);
                     break;
                 case 3:
-                    System.out.println("=====FOOD-SERVICE======");
+                    admin.foodService(menus);
                     break;
                 case 4:
-                    System.out.println("=====FOOD-INVENTORY======");
+                    admin.goInventory(foods);
                     break;
                 case 5:
-                    System.out.println("=====RESERVATIONS======");
+                    admin.goReservations(reservations);
                     break;
                 case 6:
-                    System.out.println("=====REPORTS======");
+                    admin.goReports(all);
                     break;
                 case 0:
                     System.out.println("Log-out successfully");
@@ -113,14 +136,11 @@ public class Main {
                     break;
                 default:
                     System.out.println("INVALID: Use indicated number only!");
-                    boolean isCont = method.isContinue();
-                    if (isCont==true) AdminPage();
-                    else break;
             }
         }
     }//End of AdminPage method
 
-    static void StaffPage() {
+    static void StaffPage(Staff staff) {
         String choice = null;
         boolean isStaffPage = true;
 
@@ -129,29 +149,29 @@ public class Main {
             System.out.println("[1] Room management");
             System.out.println("[2] Customer management");
             System.out.println("[3] Reservations");
+            System.out.println("[4] Sales");
             System.out.println("[0] Logout");
-            System.out.print("Enter choice: ");
-            choice = sc.nextLine();
+            int pick = method.inputInt("Enter choice: ");
 
-            switch (choice) {
-                case "1":
-                    System.out.println("=====ROOM-MANAGEMENT======");
+            switch (pick) {
+                case 1:
+                    staffP.goManageRoom(rooms);
                     break;
-                case "2":
-                    System.out.println("=====CUSTOMER-MANAGEMENT======");
+                case 2:
+                    staffP.goCustomerAccount(customersList);
                     break;
-                case "3":
-                    System.out.println("=====RESERVATIONS======");
+                case 3:
+                    staffP.goReservations(reservations);
                     break;
-                case "0":
+                case 4:
+                    staffP.goSales(staff);
+                    break;
+                case 0:
                     System.out.println("Log-out successfully");
                     isStaffPage = false;
                     break;
                 default:
                     System.out.println("INVALID: Use indicated number only!");
-                    boolean isCont = method.isContinue();
-                    if (isCont==true) continue;
-                    else break;
             }
         }
     }//End of Main.StaffPage method
@@ -172,16 +192,16 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    System.out.println("=====ACCOUNT======");
+                    customerP.goAccount(customerAcct);
                     break;
                 case "2":
-                    System.out.println("=====ROOMS======");
+                    customerP.goSelectRoom(rooms);
                     break;
                 case "3":
-                    System.out.println("=====RESERVATIONS======");
+                    customerP.goBookReservation(rooms, amenities, reservations);
                     break;
                 case "4":
-                    System.out.println("=====IN-HOTEL-ORDERS======");
+                    customerP.goHotelOrders(orders);
                     break;
                 case "0":
                     System.out.println("Log-out successfully");
@@ -189,9 +209,6 @@ public class Main {
                     break;
                 default:
                     System.out.println("INVALID: Use indicated number only!");
-                    boolean isCont = method.isContinue();
-                    if (isCont==true) continue;
-                    else break;
             }
         }
     }//End of CustomerPage

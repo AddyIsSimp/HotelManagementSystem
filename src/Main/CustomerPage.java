@@ -1,6 +1,10 @@
 package Main;
 
 import Entity.Customer;
+import Rooms.Reservation;
+import Rooms.Room;
+import Amenity.*;
+import Menus.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -8,8 +12,10 @@ import java.util.Scanner;
 public class CustomerPage {
 
     private Scanner sc = new Scanner(System.in);
-    private String choice = null;
     private Methods method = new Methods();
+    private String choice = null;
+
+    //Dapat ma-update ang balance if ever naay order c customer
 
     //=============================CUSTOMERS================================
     //REGISTER CUSTOMER
@@ -71,7 +77,7 @@ public class CustomerPage {
             for(int i = 0; i<customersList.size(); i++) {
                 Customer temp = customersList.get(i);
                 if(temp.getName().equals(un) && temp.getPassword().equals(pw)) {
-                    method.customerAcct = temp;
+                    Main.customerAcct = temp;
                     isLogin = true;
                     break;
                 }
@@ -88,5 +94,109 @@ public class CustomerPage {
         return isLogin;
     }
 
+    //========================================SUB-MENU============================================================
+    //================================ACCOUNT
+    public void goAccount(Customer customer) {
+        boolean isManage = true;
+        while(isManage==true) {
+            System.out.println("=====ACCOUNTS=====");
+            System.out.println("[1] Account details");
+            System.out.println("[2] Transaction history");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 0:
+                    isManage=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================SELECT-ROOMS
+    public void goSelectRoom(ArrayList<Room> rooms) {
+        boolean isManage = true;
+        while(isManage==true) {
+            System.out.println("=====SELECT-ROOMS=====");
+            System.out.println("[1] Select room number");
+            System.out.println("[2] View category");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 0:
+                    isManage=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================BOOK-RESERVATIONS
+    public void goBookReservation(ArrayList<Room> rooms,
+                                  ArrayList<Amenity> amenities,
+                                  ArrayList<Reservation> reservations) {
+        boolean isManage = true;
+        while(isManage==true) {
+            System.out.println("=====BOOK-RESERVATION=====");
+            System.out.println("[1] Rooms");
+            System.out.println("[2] Amenities");
+            System.out.println("[3] Reservations");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 0:
+                    isManage=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================IN-HOTEL-ORDERS
+    public void goHotelOrders(ArrayList<Order> orders) {
+        boolean isManage = true;
+        while(isManage==true) {
+            System.out.println("=====IN-HOTEL-ORDERS=====");
+            System.out.println("[1] Room/Amenity Occupied");
+            System.out.println("[2] Food Order");
+            System.out.println("[2] Check-out");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 0:
+                    isManage=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
 
 }

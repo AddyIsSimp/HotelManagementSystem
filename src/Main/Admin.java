@@ -1,11 +1,12 @@
 package Main;
 
-import Entity.Customer;
-import Entity.Staff;
-import Main.Main;
+import Entity.*;
+import Main.*;
+import Menus.*;
+import Rooms.Reservation;
+import Rooms.Room;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Admin {
@@ -34,6 +35,7 @@ public class Admin {
     public void setPassword(String s) {this.password = s;}
 
     //====================METHODS=============================
+
     //LOGIN ADMIN
     boolean loginAdmin() {
         String un = null;
@@ -62,7 +64,8 @@ public class Admin {
         return login;
     }
 
-
+//========================================SUB-MENU============================================================
+    //================================MANAGE ACCOUNTS
     public void manageAccounts(ArrayList<Customer> customers, ArrayList<Staff> staffs, Admin admin) {
 
         Account : while(true) {
@@ -79,7 +82,7 @@ public class Admin {
                     while (isCustomer == true) {
                         System.out.println("===CUSTOMER-ACCOUNTS===");
                         System.out.println("Number of customer registered: " + customers.size());
-                        System.out.println("[1] View accounts");
+                        System.out.println("[1] View customers");
                         System.out.println("[2] Edit account");
                         System.out.println("[3] Delete account");
                         System.out.println("[0] Back");
@@ -87,72 +90,11 @@ public class Admin {
 
                         switch (choice) {
                             case 1:     //CUSTOMER - VIEW ACCOUNTS
-                                System.out.println("=VIEW-ACCOUNTS=");
-                                for (int i = 0; i < customers.size(); i++) {
-                                    Customer customer = customers.get(i);
-                                    System.out.print((i + 1) + ". Name: " + customer.getName());
-                                    System.out.println(" Email: " + customer.getEmail());
-                                }
+                                System.out.println("=====VIEW-ACCOUNTS=====");
+                                method.displayCustomer(customers);
                                 break;
                             case 2:     //CUSTOMER - EDIT ACCOUNT
-                                boolean editCustomer = true;
-                                while (editCustomer==true) {
-                                    String acctName = null;
-                                    String password = null;
-                                    Customer customer = null;
-
-//                                    System.out.println("=====EDIT-ACCOUNT=====");
-//                                    System.out.print("Search account name to edit:");
-//                                    acctName = sc.nextLine();
-//
-//                                    //Checks if Account is found
-//                                    boolean isFound = false;
-//                                    int pos = 0;
-//                                    for (int i = 0; i < customers.size(); i++) {
-//                                        customer = customers.get(i);
-//                                        if (customer.getName().equals(acctName)) {      //Checks if the same
-//                                            isFound = true;
-//                                            pos = i;
-//                                            break;
-//                                        }
-//                                    }
-//                                    if (isFound == false) {        //ask if continue or not
-//                                        System.out.println("INVALID: Account name not found");
-//                                        boolean isCont = method.isContinue();
-//                                        if (isCont == true) continue;
-//                                        else break;
-//                                    }
-//
-//                                    System.out.println("Enter password");
-//                                    password = sc.nextLine();
-//
-//                                    //Checks if the password is correct in the account name
-//                                    boolean isPword = method.pwordChecker(customers, password, pos);
-//                                    if (isPword == false) {
-//                                        System.out.println("INVALID: Password is incorrect");
-//                                        boolean isCont = method.isContinue();
-//                                        if (isCont == true) continue;
-//                                        else break;
-//                                    }
-//
-//                                    customer = customers.get(pos);
-
-                                    System.out.println("=====EDIT-ACCOUNT=====");
-                                    Customer findCustomer = method.searchCustomer(customers);
-
-                                    if(findCustomer==null) {        //Customer is not found
-                                        System.out.println("Customer is not found!");
-                                        break;
-                                    }else {customer = findCustomer;}
-
-                                    //Finds the customer name in the list
-                                    System.out.println("==ACCOUNT-INFO==");
-                                    System.out.println("[1] Name: " + customer.getName());
-                                    System.out.println("[2] Password: " + customer.getPassword());
-                                    System.out.println("[3] Email: " + customer.getEmail());
-                                    System.out.print("Select number to modify: ");
-
-                                }
+                                method.editCustomer(customers);
                                 break;
                             case 3:     //CUSTOMER - DELETE ACCOUNT
                                 System.out.println("=DELETE-ACCOUNT");
@@ -172,10 +114,10 @@ public class Admin {
                     while (isStaff == true) {
                         System.out.println("===STAFF-ACCOUNTS===");
                         System.out.println("Number of staff registered: " + staffs.size());
-                        System.out.println("[1] Add accounts");
-                        System.out.println("[2] View accounts");
-                        System.out.println("[3] Edit account");
-                        System.out.println("[4] Delete account");
+                        System.out.println("[1] Add staff");
+                        System.out.println("[2] View staffs");
+                        System.out.println("[3] Edit staff");
+                        System.out.println("[4] Delete staff");
                         System.out.println("[0] Back");
                         choice = method.inputInt("Enter choice: ");
 
@@ -185,7 +127,7 @@ public class Admin {
                                 boolean isCreate = true;
                                 while(isCreate==true) {
                                     System.out.println("===CREATE-STAFF-ACCOUNT===");
-                                    System.out.println("Enter name: ");
+                                    System.out.print("Enter name: ");
                                     name = sc.nextLine();
 
                                     //Checks if there is already name existed
@@ -200,15 +142,16 @@ public class Admin {
                                         }
                                     }
 
-                                    System.out.println("Enter password: ");
+                                    System.out.print("Enter password: ");
                                     password = sc.nextLine();
-                                    System.out.println("Enter email: ");
+                                    System.out.print("Enter email: ");
                                     email = sc.nextLine();
+                                    if(email.equals("0")) {email=null;}
                                     staffs.add(new Staff(name, password, email));
                                     System.out.println("Account is successfully created!");
+                                    break;
                                 }
 
-                                System.out.println("Enter password");
                                 break;
                             case 2:     //VIEW STAFF ACCOUNT
                                 System.out.println("=====STAFF-ACCOUNT=====");
@@ -276,6 +219,145 @@ public class Admin {
                     boolean isCont = method.isContinue();
                     if (isCont == true) continue;
                     else break Account;
+            }
+        }
+    }
+    //================================ROOM-MANAGE
+    public void manageRoom(ArrayList<Room> rooms) {
+        boolean isManage = true;
+        while(isManage==true) {
+            System.out.println("=====MANAGE-ROOMS=====");
+            System.out.println("[1] Rooms");
+            System.out.println("[2] Amenities");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 0:
+                    isManage=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================FOOD-SERVICE
+    public void foodService(ArrayList<Menu> menus) {
+        boolean isFoods = true;
+        while(isFoods==true) {
+            System.out.println("=====FOOD-SERVICE=====");
+            System.out.println("[1] View food menu");
+            System.out.println("[2] Add menu");
+            System.out.println("[3] Modify menu");
+            System.out.println("[4] Delete menu");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 0:
+                    isFoods=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================FOOD-SERVICE
+    public void goInventory(ArrayList<Food> foods) {
+        boolean isInventory = true;
+        while(isInventory==true) {
+            System.out.println("=====INVENTORY=====");
+            System.out.println("[1] View food stocks");
+            System.out.println("[2] Add stocks");
+            System.out.println("[3] Modify stocks");
+            System.out.println("[4] Delete stocks");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 0:
+                    isInventory=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    //================================FOOD-SERVICE
+    public void goReservations(ArrayList<Reservation> reservations) {
+        boolean isReservation = true;
+        while(isReservation==true) {
+            System.out.println("=====RESERVATIONS=====");
+            System.out.println("[1] View reservation");
+            System.out.println("[2] Edit reservation");
+            System.out.println("[3] Cancel reservation");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 0:
+                    isReservation=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
+    public void goReports(ArrayList<ArrayList> all) {
+        boolean isReports = true;
+        while(isReports==true) {
+            System.out.println("=====REPORTS=====");
+            System.out.println("[1] Accounts");
+            System.out.println("[2] Rooms");
+            System.out.println("[3] Reservations");
+            System.out.println("[4] Sales");
+            System.out.println("[0] Back");
+            int choice = method.inputInt("Enter choice: ");
+
+            switch(choice) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 0:
+                    isReports=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
             }
         }
     }

@@ -9,48 +9,143 @@ public class Methods{
 
     private Scanner sc = new Scanner(System.in);        //For string inputs
     private Scanner in = new Scanner(System.in);        //For integer/long/double inputs
-
-    Staff staffAcct;
-    Customer customerAcct;
     String choice = null;
 
     //CONSTRUCTOR
     public Methods() {
     }
 
-//LOGIN STAFF
-    boolean loginStaff(ArrayList<Staff> staffsList) {
-        String un = null;
-        String pw = null;
-        boolean isLogin = false;
+    //====================================USEFUL METHODS============================================
 
+    public void displayCustomer(ArrayList<Customer> customers) {
+        for(int i = 0; i<customers.size();i++) {
+            Customer customer = customers.get(i);
+            System.out.print((i+1) + ". Name: " + customer.getName());
+            if(customer.getEmail()!=null) System.out.print(" || Contact: " + customer.getEmail());
+            System.out.println();
+        }
+    }
+
+    public void displayStaff(ArrayList<Staff> staffs) {
+        for(int i = 0; i<staffs.size();i++) {
+            Staff staff = staffs.get(i);
+            System.out.print((i+1) + ". Name: " + staff.getName());
+            if(staff.getEmail()!=null) System.out.print(" || Contact: " + staff.getEmail());
+            System.out.println();
+        }
+    }
+
+    public void editCustomer(ArrayList<Customer> customers) {
+        String name = null;
+        boolean isFound = false;
+        Customer customer = null;
         while(true) {
-            System.out.println("=====STAFF=====");
-            System.out.print("Username: ");
-            un = sc.nextLine();
-            System.out.print("Password: ");
-            pw = sc.nextLine();
+            System.out.println("=====EDIT-ACCOUNT=====");
+            System.out.print("Search name: ");
+            name = sc.nextLine();
 
-            //Checks the list of Staff if there is same name and password
-            for(int i = 0; i<staffsList.size(); i++) {
-                Staff temp = staffsList.get(i);
-                if(temp.getName().equals(un) && temp.getPassword().equals(pw)) {
-                    staffAcct = temp;
-                    isLogin = true;
-                    return true;
+            for (int i = 0; i < customers.size(); i++) {
+                Customer temp = customers.get(i);
+                if (name.equals(temp.getName()) == true) {
+                    customer = temp;
+                    isFound = true;
+                    break;
                 }
             }
-
-            //No staff found w/ same un & pw
-            if(isLogin==false) {
-                boolean isCont = isContinue();
-                if(isCont==true) continue;
-                else return false;
+            if(isFound = false) {      //When account is not found
+                boolean isCont = stateError("Account not found!");
+                if (isCont == false) break;
             }
-        }//End of isLogin whileloop
-    }//end of loginStaff method
 
-    //====================================USEFUL METHODS============================================
+            if(customer!=null) {
+                System.out.println("===ACCOUNT-INFO===");
+                System.out.println("[1] Name: " + customer.getName());
+                System.out.println("[2] Password: " + customer.getPassword());
+                if(customer.getEmail()!=null) System.out.println("[3] Email: " + customer.getEmail());
+                else System.out.println("[3] No email registered!");
+                int choice = inputInt("Select to modify: ");
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter new name: ");
+                        String newName = sc.nextLine();
+                        customer.setName(newName);
+                        System.out.println("Modified name successfully!");
+                        break;
+                    case 2:
+                        System.out.println("Enter new password: ");
+                        String newPw = sc.nextLine();
+                        customer.setPassword(newPw);
+                        System.out.println("Modified password successfully!");
+                        break;
+                    case 3:
+                        System.out.println("Enter new email: ");
+                        String newEmail = sc.nextLine();
+                        customer.setEmail(newEmail);
+                        System.out.println("Modified email successfully!");
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        System.out.println("INVALID: Use indicated number only!");
+                }
+            }
+            break;
+        }
+    }
+
+    public void editStaff(ArrayList<Staff> staffs) {
+        String name = null;
+        boolean isFound = false;
+        Staff staff = null;
+        while(true) {
+            System.out.println("=====EDIT-ACCOUNT=====");
+            System.out.println("Search name: ");
+            name = sc.nextLine();
+
+            for (int i = 0; i < staffs.size(); i++) {
+                Staff temp = staffs.get(i);
+                if (name.equals(temp.getName()) == true) {
+                    staff = temp;
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound = false) {      //When account is not found
+                boolean isCont = stateError("Account not found!");
+                if (isCont == false) break;
+            }
+
+            System.out.println("==ACCOUNT-INFO==");
+            System.out.println("[1] Name: " + staff.getName());
+            System.out.println("[2] Password: " + staff.getPassword());
+            System.out.println("[3] Email: " + staff.getEmail());
+            int choice = inputInt("Select to modify: ");
+            switch(choice) {
+                case 1:
+                    System.out.print("Enter new name: ");
+                    String newName = sc.nextLine();
+                    staff.setName(newName);
+                    System.out.println("Modified name successfully!");
+                    break;
+                case 2:
+                    System.out.println("Enter new password: ");
+                    String newPw = sc.nextLine();
+                    staff.setPassword(newPw);
+                    System.out.println("Modified password successfully!");
+                    break;
+                case 3:
+                    System.out.println("Enter new email: ");
+                    String newEmail = sc.nextLine();
+                    staff.setEmail(newEmail);
+                    System.out.println("Modified email successfully!");
+                    break;
+                case 0: break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+            break;
+        }
+    }
 
     public Person searchPerson(ArrayList<Person> persons, String accountName) {
         String acctName = null;
@@ -227,6 +322,13 @@ public class Methods{
         }
     }
 
+    public boolean stateError(String statement) {      //Used when there is invalid
+        System.out.println("INVALID: " + statement);
+        boolean isCont = isContinue();
+        if(isCont==true) return true;
+        else return false;
+    }
+
     public int inputInt(String statement) {
         int choiceNum = -1;
         try {
@@ -253,6 +355,7 @@ public class Methods{
         }
         return true;
     }
+
 
     //DATATYPE CONVERTER
     static int StrToInt(String s) {
