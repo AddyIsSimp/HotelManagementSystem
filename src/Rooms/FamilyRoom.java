@@ -1,25 +1,25 @@
 package Rooms;
 
-public class CoupleRoom extends Room{
+public class FamilyRoom extends Room {
 
-    public CoupleRoom() {
+    public FamilyRoom() {
         super();
         setRoomType();
     }
 
-    public CoupleRoom(Room ob) {
+    public FamilyRoom(Room ob) {
         super(ob);
         setRoomType();
     }
 
-    public CoupleRoom(int roomNumber) {
+    public FamilyRoom(int roomNumber) {
         super(roomNumber);
         setRoomType();
     }
 
     public void setRoomType() {
-        this.roomType = "Couple";
-        this.ratePer = 100;
+        this.roomType = "Family";
+        this.ratePer = 300;
     }
 
 }

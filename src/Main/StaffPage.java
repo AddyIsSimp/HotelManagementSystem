@@ -51,7 +51,7 @@ public class StaffPage {
         boolean isManage = true;
         while(isManage==true) {
             System.out.println("=====MANAGE-ROOMS=====");
-            System.out.println("[1] Select room number");
+            System.out.println("[1] Display rooms");
             System.out.println("[2] View category");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");

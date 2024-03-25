@@ -2,28 +2,27 @@ package Rooms;
 import java.util.ArrayList;
 
 public class SingleRoom extends Room {
-    protected String bedType = "Single";
 
-    SingleRoom() {
+    public SingleRoom() {
         super();
-        addDefaultAppliance();
+        setRoomType();
     }
 
-    SingleRoom(Room ob) {
+    public SingleRoom(Room ob) {
         super(ob);
-        addDefaultAppliance();
+        setRoomType();
     }
 
-    SingleRoom(int roomNumber) {
+    public SingleRoom(int roomNumber) {
         super(roomNumber);
-        addDefaultAppliance();
+        setRoomType();
     }
 
-    void addDefaultAppliance() {
-        this.appliances.add("Aircon");
-        this.appliances.add("TV");
-        this.appliances.add("Mini-refrigerator");
+    public void setRoomType() {
+        this.roomType = "Single";
+        this.ratePer = 100;
     }
+
 
 }
 

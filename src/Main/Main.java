@@ -10,9 +10,6 @@ import java.util.ArrayList;
 
 public class Main {
 
-    //CONCERNS: Remove the addAppliance() in Rooms for easy no hassle
-    //          Ask if pwede ba ang ArrayList
-
     //INSTANCE VARIABLES
     private static Scanner sc = new Scanner(System.in);            //For string inputs
     private static Scanner in = new Scanner(System.in);            //For int inputs
@@ -27,9 +24,9 @@ public class Main {
     public static ArrayList<Staff> staffsList = new ArrayList<>();
     public static ArrayList<Room> rooms = new ArrayList<>();
     public static ArrayList<Amenity> amenities = new ArrayList<Amenity>();
-    public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity
+    public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
-    public static ArrayList<Order> orders = new ArrayList<>();
+    public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
     public static ArrayList<Reservation> reservations = new ArrayList<>();
 
     public static Staff staffAcct = null;
@@ -52,7 +49,19 @@ public class Main {
         Scanner sc = new Scanner(System.in);    //Use for string inputs
         Scanner in = new Scanner(System.in);    //Use for int /double inputs
         int choice = 0;
+        String pick = null;
         boolean main = true;
+
+        rooms.add(new SingleRoom(5));
+        rooms.add(new SingleRoom(2));
+        rooms.add(new SingleRoom(11));
+        rooms.add(new SingleRoom(4));
+        rooms.add(new SingleRoom(3));
+        rooms.add(new CoupleRoom(7));
+        rooms.add(new CoupleRoom(6));
+        rooms.add(new CoupleRoom(8));
+        rooms.add(new CoupleRoom(10));
+        rooms.add(new CoupleRoom(9));
 
         System.out.println("HOTEL MANAGEMENT SYSTEM");
 
@@ -68,7 +77,7 @@ public class Main {
             System.out.println("[2] STAFF");
             System.out.println("[3] CUSTOMER");
             System.out.print("Enter choice: ");
-            choice = in.nextInt();
+            choice = method.inputInt();
 
             switch (choice) {
                 case 1:
@@ -86,7 +95,7 @@ public class Main {
                     else continue;
                     break;
                 default:
-                    System.out.println("INVALID: Use indicated number only!");
+                    if(choice!=-1) System.out.println("INVALID: Use indicated number only");
                     continue;
             }
         }
@@ -109,7 +118,7 @@ public class Main {
             System.out.println("[6] Reports");
             System.out.println("[0] Logout");
             System.out.print("Enter choice: ");
-            choice = sc.nextInt();
+            choice = method.inputInt();
 
             switch (choice) {
                 case 1:
@@ -141,7 +150,7 @@ public class Main {
     }//End of AdminPage method
 
     static void StaffPage(Staff staff) {
-        String choice = null;
+        int pick = 0;
         boolean isStaffPage = true;
 
         while(isStaffPage==true) {
@@ -151,7 +160,8 @@ public class Main {
             System.out.println("[3] Reservations");
             System.out.println("[4] Sales");
             System.out.println("[0] Logout");
-            int pick = method.inputInt("Enter choice: ");
+            System.out.print("Enter choice: ");
+            pick = method.inputInt();
 
             switch (pick) {
                 case 1:
@@ -177,7 +187,7 @@ public class Main {
     }//End of Main.StaffPage method
 
     static void CustomerPage() {
-        String choice = null;
+        int pick = 0;
         boolean isCustomerPage = true;
 
         while(isCustomerPage==true) {
@@ -188,22 +198,22 @@ public class Main {
             System.out.println("[4] In-Hotel Orders");
             System.out.println("[0] Logout");
             System.out.print("Enter choice: ");
-            choice = sc.nextLine();
+            pick = method.inputInt();
 
-            switch (choice) {
-                case "1":
+            switch (pick) {
+                case 1:
                     customerP.goAccount(customerAcct);
                     break;
-                case "2":
+                case 2:
                     customerP.goSelectRoom(rooms);
                     break;
-                case "3":
+                case 3:
                     customerP.goBookReservation(rooms, amenities, reservations);
                     break;
-                case "4":
+                case 4:
                     customerP.goHotelOrders(orders);
                     break;
-                case "0":
+                case 0:
                     System.out.println("Log-out successfully");
                     isCustomerPage = false;
                     break;

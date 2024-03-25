@@ -11,13 +11,13 @@ public class Reservation {
     private Calendar endDate;
 
     public Reservation() {
-        room.roomNum = -1;
+        room.setRoomNum(-1);
         startDate = null;
         endDate = null;
     }
 
     public Reservation(int roomNum, Calendar startDate, Calendar endDate) {
-        room.roomNum = -1;
+        this.room.setRoomNum(roomNum);
         this.startDate = startDate;
         this.endDate = endDate;
     }
