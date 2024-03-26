@@ -1,8 +1,10 @@
 package Main;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import Entity.*;
+import Foods.Food;
 import Menus.Menu;
 import Rooms.*;
 
@@ -62,7 +64,7 @@ public class Methods{
         return isExist;
     }
 
-    public int isRoomNumReturnIndex(ArrayList<Room> rooms, int roomNum) {   //Returns the index of room with room number spedified
+    public int isRoomNumReturnIndex(ArrayList<Room> rooms, int roomNum) {   //Returns the index of room with room number specified
         int index = -1;
         for(int i = 0; i< rooms.size(); i++) {
             if(rooms.get(i).getRoomNum()==roomNum) {
@@ -138,8 +140,16 @@ public class Methods{
         }
     }
 
-    public Menu checkMenuExist(ArrayList<Menu> menus, String menuName) {
-        for(int i = 0; i<menus.)
+    public Menu checkMenuExist(ArrayList<Menu> menus, String menuName) {    //Returns a menu if that menuname existed in list
+        Menu foundMenu = null;
+        for(int i = 0; i<menus.size(); i++) {
+            Menu menu = menus.get(i);
+            if(menu.getMenuName().equals(menuName)==true) {
+                foundMenu = menu;
+                break;
+            }
+        }
+        return foundMenu;
     }
 
     public void displayCustomer(ArrayList<Customer> customers) {    //Display all customer
@@ -273,7 +283,7 @@ public class Methods{
         }
     }
 
-    public int isCustomerExistReturnIndex(ArrayList<Customer> customers, String name) {     //Returns a boolean if room exist
+    public int isCustomerExistReturnIndex(ArrayList<Customer> customers, String name) {     //Returns an int index if customer exist
         int index = -1;
         for(int i = 0; i< customers.size(); i++) {
             if(customers.get(i).getName().equals(name)) {
@@ -395,7 +405,7 @@ public class Methods{
         return isDuplicate;
     }
 
-    boolean checkDupCustomer(ArrayList<Customer> persons, String s) {       //Returns the boolean whether there is duplicate in person name
+    public boolean checkDupCustomer(ArrayList<Customer> persons, String s) {       //Returns the boolean whether there is duplicate in customer name
         boolean isDuplicate = false;
 
         for(int i = 0; i<persons.size(); i++) {
@@ -409,7 +419,7 @@ public class Methods{
         return isDuplicate;
     }
 
-    boolean checkDupStaff(ArrayList<Staff> persons, String s) {         //Returns the boolean whether there is duplicate in person name
+    public boolean checkDupStaff(ArrayList<Staff> persons, String s) {         //Returns the boolean whether there is duplicate in staff name
         boolean isDuplicate = false;
 
         for(int i = 0; i<persons.size(); i++) {
@@ -470,7 +480,7 @@ public class Methods{
         }
     }
 
-    public boolean isGoBack() {     //This is
+    public boolean isGoBack() {     //This is to ask user if go back for avoiding print issue
         while(true) {
             System.out.print("Press 0 to go back: ");
             choice = sc.nextLine();
@@ -491,7 +501,7 @@ public class Methods{
         else return false;
     }
 
-    public int inputInt(String statement) {
+    public int inputInt(String statement) { //For taking an integer input
         int choiceNum = -1;
         try {
             System.out.print(statement);
@@ -616,28 +626,88 @@ public class Methods{
 
 
     //DATATYPE CONVERTER
-    static int StrToInt(String s) {
+    public int StrToInt(String s) {
         int num = 0;
         num = Integer.parseInt(s);
         return num;
     }
 
-    static double StrToDbl(String s) {
+    public double StrToDbl(String s) {
         double num = 0;
         num = Double.parseDouble(s);
         return num;
     }
 
-    static String IntToStr(int n) {
+    public String IntToStr(int n) {
         String s = null;
         s = Integer.toString(n);
         return s;
     }
 
-    static String DblToStr(double n) {
+    public String DblToStr(double n) {
         String s = null;
         s = Double.toString(n);
         return s;
+    }
+
+    //===============================NEW ADDED METHODS===========================
+    public void showMainDish(ArrayList<Food> foods) {
+
+    }
+
+    //Create a method to search for duplicate reservation in RoomsList and reservations
+
+    public void setReservationDate(Reservation reservation, ArrayList<Reservation> reservations) {
+        Calendar start = null;
+        Calendar end = null;
+        System.out.println("=====SET-RESERVATION=====");
+        while(true) {
+            System.out.print("==START-DATE==");
+            System.out.println("Date e.g.(31): ");
+
+            //start.set();
+        }
+
+    }
+
+    public Date inputDate() {
+        boolean isInput = true;
+        Date date = null;
+        while(isInput==true) {
+            System.out.print("Date: ");
+            int day = inputInt();
+
+            if(day>31 || day<1) {     //Scans if date is proper
+                System.out.println("INVALID: Date is not tarung");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+
+            System.out.print("Month: ");
+            int month = inputInt();
+
+            if(month>12 || month<1) {     //Scans if date is proper
+                System.out.println("INVALID: Month is not tarung");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+
+            System.out.print("Year: ");
+            int year = inputInt();
+
+            if(year<2024) {     //Scans if date is proper
+                System.out.println("INVALID: Year is nalapas");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+
+
+            date.setDate(day);
+        }
+        return date;
     }
 
 

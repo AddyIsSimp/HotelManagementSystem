@@ -5,6 +5,7 @@ import Main.*;
 import Main.Main.*;
 import Menus.*;
 import Rooms.*;
+import Foods.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -525,6 +526,7 @@ public class Admin {
 
     //================================FOOD-SERVICE
     public void foodService(ArrayList<Menu> menus) {
+
         boolean isFoods = true;
         while(isFoods==true) {
             System.out.println("=====FOOD-SERVICE=====");
@@ -545,7 +547,16 @@ public class Admin {
                         System.out.print("Set menu name: ");
                         String newMenuName = sc.nextLine();
 
-                        //
+                        Menu menuFound = method.checkMenuExist(menus, newMenuName);
+                        if(menuFound!=null) {       //Restricts creation of duplicate menu name
+                            method.stateError("Duplicate menu name is prohibited!");
+                            boolean isCont = method.isContinue();
+                            if(isCont==true) continue;
+                            else break;
+                        }
+
+                        System.out.print("Set maindish:");
+
                     }
                     break;
                 case 3:
@@ -563,24 +574,32 @@ public class Admin {
 
     //================================FOOD-SERVICE
     public void goInventory(ArrayList<Food> foods) {
+
         boolean isInventory = true;
         while(isInventory==true) {
             System.out.println("=====INVENTORY=====");
             System.out.println("[1] View food stocks");
-            System.out.println("[2] Add stocks");
-            System.out.println("[3] Modify stocks");
-            System.out.println("[4] Delete stocks");
+            System.out.println("[2] Add new food");
+            System.out.println("[3] Add stocks");
+            System.out.println("[4] Modify stocks");
+            System.out.println("[5] Delete stocks");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
+                case 1:     //VIEW FOOD STOCKS
+                    System.out.println("=====FOOD-LIST=====");
+                    for(int i = 0; i<foods.size(); i++) {
+
+                    }
                     break;
-                case 2:
+                case 2:     //ADD NEW FOOD
                     break;
-                case 3:
+                case 3:     //ADD STOCKS
                     break;
-                case 4:
+                case 4:     //MODIFY STOCKS
+                    break;
+                case 5:     //DELETE STOCKS
                     break;
                 case 0:
                     isInventory=false;

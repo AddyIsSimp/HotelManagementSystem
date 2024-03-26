@@ -1,5 +1,7 @@
 package Menus;
 
+import Foods.*;
+
 public class Menu {
     private String menuName;
     private Food dessert;

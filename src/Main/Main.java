@@ -4,6 +4,7 @@ import Entity.*;
 import Rooms.*;
 import Menus.*;
 import Amenity.*;
+import Foods.*;
 
 import java.util.Scanner;
 import java.util.ArrayList;

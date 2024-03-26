@@ -7,6 +7,7 @@ import Amenity.*;
 import Menus.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class CustomerPage {
@@ -124,13 +125,18 @@ public class CustomerPage {
         boolean isManage = true;
         while(isManage==true) {
             System.out.println("=====SELECT-ROOMS=====");
-            System.out.println("[1] Select room number");
+            System.out.println("[1] Select room");
             System.out.println("[2] View category");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
                 case 1:
+                    boolean isSelect = true;
+                    while(isSelect==true) {
+                        method.displayAllRoom(rooms);
+                        System.out.println();
+                    }
                     break;
                 case 2:
                     break;
@@ -147,8 +153,11 @@ public class CustomerPage {
     public void goBookReservation(ArrayList<Room> rooms,
                                   ArrayList<Amenity> amenities,
                                   ArrayList<Reservation> reservations) {
+
+        ArrayList<Reservation> customerReservations = Main.customerAcct.getReservations();
         boolean isManage = true;
         while(isManage==true) {
+
             System.out.println("=====BOOK-RESERVATION=====");
             System.out.println("[1] Rooms");
             System.out.println("[2] Amenities");
@@ -157,11 +166,45 @@ public class CustomerPage {
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
+                case 1:     //ROOMS
+                    boolean isRoom = true;
+                    while(isRoom==true) {
+                        System.out.println("=====ROOM-LIST=====");
+                        System.out.println("[1] Display room");
+                        System.out.println("[2] Display by category");
+                        System.out.println("[0] Back");
+                        choice = method.inputInt("Enter choice: ");
+
+                        switch (choice) {
+                            case 1: //Display all room
+                                method.displayAllRoom(rooms);
+                                break;
+                            case 2:
+                                method.displayRoomCategory(rooms);
+                                break;
+                            case 0:
+                                isRoom=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated numbers only");
+                        }
+                    }
                     break;
-                case 2:
+                case 2:     //AMENITIES
                     break;
-                case 3:
+                case 3:     //RESERVATIONS
+                    if(customerReservations.size()!=0) {     //If there is reservation in maincustomer
+                        for(int i = 0; i<customerReservations.size();i++) {
+                            Reservation reservation = customerReservations.get(i);
+                            Room room = reservation.getRoom();
+                            Calendar start = reservation.getStartDate();
+                            Calendar end = reservation.getEndDate();
+                            System.out.println((i+1) + " " + room.getRoomNum() + " " +
+                                    room.getRoomType() + " || Start: " + start.toString() + " || End: " + end.toString());
+                        }
+                    }else {     //Else no reservations
+                        System.out.println("No reservations listed");
+                    }
                     break;
                 case 0:
                     isManage=false;

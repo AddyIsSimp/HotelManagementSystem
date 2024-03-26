@@ -1,10 +1,12 @@
 package Entity;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import Rooms.Reservation;
 
 public class Customer extends Person {
     ArrayList<Transact> transactions = new ArrayList<>();
-    private Reservation reservation;
+    private ArrayList<Reservation> reservations = new ArrayList<>();
 
     public Customer() {
         this.name = null;
@@ -25,8 +27,11 @@ public class Customer extends Person {
     }
 
     //Need to modify
-    public void setReservation() {
-
+    public void addReservation(int roomNum, Calendar startDate, Calendar endDate) {
+        reservations.add(new Reservation(roomNum, startDate, endDate));
+        System.out.println("Reservation added successfully!");
     }
+
+    public ArrayList<Reservation> getReservations() {return reservations;}
 
 }
