@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import Entity.*;
 import Foods.Food;
+import Foods.MainDish;
 import Menus.Menu;
 import Rooms.*;
 
@@ -29,6 +30,19 @@ public class Methods{
                 Room room = rooms.get(i);
                 System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType()
                         + " || Occupied: " + room.getIsOccupied() + " || Disabled: " + room.getIsDisabled());
+            }
+        }else System.out.println("\nThere is no room found\n");
+    }
+
+    public void displayAllRoomForCustomer(ArrayList<Room> rooms) {     //Display all rooms despite occupied or not
+        sortRooms(rooms);
+        if(rooms.size()!=0) {       //If there is room existing
+            System.out.println("===ROOMS-LIST===");
+            for (int i = 0; i < rooms.size(); i++) {
+                Room room = rooms.get(i);
+                if(room.getIsOccupied()==false && room.getIsDisabled()==false) {    //Filtering out those unavailable room
+                    System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType());
+                }
             }
         }else System.out.println("\nThere is no room found\n");
     }
@@ -125,31 +139,6 @@ public class Methods{
                     " || Occupied: " + room.getIsOccupied() +
                     " || Disabled: " + room.getIsDisabled());
         }
-    }
-
-    public void displayMenus(ArrayList<Menu> menus) {
-        System.out.println("=====MENU-LIST=====");
-        for(int i = 0; i<menus.size(); i++) {        //Display all menu created
-            Menu menu = menus.get(i);
-            System.out.println((i+1) + " Name: " + menu.getMenuName()
-                    + "|| Food: " + menu.getMainDish());
-            if(menu.getSideDish() !=null) System.out.println(" , " + menu.getSideDish());
-            if(menu.getDrinks()!=null) System.out.println(" , " + menu.getDrinks());
-            if(menu.getDessert()!=null) System.out.println(" , " + menu.getDessert());
-            System.out.println(" || Price: " + menu.getTotalPrice());
-        }
-    }
-
-    public Menu checkMenuExist(ArrayList<Menu> menus, String menuName) {    //Returns a menu if that menuname existed in list
-        Menu foundMenu = null;
-        for(int i = 0; i<menus.size(); i++) {
-            Menu menu = menus.get(i);
-            if(menu.getMenuName().equals(menuName)==true) {
-                foundMenu = menu;
-                break;
-            }
-        }
-        return foundMenu;
     }
 
     public void displayCustomer(ArrayList<Customer> customers) {    //Display all customer
@@ -651,29 +640,131 @@ public class Methods{
     }
 
     //===============================NEW ADDED METHODS===========================
+
+    public void displayMenus(ArrayList<Menu> menus) {
+        System.out.println("=====MENU-LIST=====");
+        if(menus.size()==0) System.out.println("There is no menu created");
+        for(int i = 0; i<menus.size(); i++) {        //Display all menu created
+            Menu menu = menus.get(i);
+            System.out.print((i+1) + " Name: " + menu.getMenuName()
+                    + " || Food: " + menu.getMainDish().getFoodName());
+            if(menu.getSideDish() !=null) System.out.print(" , " + menu.getSideDish().getFoodName());
+            if(menu.getDrinks()!=null) System.out.print(" , " + menu.getDrinks().getFoodName());
+            if(menu.getDessert()!=null) System.out.print(" , " + menu.getDessert().getFoodName());
+            System.out.print(" || Price: " + menu.getTotalPrice());
+            System.out.println("");
+        }
+    }
+
+    public Menu selectMenu(ArrayList<Menu> menus) {
+        Menu menuSelect = null;
+        while(true) {
+            System.out.println("=====MENU-LIST=====");
+            if (menus.size() == 0) System.out.println("There is no menu created");
+            for (int i = 0; i < menus.size(); i++) {        //Display all menu created
+                Menu menu = menus.get(i);
+                System.out.print((i + 1) + " Name: " + menu.getMenuName()
+                        + " || Food: " + menu.getMainDish().getFoodName());
+                if (menu.getSideDish() != null) System.out.print(" , " + menu.getSideDish().getFoodName());
+                if (menu.getDrinks() != null) System.out.print(" , " + menu.getDrinks().getFoodName());
+                if (menu.getDessert() != null) System.out.print(" , " + menu.getDessert().getFoodName());
+                System.out.print(" || Price: " + menu.getTotalPrice());
+                System.out.println("");
+            }
+
+            System.out.print("\nSelect menu number: ");
+            int menuNum = inputInt();
+            if(menuNum>menus.size() || menuNum<0) {
+                System.out.println("INVALID: Pick number with existing menu or 0 to exit");
+                continue;
+            }
+            if(menuNum==0) break;
+            menuSelect = menus.get(menuNum-1);
+
+            break;
+        }
+        if(menuSelect!=null) return menuSelect;
+        else return null;
+    }
+
+    public Menu checkMenuExist(ArrayList<Menu> menus, String menuName) {    //Returns a menu if that menuname existed in list
+        Menu foundMenu = null;
+        for(int i = 0; i<menus.size(); i++) {
+            Menu menu = menus.get(i);
+            if(menu.getMenuName().equals(menuName)==true) {
+                foundMenu = menu;
+                break;
+            }
+        }
+        return foundMenu;
+    }
+
     public void showMainDish(ArrayList<Food> foods) {
 
     }
 
-    //Create a method to search for duplicate reservation in RoomsList and reservations
+    public Room selectRoom(ArrayList<Room> rooms) {     //select Room and check if it is vacant
+        Room room = null;
+        boolean isFound = false;
+        while(isFound==false) {
+            int roomNum = 0;
+            System.out.print("Enter room number:");
+            roomNum = inputInt();
 
-    public void setReservationDate(Reservation reservation, ArrayList<Reservation> reservations) {
-        Calendar start = null;
-        Calendar end = null;
-        System.out.println("=====SET-RESERVATION=====");
-        while(true) {
-            System.out.print("==START-DATE==");
-            System.out.println("Date e.g.(31): ");
+            for(int i = 0; i<rooms.size(); i++) {
+                Room temp = rooms.get(i);
+                if(temp.getRoomNum()==roomNum) {
+                    room = temp;
+                    isFound=true;
+                    break;
+                }
+            }
 
-            //start.set();
+            if(isFound==false) {
+                System.out.println("INVALID: Room not found with the specified room number");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+        }
+        return room;
+    }
+
+    public boolean checkReservation(ArrayList<Reservation> reservations, Reservation reservation) {
+        boolean isGood = true;
+
+        for(int i = 0; i<reservations.size(); i++) {            //Scans per reservations saved
+            Reservation reserveList = reservations.get(i);      //Get the reservation in ArrayList
+            ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
+            for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
+                Date date = durationDays.get(j);                //Get the date in durationDays
+                ArrayList<Date> durationToRsrv = reservation.getDuration(reservation.getStartDate(), reservation.getDuration());
+                for(int k = 0; k<durationToRsrv.size(); k++) {
+                    if(durationToRsrv.get(k).equals(date)) isGood = false;     //There is a conflict in Date;
+                }
+            }
         }
 
+        return isGood;
+    }
+
+    public void displayReservations(ArrayList<Reservation> reservations) {
+        System.out.println("=====RESERVATIONS=====");
+        if(reservations.size()==0) System.out.println("There is no reservations");
+        for(int i = 0; i<reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            Room room = reservation.getRoom();
+            System.out.println("[" + (i+1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
+                    room.getRoomType() + " Cost: " + reservation.getReservationPrice());
+        }
     }
 
     public Date inputDate() {
         boolean isInput = true;
         Date date = null;
+
         while(isInput==true) {
+            System.out.println("===SET-DATE===");
             System.out.print("Date: ");
             int day = inputInt();
 
@@ -705,11 +796,23 @@ public class Methods{
             }
 
 
-            date.setDate(day);
+            date = new Date(day, month, year);
+            break;
         }
         return date;
     }
 
+//    public Transact computeBills(Reservation reservation) {
+//
+//    }
+//
+//    public Transact computeBills(Room room) {
+//
+//    }
+//
+//    public Transact paymentProcess() {
+//        System.out.println("=====PAYMENT=====");
+//    }
 
 }
 

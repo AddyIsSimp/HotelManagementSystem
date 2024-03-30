@@ -3,6 +3,7 @@ package Amenity;
 public class Amenity {
     private String amenityCode;
     private int maxPerson;
+    private boolean isReserved = false;
 
     public Amenity() {
         this.amenityCode = null;
@@ -19,5 +20,8 @@ public class Amenity {
 
     public void setMaxPerson(int qty) {this.maxPerson = qty;}
     public int getMaxPerson() {return maxPerson;}
+
+    public void setReserved(boolean reserve) {this.isReserved = reserve;}
+    public boolean getReserved() {return isReserved;}
 
 }

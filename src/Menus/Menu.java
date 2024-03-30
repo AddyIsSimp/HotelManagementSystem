@@ -10,25 +10,31 @@ public class Menu {
     private Food drinks;
     private double totalPrice;
 
-    public Menu(String menuName, Food main, Food drinks, Food side, Food dessert) {
+    public Menu(String menuName, Food main, Food side, Food drinks, Food dessert) {
         this.menuName = menuName;
-        this.dessert = dessert;
         this.mainDish = main;
         this.sideDish = side;
         this.drinks = drinks;
+        this.dessert = dessert;
+        computeTotalPrice();
     }
 
-    public Menu(String menuName, Food main, Food drinks, Food side) {
+    public Menu(String menuName, Food main, Food side, Food drinks) {
         this.menuName = menuName;
         this.mainDish = main;
         this.sideDish = side;
         this.drinks = drinks;
+        this.dessert = null;
+        computeTotalPrice();
     }
 
     public Menu(String menuName, Food main, Food drinks) {
         this.menuName = menuName;
         this.mainDish = main;
         this.drinks = drinks;
+        this.sideDish = null;
+        this.dessert = null;
+        computeTotalPrice();
     }
 
     public void setMenuName(String menuName) {this.menuName = menuName;}
@@ -45,6 +51,22 @@ public class Menu {
 
     public void setDrinks(Food food) {this.drinks = food;}
     public Food getDrinks() {return drinks;}
+
+    public void computeTotalPrice() {
+        if(this.dessert==null && this.sideDish==null) {
+            totalPrice += mainDish.getPrice();
+            totalPrice += drinks.getPrice();
+        }else if(this.dessert==null) {
+            totalPrice += mainDish.getPrice();
+            totalPrice += sideDish.getPrice();
+            totalPrice += drinks.getPrice();
+        }else {
+            totalPrice += mainDish.getPrice();
+            totalPrice += sideDish.getPrice();
+            totalPrice += drinks.getPrice();
+            totalPrice += dessert.getPrice();
+        }
+    }
 
     public void setTotalPrice(double price) {this.totalPrice = price;}
     public double getTotalPrice() {return totalPrice;}

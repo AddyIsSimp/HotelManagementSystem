@@ -18,7 +18,7 @@ public class VIPRoom extends Room{
 
     public void setRoomType() {
         this.roomType = "VIP";
-        this.ratePer = 1000;
+        this.ratePerDay = 1000;
     }
 
 

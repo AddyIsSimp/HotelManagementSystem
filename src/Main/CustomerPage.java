@@ -1,11 +1,13 @@
 package Main;
 
 import Entity.Customer;
+import Rooms.Date;
 import Rooms.Reservation;
 import Rooms.Room;
 import Amenity.*;
 import Menus.*;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -15,6 +17,7 @@ public class CustomerPage {
     private Scanner sc = new Scanner(System.in);
     private Methods method = new Methods();
     private String choice = null;
+    private int reserveDurationLimit = 10;
 
     //Dapat ma-update ang balance if ever naay order c customer
 
@@ -177,7 +180,38 @@ public class CustomerPage {
 
                         switch (choice) {
                             case 1: //Display all room
-                                method.displayAllRoom(rooms);
+                                boolean displayAll = true;
+                                while(displayAll==true) {
+                                    Date start = null;
+                                    Room room = null;
+                                    int duration = 0;
+
+                                    method.displayAllRoomForCustomer(rooms);
+
+                                    System.out.println("===SELECT-ROOM===");
+                                    room = method.selectRoom(rooms);
+                                    start = method.inputDate();     //Set the date
+                                    System.out.println("===SET-DURATION===");
+                                    System.out.print("Enter duration of reservation(days) : ");
+                                    duration = method.inputInt();
+
+                                    Reservation reservation = new Reservation(Main.customerAcct, room, start, duration);
+                                    ArrayList<Date> durationDay = reservation.getDuration(start, duration);
+
+                                    boolean isUnique = method.checkReservation(reservations, reservation);
+                                    if(isUnique==false) {
+                                        boolean isCont = method.stateError("The room " + room.getRoomNum()
+                                                + " is already reserved");
+                                        if(isCont==true) continue;
+                                        else break;
+                                    }
+
+
+
+                                    reservations.add(reservation);
+                                    Main.customerAcct.addReservation(reservation);
+                                    break;
+                                }
                                 break;
                             case 2:
                                 method.displayRoomCategory(rooms);
@@ -197,10 +231,14 @@ public class CustomerPage {
                         for(int i = 0; i<customerReservations.size();i++) {
                             Reservation reservation = customerReservations.get(i);
                             Room room = reservation.getRoom();
-                            Calendar start = reservation.getStartDate();
-                            Calendar end = reservation.getEndDate();
+                            Date start = reservation.getStartDate();
+                            Date end = reservation.getEndDate();
                             System.out.println((i+1) + " " + room.getRoomNum() + " " +
-                                    room.getRoomType() + " || Start: " + start.toString() + " || End: " + end.toString());
+                                    room.getRoomType());
+                            System.out.print(" || Start: ");
+                            start.displayDate();
+                            System.out.print(" || End: ");
+                            end.displayDate();
                         }
                     }else {     //Else no reservations
                         System.out.println("No reservations listed");

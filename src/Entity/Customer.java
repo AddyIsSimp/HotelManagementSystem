@@ -2,7 +2,9 @@ package Entity;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import Rooms.Date;
 import Rooms.Reservation;
+import Rooms.Room;
 
 public class Customer extends Person {
     ArrayList<Transact> transactions = new ArrayList<>();
@@ -27,8 +29,13 @@ public class Customer extends Person {
     }
 
     //Need to modify
-    public void addReservation(int roomNum, Calendar startDate, Calendar endDate) {
-        reservations.add(new Reservation(roomNum, startDate, endDate));
+    public void addReservation(Room room, Date startDate, int duration) {
+        reservations.add(new Reservation(room, startDate, duration));
+        System.out.println("Reservation added successfully!");
+    }
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
         System.out.println("Reservation added successfully!");
     }
 

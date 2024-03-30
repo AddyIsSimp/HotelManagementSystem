@@ -537,12 +537,23 @@ public class Admin {
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
-            switch(choice) {
+            switch(choice) {     //VIEW MENU
                 case 1:
                     method.displayMenus(menus);
+                    method.isGoBack();
                     break;
-                case 2:
-                    while(true) {
+                case 2:         //ADD MENU
+                    while(true) {   //
+                        ArrayList<Food> mainDishes = new ArrayList<>();
+                        ArrayList<Food> sideDishes = new ArrayList<>();
+                        ArrayList<Food> drinksList = new ArrayList<>();
+                        ArrayList<Food> desserts = new ArrayList<>();
+                        Food mainDish;
+                        Food sideDish;
+                        Food drinks;
+                        Food dessert;
+                        int index = 0;
+
                         System.out.println("=====CREATE-MENU=====");
                         System.out.print("Set menu name: ");
                         String newMenuName = sc.nextLine();
@@ -555,13 +566,253 @@ public class Admin {
                             else break;
                         }
 
-                        System.out.print("Set maindish:");
+                        //MAIN DISH SELECTION
+                        System.out.println("=====MAIN-DISH=====");
+                        int count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== MainDish.class) {
+                                System.out.println("Dish " + count + " : " + food.getFoodName());
+                                mainDishes.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Main dish number: ");
+                        index = method.inputInt();
+                        if(index==0) break;     //Exit clause
+                        mainDish = mainDishes.get(index-1);
+                        System.out.println("You select " + mainDish.getFoodName() + " as main dish");
 
+                        //SIDE DISH SELECTION
+                        System.out.println("=====SIDE-DISH=====");
+                        count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== SideDish.class) {
+                                System.out.println("Dish " + count + " : " + food.getFoodName());
+                                sideDishes.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Side dish number: ");
+                        index = method.inputInt();
+                        if(index==0) sideDish = null;     //No sidedish selected means if 0
+                        sideDish = sideDishes.get(index-1);
+                        System.out.println("You select " + sideDish.getFoodName() + " as side dish");
+
+                        //DRINKS SELECTION
+                        while(true) {
+                            System.out.println("=====DRINKS=====");
+                            count = 1;
+                            for (int i = 0; i < Main.foods.size(); i++) {
+                                Food food = Main.foods.get(i);
+                                if (food.getClass() == Drinks.class) {
+                                    System.out.println("Drink " + count + " : " + food.getFoodName());
+                                    drinksList.add(food);
+                                    count++;
+                                }
+                            }
+                            System.out.print("Drink number: ");
+                            index = method.inputInt();
+                            if(index>drinksList.size() || index<1) {       //Restricts to priority get drinks in the menu
+                                System.out.println("INVALID: You must select a drinks for the menu");
+                                continue;
+                            }
+                            drinks = drinksList.get(index-1);
+                            System.out.println("You select " + drinks.getFoodName() + " as your drinks");
+                            break;
+                        }
+
+                        //DESSERT SELECTION
+                        System.out.println("=====DESSERTS=====");
+                        count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== Dessert.class) {
+                                System.out.println("Dessert " + count + " : " + food.getFoodName());
+                                desserts.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Dessert number: ");
+                        index = method.inputInt();
+                        if(index==0) dessert = null;     //No sidedish selected means if 0
+                        dessert = desserts.get(index-1);
+                        System.out.println("You select " + dessert.getFoodName() + " as dessert");
+
+                        if(desserts==null && sideDish==null) {
+                            menus.add(new Menu(newMenuName, mainDish, drinks));
+                            System.out.println("Successfully added menu " + newMenuName);
+                        }else if(desserts==null) {
+                            menus.add(new Menu(newMenuName, mainDish, sideDish, drinks));
+                            System.out.println("Successfully added menu " + newMenuName);
+                        }else {
+                            menus.add(new Menu(newMenuName, mainDish, sideDish, drinks, dessert));
+                            System.out.println("Successfully added menu "  + newMenuName);
+                        }
+
+                        break;
+                    }   //End of Add menu
+                    break;
+                case 3:         //MODIFY MENU
+                    System.out.println("=====EDIT-MENU=====");
+                    Menu menuSelect = method.selectMenu(menus);
+                    if(menuSelect==null) {
+                        System.out.println("INVALID: No menu selected");
+                        continue;
                     }
+
+                    while(menuSelect!=null) {
+                        ArrayList<Food> mainDishes = new ArrayList<>();
+                        ArrayList<Food> sideDishes = new ArrayList<>();
+                        ArrayList<Food> drinksList = new ArrayList<>();
+                        ArrayList<Food> desserts = new ArrayList<>();
+                        Food mainDish;
+                        Food sideDish;
+                        Food drinks;
+                        Food dessert;
+                        int index = 0;
+                        String newMenuName = null;
+
+                        System.out.println("Do you want to change name of menu " + menuSelect.getMenuName() +
+                                "?[1]Yes/[2]No");
+                        choice = method.inputInt();
+                        if(choice==1) { //Set menu name
+                            System.out.print("Set menu name: ");
+                            newMenuName = sc.nextLine();
+                        }
+
+                        Menu menuFound = method.checkMenuExist(menus, newMenuName);
+                        if(menuFound!=null) {       //Restricts creation of duplicate menu name
+                            method.stateError("Duplicate menu name is prohibited!");
+                            boolean isCont = method.isContinue();
+                            if(isCont==true) continue;
+                            else break;
+                        }
+
+                        menuSelect.setMenuName(newMenuName);
+
+                        //MAIN DISH SELECTION
+                        System.out.println("=====MAIN-DISH=====");
+                        int count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== MainDish.class) {
+                                System.out.println("Dish " + count + " : " + food.getFoodName());
+                                mainDishes.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Main dish number: ");
+                        index = method.inputInt();
+                        if(index==0) break;     //Exit clause
+                        mainDish = mainDishes.get(index-1);
+                        System.out.println("You select " + mainDish.getFoodName() + " as main dish");
+
+                        //SIDE DISH SELECTION
+                        System.out.println("=====SIDE-DISH=====");
+                        count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== SideDish.class) {
+                                System.out.println("Dish " + count + " : " + food.getFoodName());
+                                sideDishes.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Side dish number: ");
+                        index = method.inputInt();
+                        if(index==0) sideDish = null;     //No sidedish selected means if 0
+                        sideDish = sideDishes.get(index-1);
+                        System.out.println("You select " + sideDish.getFoodName() + " as side dish");
+
+                        //DRINKS SELECTION
+                        while(true) {
+                            System.out.println("=====DRINKS=====");
+                            count = 1;
+                            for (int i = 0; i < Main.foods.size(); i++) {
+                                Food food = Main.foods.get(i);
+                                if (food.getClass() == Drinks.class) {
+                                    System.out.println("Drink " + count + " : " + food.getFoodName());
+                                    drinksList.add(food);
+                                    count++;
+                                }
+                            }
+                            System.out.print("Drink number: ");
+                            index = method.inputInt();
+                            if(index>=drinksList.size() || index<1) {       //Restricts to priority get drinks in the menu
+                                System.out.println("INVALID: You must select a drinks for the menu");
+                                continue;
+                            }
+                            drinks = drinksList.get(index-1);
+                            System.out.println("You select " + drinks.getFoodName() + " as your drinks");
+                            break;
+                        }
+
+                        //DESSERT SELECTION
+                        System.out.println("=====DESSERTS=====");
+                        count = 1;
+                        for(int i = 0; i< Main.foods.size(); i++) {
+                            Food food = Main.foods.get(i);
+                            if(food.getClass()== Dessert.class) {
+                                System.out.println("Dessert " + count + " : " + food.getFoodName());
+                                desserts.add(food);
+                                count++;
+                            }
+                        }
+                        System.out.print("Dessert number: ");
+                        index = method.inputInt();
+                        if(index==0) dessert = null;     //No sidedish selected means if 0
+                        dessert = desserts.get(index-1);
+                        System.out.println("You select " + dessert.getFoodName() + " as dessert");
+
+                        if(desserts==null && sideDish==null) {
+                            menuSelect = new Menu(newMenuName, mainDish, drinks);
+                            System.out.println("Successfully modified menu " + menuSelect.getMenuName());
+                        }else if(desserts==null) {
+                            menuSelect = new Menu(newMenuName, mainDish, sideDish, drinks);
+                            System.out.println("Successfully modified menu " + menuSelect.getMenuName());
+                        }else {
+                            menuSelect = new Menu(newMenuName, mainDish, sideDish, drinks, dessert);
+                            System.out.println("Successfully modified menu "  + menuSelect.getMenuName());
+                        }
+
+                        break;
+                    }
+
                     break;
-                case 3:
-                    break;
-                case 4:
+                case 4:         //DELETE MENU
+                    boolean delMenu = true;
+
+                    System.out.println("=====DELETE-MENU=====");
+                    while(delMenu==true) {
+                        System.out.println("=====MENU-LIST=====");
+                        if (menus.size() == 0) System.out.println("There is no menu created");
+                        for (int i = 0; i < menus.size(); i++) {        //Display all menu created
+                            Menu menu = menus.get(i);
+                            System.out.print((i + 1) + " Name: " + menu.getMenuName()
+                                    + " || Food: " + menu.getMainDish().getFoodName());
+                            if (menu.getSideDish() != null) System.out.print(" , " + menu.getSideDish().getFoodName());
+                            if (menu.getDrinks() != null) System.out.print(" , " + menu.getDrinks().getFoodName());
+                            if (menu.getDessert() != null) System.out.print(" , " + menu.getDessert().getFoodName());
+                            System.out.print(" || Price: " + menu.getTotalPrice());
+                            System.out.println();
+                        }
+
+                        System.out.print("\nSelect menu number: ");
+                        int menuNum = method.inputInt();
+                        if(menuNum>menus.size() || menuNum<0) {
+                            System.out.println("INVALID: Pick number with existing menu or 0 to exit");
+                            continue;
+                        }
+
+                        if(menuNum==0) break;
+
+                        Menu menu = menus.get(menuNum-1);
+                        menus.remove(menu);
+                        System.out.println("Menu " + menu.getMenuName() + " is removed successfully!");
+                        break;
+                    }   //End of delMenu loop
                     break;
                 case 0:
                     isFoods=false;
@@ -623,6 +874,7 @@ public class Admin {
 
             switch(choice) {
                 case 1:
+                    method.displayReservations(reservations);
                     break;
                 case 2:
                     break;

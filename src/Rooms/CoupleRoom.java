@@ -19,7 +19,11 @@ public class CoupleRoom extends Room{
 
     public void setRoomType() {
         this.roomType = "Couple";
-        this.ratePer = 100;
+        this.ratePerDay = 100;
+    }
+
+    public void setRate() {
+
     }
 
 }

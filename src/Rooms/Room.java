@@ -6,7 +6,7 @@ public class Room {
 
     protected String roomType;
     private int roomNum;
-    protected double ratePer;
+    protected double ratePerDay;
     private boolean isOccupied;
     private boolean isDisabled;
 
@@ -42,5 +42,8 @@ public class Room {
 
     public boolean getIsDisabled() {return isDisabled;}
     public void setIsDisabled(boolean b) {this.isDisabled=b;}
+
+    public double getRatePerDay() {return ratePerDay;}
+    public void setRatePerDay(double rate) {this.ratePerDay = rate;}
 
 }
