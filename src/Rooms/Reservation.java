@@ -10,7 +10,7 @@ public class Reservation {
 
     //Assign the reservation in RoomNum not in the room instance
 
-    private Customer person;    //Person that reserve
+    private Customer customer;    //Person that reserve
     private Amenity amenity;
     private Room room;
     private Date startDate;     //Start Date of reservation
@@ -30,22 +30,29 @@ public class Reservation {
     }
 
     public Reservation(Customer person, Room room, Date startDate, int duration) {
-        this.person = person;
+        this.customer = person;
         this.room = room;
         this.startDate = startDate;
         this.duration = duration;
     }
 
-    public Reservation(Customer person, String amenityCode, Date startDate, int duration) {
-        this.amenity.setAmenityCode(amenityCode);
+    public Reservation(Reservation reservation) {
+        this.customer = reservation.getCustomer();
+        this.room = reservation.getRoom();
+        this.startDate = reservation.getStartDate();
+        this.duration = reservation.getDuration();
+    }
+
+    public Reservation(Customer person, Amenity amenity, Date startDate, int duration) {
+        this.amenity = amenity;
         this.startDate = startDate;
         this.duration = duration;
     }
 
-    public void setPerson(Customer person) {this.person = person;}
-    public Person getPerson() {return person;}
+    public void setCustomer(Customer person) {this.customer = person;}
+    public Customer getCustomer() {return customer;}
 
-    public void setstartDate(Date startDate) {this.startDate = startDate;}
+    public void setStartDate(Date startDate) {this.startDate = startDate;}
     public Date getStartDate() {return startDate;}
 
     public void setDuration(int duration) {this.duration = duration;}
@@ -53,6 +60,9 @@ public class Reservation {
 
     public void setRoom(Room room) {this.room = room;}
     public Room getRoom() {return room;}
+
+    public void setAmenity(Amenity amenity) {this.amenity = amenity;}
+    public Amenity getAmenity() {return amenity;}
 
     public Date getEndDate() {
         Date date = startDate;
@@ -115,9 +125,10 @@ public class Reservation {
         }
     }
 
-    public double getReservationPrice() {
+    public double computeReservationPrice() {
         try{
-            computePrice();
+            if(this.room!=null) computePriceRoom();
+            else if(this.amenity!=null) computeAmenityReservePrice();
             return reservationPrice;
         }catch (Exception e) {
             System.out.println("INVALID: Arithmetic error");
@@ -125,7 +136,19 @@ public class Reservation {
         return -1;
     }
 
-    public void computePrice() throws Exception {
+    public void computeRoomReservePrice() {
+        double price = room.getReservationPrice()*duration;
+        price/=2;
+        this.reservationPrice = price;
+    }
+
+    public void computeAmenityReservePrice() {
+        double price = amenity.getReservationCost()*duration;
+        price/=2;
+        this.reservationPrice = price;
+    }
+
+    public void computePriceRoom() {
         double price = room.getRatePerDay()*duration;
         price/=2;
         this.reservationPrice = price;

@@ -1,16 +1,15 @@
 package Main;
 
 import Entity.*;
-import Main.*;
-import Main.Main.*;
-import Menus.*;
 import Rooms.*;
 import Foods.*;
+import Amenity.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Admin {
+
     private String userName = "Admin123";
     private String password = "admin123";
     private Methods method = new Methods();
@@ -45,7 +44,7 @@ public class Admin {
         boolean login = false;
 
         while(login==false) {
-            System.out.println("=====ADMIN-LOGIN=====");
+            System.out.println("\n=====ADMIN-LOGIN=====");
             System.out.print("Username: ");
             un = sc.nextLine();
             System.out.print("Password: ");
@@ -71,7 +70,7 @@ public class Admin {
     public void manageAccounts(ArrayList<Customer> customers, ArrayList<Staff> staffs, Admin admin) {
 
         Account : while(true) {
-            System.out.println("=====MANAGE-ACCOUNTS=====");
+            System.out.println("\n=====MANAGE-ACCOUNTS=====");
             System.out.println("[1] Customer");
             System.out.println("[2] Staff");
             System.out.println("[3] Admin");
@@ -315,13 +314,13 @@ public class Admin {
         }
     }
     //================================ROOM-MANAGE
-    public void manageRoom(ArrayList<Room> rooms) {
+    public void manageRoom(ArrayList<Room> rooms, ArrayList<Amenity> amenities) {
         boolean isManage = true;
         while(isManage==true) {
             int roomNum = 0;
             int roomIndex = 0;
 
-            System.out.println("=====MANAGE-ROOMS=====");
+            System.out.println("\n=====MANAGE-ROOMS=====");
             System.out.println("[1] Rooms");
             System.out.println("[2] Amenities");
             System.out.println("[0] Back");
@@ -335,7 +334,8 @@ public class Admin {
                         System.out.println("[1] View rooms");
                         System.out.println("[2] Add room");
                         System.out.println("[3] Edit room");
-                        System.out.println("[4] Delete room");
+                        System.out.println("[4] Edit room price");
+                        System.out.println("[5] Delete room");
                         System.out.println("[0] Back");
                         choice = method.inputInt("Enter choice: ");
 
@@ -483,7 +483,78 @@ public class Admin {
                                     }//end of roomExist condition
                                 }//end of isEdit loop
                                 break;
-                            case 4:
+                            case 4:     //EDIT ROOM PRICE
+                                boolean isEditPrice = true;
+                                while(isEditPrice==true) {
+                                    ArrayList<Room> roomsType = null;
+                                    double rate = 0;
+                                    System.out.println("=====SET-ROOM-PRICE=====");
+                                    System.out.println("[1] Single Room");
+                                    System.out.println("[2] Couple Room");
+                                    System.out.println("[3] Family Room");
+                                    System.out.println("[4] VIP Room");
+                                    System.out.print("Enter choice: ");
+                                    choice = method.inputInt();
+
+                                    switch(choice) {
+                                        case 0:
+                                            isEditPrice = false;
+                                            break;
+                                        case 1:
+                                            System.out.print("\nSet single room price: ");
+                                            rate = method.inputDouble();
+                                            if(rate<0) {
+                                                System.out.println("INVALID: Price should be real number");
+                                                continue;
+                                            }
+                                            roomsType = method.getRoomsType(rooms, "Single");
+                                            method.setPriceRooms(roomsType, rate);
+                                            System.out.println("Price of single rooms are set to " + rate);
+                                            isEditPrice=false;
+                                            break;
+                                        case 2:
+                                            System.out.print("\nSet coupe room price: ");
+                                            rate = method.inputDouble();
+                                            if(rate<0) {
+                                                System.out.println("INVALID: Price should be real number");
+                                                continue;
+                                            }
+                                            roomsType = method.getRoomsType(rooms, "Couple");
+                                            method.setPriceRooms(roomsType, rate);
+                                            System.out.println("Price of couple rooms are set to " + rate);
+                                            isEditPrice=false;
+                                            break;
+                                        case 3:
+                                            System.out.print("\nSet family room price: ");
+                                            rate = method.inputDouble();
+                                            if(rate<0) {
+                                                System.out.println("INVALID: Price should be real number");
+                                                continue;
+                                            }
+                                            roomsType = method.getRoomsType(rooms, "Family");
+                                            method.setPriceRooms(roomsType, rate);
+                                            System.out.println("Price of family rooms are set to " + rate);
+                                            isEditPrice=false;
+                                            break;
+                                        case 4:
+                                            System.out.print("\nSet VIP room price: ");
+                                            rate = method.inputDouble();
+                                            if(rate<0) {
+                                                System.out.println("INVALID: Price should be real number");
+                                                continue;
+                                            }
+                                            roomsType = method.getRoomsType(rooms, "VIP");
+                                            method.setPriceRooms(roomsType, rate);
+                                            System.out.println("Price of family rooms are set to " + rate);
+                                            isEditPrice=false;
+                                            break;
+                                        default:
+                                            System.out.println("INVALID: Use indicated number only");
+                                    }
+
+                                }
+                                break;
+                            case 5:     //DELETE ROOM
                                 boolean isDelete = true;
 
                                 while(isDelete==true) {
@@ -513,7 +584,214 @@ public class Admin {
                         }
                     }
                     break;
-                case 2:
+                case 2:     //AMENITIES EDIT
+                    boolean isAmenity = true;
+                    while(isAmenity==true) {
+                        System.out.println("\n=====AMENITIES=====");
+                        System.out.println("[1] Add amenity");
+                        System.out.println("[2] View amenities");
+                        System.out.println("[3] Edit amenity");
+                        System.out.println("[4] Edit reservation cost");
+                        System.out.println("[5] Delete amenity");
+                        System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
+                        choice = method.inputInt();
+
+                        switch(choice) {
+                            case 1:     //Add amenity
+                                boolean isAdd = true;
+                                while(isAdd==true) {
+                                    System.out.println("\n=====ADD-AMENITY=====");
+                                    System.out.println("[1] Karaoke");
+                                    System.out.println("[2] Reception Hall");
+                                    System.out.println("[3] Pool");
+                                    System.out.println("[4] Game Room");
+                                    System.out.print("Select type of amenity: ");
+                                    choice = method.inputInt();
+
+                                    switch (choice) {
+                                        case 1:
+                                            method.addAmenity(amenities, "Karaoke");
+                                            Amenity amenityLast = amenities.get(amenities.size()-1);
+                                            System.out.println("\nYou have successfully added Karaoke " + amenityLast.getAmenityCode());
+                                            isAdd = false;
+                                            break;
+                                        case 2:
+                                            method.addAmenity(amenities, "ReceptionHall");
+                                            amenityLast = amenities.get(amenities.size()-1);
+                                            System.out.println("\nYou have successfully added Reception Hall " + amenityLast.getAmenityCode());
+                                            isAdd = false;
+                                            break;
+                                        case 3:
+                                            method.addAmenity(amenities, "Pool");
+                                            amenityLast = amenities.get(amenities.size()-1);
+                                            System.out.println("\nYou have successfully added Pool " + amenityLast.getAmenityCode());
+                                            isAdd = false;
+                                            break;
+                                        case 4:
+                                            method.addAmenity(amenities, "GameRoom");
+                                            amenityLast = amenities.get(amenities.size()-1);
+                                            System.out.println("\nYou have successfully added Game Room " + amenityLast.getAmenityCode());
+                                            isAdd = false;
+                                            break;
+                                        case 0:
+                                            isAdd=false;
+                                            break;
+                                        default:
+                                            System.out.println("INVALID: Use indicated number only");
+
+                                    }
+
+                                }
+                                break;
+                            case 2:     //View amenity
+                                method.displayAmenities(amenities);
+                                method.isGoBack();
+                                break;
+                            case 3:     //Edit amenity
+                                boolean editAmenity = true;
+                                while(editAmenity==true) {
+                                    String amenityCode = null;
+                                    System.out.println("\n=====EDIT-AMENITY=====");
+                                    System.out.print("Enter the amenity code to edit: ");
+                                    amenityCode = sc.nextLine();
+
+                                    if(amenityCode.equals("0")) break;
+
+                                    Amenity amenityEdit = method.getAmenity(amenities, amenityCode);
+                                    if(amenityEdit==null) {     //If amenity is not found
+                                        System.out.println("INVALID: Amenity not found");
+                                        break;
+                                    }
+
+                                    System.out.println("\n=====AMENITY-INFO=====");
+                                    System.out.println("Amenity Type: " + amenityEdit.getAmenityType());
+                                    System.out.println("[1] Reservation Cost: " + amenityEdit.getReservationCost());
+                                    System.out.print("Select details to modify: ");
+                                    choice = method.inputInt();
+
+                                    double dblChoice = 0;
+                                    int intChoice = 0;
+                                    switch (choice) {
+                                        case 1: //Edit reservation cost
+                                            while(true) {
+                                                System.out.print("\nEnter new reservation cost: ");
+                                                dblChoice = method.inputDouble();
+
+                                                if (dblChoice == -1) {    //Invalid double input
+                                                    System.out.println("INVALID: Use real numbers only");
+                                                    boolean isCont = method.isContinue();
+                                                    if(isCont==true) continue;
+                                                    else {      //Exit clause
+                                                        System.out.println("\nEdit amenity is failed!");
+                                                        editAmenity = false;
+                                                        break;
+                                                    }
+                                                }
+                                                amenityEdit.setReservationCost(dblChoice);
+                                                System.out.println("\nAmenity is edited successfully");
+                                                editAmenity = false;
+                                                break;
+                                            }//End of loop
+                                            break;
+                                        case 0:
+                                            editAmenity = false;
+                                            break;
+                                        default:
+                                            System.out.println("INVALID: Use indicated numbers only");
+                                    }
+                                }
+                                break;
+                            case 4:     //Edit price
+                                    ArrayList<Amenity> amenityTypeList = new ArrayList<>();
+                                    double newRate = 0;
+
+                                    boolean editRsrvCost = true;
+                                    while (editRsrvCost == true) {
+                                        System.out.println("\n=====AMENITY=====");
+                                        System.out.println("[1] Karaoke");
+                                        System.out.println("[2] Reception Hall");
+                                        System.out.println("[3] Pool");
+                                        System.out.println("[4] Game Room");
+                                        System.out.print("Select amenity to modify: ");
+                                        choice = method.inputInt();
+
+                                        System.out.print("Enter new reservation cost: ");
+                                        newRate = method.inputDouble();
+
+                                        if (newRate == -1) {    //Invalid double input
+                                            System.out.println("INVALID: Use real numbers only");
+                                            boolean isCont = method.isContinue();
+                                            if (isCont == true) continue;
+                                            else {      //Exit clause
+                                                System.out.println("\nEdit amenity is failed!");
+                                                break;
+                                            }
+                                        }
+
+                                        switch (choice) {
+                                            case 1:
+                                                amenityTypeList = method.getAmenitiesType(amenities, "Karaoke");
+                                                method.setRsrvCostAmenities(amenityTypeList, newRate);
+                                                System.out.println("The reservation cost in all karaoke is " + newRate);
+                                                editRsrvCost = false;
+                                                break;
+                                            case 2:
+                                                amenityTypeList = method.getAmenitiesType(amenities, "ReceptionHall");
+                                                method.setRsrvCostAmenities(amenityTypeList, newRate);
+                                                System.out.println("The reservation cost in all reception hall is " + newRate);
+                                                editRsrvCost = false;
+                                                break;
+                                            case 3:
+                                                amenityTypeList = method.getAmenitiesType(amenities, "Pool");
+                                                method.setRsrvCostAmenities(amenityTypeList, newRate);
+                                                System.out.println("The reservation cost in all pool is " + newRate);
+                                                editRsrvCost = false;
+                                                break;
+                                            case 4:
+                                                amenityTypeList = method.getAmenitiesType(amenities, "GameRoom");
+                                                method.setRsrvCostAmenities(amenityTypeList, newRate);
+                                                System.out.println("The reservation cost in all game room is " + newRate);
+                                                editRsrvCost = false;
+                                                break;
+                                            default:
+                                                System.out.println("INVALID: Use indicated numbers only");
+                                        }
+                                    }
+                                break;
+                            case 5:     //Delete amenity
+                                while(true) {
+                                    String amenityCode = null;
+                                    System.out.println("\n=====DELETE-AMENITY=====");
+                                    System.out.print("Enter the amenity code to delete: ");
+                                    amenityCode = sc.nextLine();
+
+                                    if (amenityCode.equals("0")) break;
+
+                                    Amenity amenityDel = method.getAmenity(amenities, amenityCode);
+                                    if (amenityDel == null) {     //If amenity is not found
+                                        System.out.println("INVALID: Amenity not found");
+                                        break;
+                                    }
+
+                                    boolean isCont = method.isContinue("Do you want to continue delete?");
+                                    if(isCont==true) {      //Continue delete amenity
+                                        amenities.remove(amenityDel);
+                                        System.out.println("Amenity " + amenityDel.getAmenityCode() + " is deleted successfully");
+                                        break;
+                                    }else {     //Delete is unsuccessful
+                                        System.out.println("\nAmenity is not deleted!");
+                                        break;
+                                    }
+                                }
+                                break;
+                            case 0:
+                                isAmenity = false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                     break;
                 case 0:
                     isManage=false;
@@ -529,7 +807,7 @@ public class Admin {
 
         boolean isFoods = true;
         while(isFoods==true) {
-            System.out.println("=====FOOD-SERVICE=====");
+            System.out.println("\n=====FOOD-SERVICE=====");
             System.out.println("[1] View food menu");
             System.out.println("[2] Add menu");
             System.out.println("[3] Modify menu");
@@ -656,10 +934,13 @@ public class Admin {
                     break;
                 case 3:         //MODIFY MENU
                     System.out.println("=====EDIT-MENU=====");
-                    Menu menuSelect = method.selectMenu(menus);
-                    if(menuSelect==null) {
+                    Menu menuSelect = null;
+                    int menuIndex = method.selectMenuIndex(menus);
+                    if(menuIndex==-1) {
                         System.out.println("INVALID: No menu selected");
                         continue;
+                    }else {
+                        menuSelect = menus.get(menuIndex-1);
                     }
 
                     while(menuSelect!=null) {
@@ -680,17 +961,18 @@ public class Admin {
                         if(choice==1) { //Set menu name
                             System.out.print("Set menu name: ");
                             newMenuName = sc.nextLine();
-                        }
 
-                        Menu menuFound = method.checkMenuExist(menus, newMenuName);
-                        if(menuFound!=null) {       //Restricts creation of duplicate menu name
-                            method.stateError("Duplicate menu name is prohibited!");
-                            boolean isCont = method.isContinue();
-                            if(isCont==true) continue;
-                            else break;
-                        }
+                            Menu menuFound = method.checkMenuExist(menus, newMenuName);
+                            if(menuFound!=null) {       //Restricts creation of duplicate menu name
+                                boolean isCont = method.stateError("Duplicate menu name is prohibited!");
+                                if(isCont==true) continue;
+                                else break;
+                            }
 
-                        menuSelect.setMenuName(newMenuName);
+                            menuSelect.setMenuName(newMenuName);
+                        }
+                        newMenuName = menuSelect.getMenuName();
+
 
                         //MAIN DISH SELECTION
                         System.out.println("=====MAIN-DISH=====");
@@ -740,7 +1022,7 @@ public class Admin {
                             }
                             System.out.print("Drink number: ");
                             index = method.inputInt();
-                            if(index>=drinksList.size() || index<1) {       //Restricts to priority get drinks in the menu
+                            if(index>drinksList.size() || index<1) {       //Restricts to priority get drinks in the menu
                                 System.out.println("INVALID: You must select a drinks for the menu");
                                 continue;
                             }
@@ -776,6 +1058,7 @@ public class Admin {
                             menuSelect = new Menu(newMenuName, mainDish, sideDish, drinks, dessert);
                             System.out.println("Successfully modified menu "  + menuSelect.getMenuName());
                         }
+                        menus.set(menuIndex-1, menuSelect);
 
                         break;
                     }
@@ -828,7 +1111,12 @@ public class Admin {
 
         boolean isInventory = true;
         while(isInventory==true) {
-            System.out.println("=====INVENTORY=====");
+            ArrayList<Food> mainDishes = new ArrayList<>();
+            ArrayList<Food> sideDishes = new ArrayList<>();
+            ArrayList<Food> drinksList = new ArrayList<>();
+            ArrayList<Food> desserts = new ArrayList<>();
+
+            System.out.println("\n====INVENTORY=====");
             System.out.println("[1] View food stocks");
             System.out.println("[2] Add new food");
             System.out.println("[3] Add stocks");
@@ -837,20 +1125,237 @@ public class Admin {
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
+            //Add foods in the respective list
+            for(int i = 0; i<foods.size(); i++) {
+                Food food = foods.get(i);
+                if(food.getClass()==MainDish.class){
+                    mainDishes.add(food);
+                }else if(food.getClass()==SideDish.class) {
+                    sideDishes.add(food);
+                }else if(food.getClass()== Drinks.class) {
+                    drinksList.add(food);
+                }else if(food.getClass()==Dessert.class) {
+                    desserts.add(food);
+                }
+            }
+
             switch(choice) {
                 case 1:     //VIEW FOOD STOCKS
                     System.out.println("=====FOOD-LIST=====");
-                    for(int i = 0; i<foods.size(); i++) {
 
+                    for(int i = 0; i<mainDishes.size(); i++) {
+                        Food food = mainDishes.get(i);
+                        System.out.println("Maindish " + (i+1) + " : " + food.getFoodName() + " || Stocks: " + food.getStocks());
                     }
+
+                    for(int i = 0; i<sideDishes.size(); i++) {
+                        Food food = sideDishes.get(i);
+                        System.out.println("Side-dish " + (i+1) + " : " + food.getFoodName() + " || Stocks: " + food.getStocks());
+                    }
+
+                    for(int i = 0; i<drinksList.size(); i++) {
+                        Food food = drinksList.get(i);
+                        System.out.println("Drinks " + (i+1) + " : " + food.getFoodName() + " || Stocks: " + food.getStocks());
+                    }
+
+                    for(int i = 0; i<desserts.size(); i++) {
+                        Food food = desserts.get(i);
+                        System.out.println("Dessert " + (i+1) + " : " + food.getFoodName() + " || Stocks: " + food.getStocks());
+                    }
+                    method.isGoBack();
                     break;
                 case 2:     //ADD NEW FOOD
+                    boolean addFood = true;
+                    String foodName = null;
+                    double price = 0;
+                    int stock = 0;
+
+                    while(addFood==true) {
+                        System.out.println("===ADD-FOOD===");
+                        System.out.println("[1] Maindish");
+                        System.out.println("[2] Sidedish");
+                        System.out.println("[3] Drinks");
+                        System.out.println("[4] Desserts");
+                        choice = method.inputInt("Select type of food: ");
+
+                        if(choice==1 || choice==2 || choice==3 || choice==4) {
+                        }else if(choice==0) { break;
+                        }else {
+                            System.out.println("INVALID: Use indicated number only");
+                            continue;
+                        }
+
+                        System.out.print("Set food name: ");
+                        foodName = sc.nextLine();
+                        System.out.print("Set price: ");
+                        price = method.inputDouble();
+                        if(price==-1) {
+                            System.out.println("INVALID: Enter digits only");
+                            continue;
+                        }
+                        System.out.print("Number of stocks: ");
+                        stock = method.inputInt();
+                        if(stock==-1) {
+                            System.out.println("INVALID: Enter digits only");
+                            continue;
+                        }
+
+                        switch (choice) {
+                            case 1:
+                                foods.add(new MainDish(foodName, price, stock));
+                                System.out.println("Maindish " + foodName + " with stock " + stock + " is added");
+                                addFood=false;
+                                break;
+                            case 2:
+                                foods.add(new SideDish(foodName, price, stock));
+                                System.out.println("Sidedish " + foodName + " with stock " + stock + " is added");
+                                addFood=false;
+                                break;
+                            case 3:
+                                foods.add(new Drinks(foodName, price, stock));
+                                System.out.println("Drink " + foodName + " with stock " + stock + " is added");
+                                addFood = false;
+                                break;
+                            case 4:
+                                foods.add(new Dessert(foodName, price, stock));
+                                System.out.println("Dessert " + foodName + " with stock " + stock + " is added");
+                                addFood = false;
+                                break;
+                            case 0:
+                                addFood = false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                     break;
                 case 3:     //ADD STOCKS
+                    String foodAdd = null;
+                    boolean isFound = false;
+                    Food foodToAdd = null;
+                    int stockInc = 0;
+
+                    while(true) {
+                        System.out.println("===ADD-STOCKS===");
+                        System.out.print("Enter food name to add: ");
+                        foodAdd = sc.nextLine();
+
+                        if(foodAdd.equals("0")) break;  //Exit clause
+
+                        for (int i = 0; i < foods.size(); i++) { //check if food name is existing
+                            Food food = foods.get(i);
+                            if (food.getFoodName().equals(foodAdd)) {
+                                foodToAdd = food;
+                                isFound = true;
+                            }
+                        }
+
+                        if(isFound==false) {    // if food not found
+                            System.out.println("INVALID: Food is not found");
+                            continue;
+                        }
+
+                        int foodStock = foodToAdd.getStocks();
+
+                        System.out.println("Stock: " + foodStock);
+                        System.out.print("\nEnter stocks increase: ");
+                        stockInc = method.inputInt();
+
+                        //Set the stock into the sum of foodStock and stockInc
+                        foodToAdd.setStocks(foodStock+stockInc);
+                        System.out.println("Food " + foodToAdd.getFoodName() + " stock is now: " + foodToAdd.getStocks());
+                        break;
+                    }
+
                     break;
                 case 4:     //MODIFY STOCKS
+                    foodAdd = null;
+                    isFound = false;
+                    Food foodModify = null;
+                    int newStock = 0;
+
+                    while(true) {
+                        System.out.println("===MODIFY-STOCKS===");
+                        System.out.print("Enter food name to modify: ");
+                        foodAdd = sc.nextLine();
+
+                        if(foodAdd.equals("0")) break;  //Exit clause
+
+                        for (int i = 0; i < foods.size(); i++) { //check if food name is existing
+                            Food food = foods.get(i);
+                            if (food.getFoodName().equals(foodAdd)) {
+                                foodModify = food;
+                                isFound = true;
+                            }
+                        }
+
+                        if(isFound==false) {    // if food not found
+                            System.out.println("INVALID: Food is not found");
+                            continue;
+                        }
+
+                        System.out.println("Stock: " + foodModify.getStocks());
+                        System.out.print("\nSet number of stocks: ");
+                        newStock = method.inputInt();
+
+                        if(newStock==-1) {      //Invalid input
+                            System.out.println("INVALID: Enter digits only");
+                            continue;
+                        }
+
+                        //Set the stock into the sum of foodStock and stockInc
+                        foodModify.setStocks(newStock);
+                        System.out.println("Food " + foodModify.getFoodName() + " stock is now: " + foodModify.getStocks());
+                        break;
+                    }
+
                     break;
                 case 5:     //DELETE STOCKS
+                    foodAdd = null;
+                    Food foodDel = null;
+                    isFound = false;
+                    newStock = 0;
+
+                    while(true) {
+                        System.out.println("===DELETE-STOCKS===");
+                        System.out.print("Enter food name to delete: ");
+                        foodAdd = sc.nextLine();
+
+                        if(foodAdd.equals("0")) break;  //Exit clause
+
+                        for (int i = 0; i < foods.size(); i++) { //check if food name is existing
+                            Food food = foods.get(i);
+                            if (food.getFoodName().equals(foodAdd)) {
+                                foodDel = food;
+                                isFound = true;
+                            }
+                        }
+
+                        if(isFound==false) {    // if food not found
+                            System.out.println("INVALID: Food is not found");
+                            continue;
+                        }
+
+                        int foodStock = foodDel.getStocks();
+
+                        System.out.println("Stock: " + foodStock);
+                        if(foodStock==0) {
+                            System.out.println("There is no stock to delete");
+                            break;
+                        }
+                        System.out.print("\nEnter stocks decrease: ");
+                        int stockDel = method.inputInt();
+
+                        if(foodStock<stockDel) {
+                            System.out.println("INVALID: Stocks are smaller than stocks to delete!");
+                            continue;
+                        }
+
+                        //Set the stock into the sum of foodStock and stockInc
+                        foodDel.setStocks(foodStock-stockDel);
+                        System.out.println("Food " + foodDel.getFoodName() + " stock is now: " + foodDel.getStocks());
+                        break;
+                    }
                     break;
                 case 0:
                     isInventory=false;
@@ -865,7 +1370,7 @@ public class Admin {
     public void goReservations(ArrayList<Reservation> reservations) {
         boolean isReservation = true;
         while(isReservation==true) {
-            System.out.println("=====RESERVATIONS=====");
+            System.out.println("\n=====RESERVATIONS=====");
             System.out.println("[1] View reservation");
             System.out.println("[2] Edit reservation");
             System.out.println("[3] Cancel reservation");
@@ -873,12 +1378,136 @@ public class Admin {
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
+                case 1:     //VIEW RESERVATION
                     method.displayReservations(reservations);
+                    method.isGoBack();
                     break;
-                case 2:
+                case 2:     //EDIT RESERVATION
+                    boolean isEdit = true;
+                    isEdit : while(isEdit==true) {
+                        Reservation reservation = null;
+                        Reservation reserveToEdit = null;
+                        int roomNum = 0;
+
+                        System.out.println("\n=====EDIT-RESERVATIONS=====");
+                        method.displayReservations(reservations);
+                        System.out.print("Enter reservation room number to modify: ");
+                        roomNum = method.inputInt();
+
+                        if(roomNum==0) break;   //Exit clause
+
+                        //Checks if roomNum exist
+                        boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
+                        if(isExist==false) {
+                            System.out.println("INVALID: Room number do not have a reservation");
+                            break;
+                        }
+                        reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
+                        reserveToEdit = new Reservation(reservation);
+
+                        System.out.println("\n===RESERVATION-DETAILS===");
+                        System.out.println("[1] Room Number: " + reserveToEdit.getRoom().getRoomNum());
+                        System.out.print("[2] Start Date: ");
+                        reserveToEdit.getStartDate().displayDate();
+                        System.out.print("[3] Duration: " + reserveToEdit.getDuration());
+                        if(reserveToEdit.getDuration()==1) System.out.println("day");
+                        else System.out.println("days");
+                        System.out.print("Select to modify: ");
+                        choice = method.inputInt();
+
+                        switch(choice) {
+                            case 1:     //Modify room number
+                                boolean modifyRoomNum = true;
+                                int roomToMove = 0;
+                                int duration = 0;
+                                Date startDate = null;
+
+                                while(modifyRoomNum==true) {
+                                    boolean isFound = false;
+
+                                    ArrayList<Integer> rooms = method.getAvailRoomNum(Main.rooms);
+                                    method.displayAvailRoomNum(Main.rooms);
+                                    System.out.print("Move to room number: ");
+                                    roomToMove = method.inputInt();
+
+                                    for(int roomNumber : rooms) {       //Check if room number exist
+                                        if(roomNumber==roomToMove) isFound = true;
+                                    }
+
+                                    if(isFound==false) {    //If room number not exist
+                                        boolean isCont = method.stateError("Room number do not exist");
+                                        if(isCont==false) break isEdit;
+                                    }
+
+                                    reserveToEdit.setRoom(method.getRoomWithRoomNumber(Main.rooms, roomToMove));
+                                    break;
+                                }
+                                break;
+                            case 2:     //Modify start date
+                                startDate = method.inputDate();
+                                reserveToEdit.setStartDate(startDate);
+                                break;
+                            case 3:     //Modify duration
+                                System.out.print("Set the duration(day): ");
+                                duration = method.inputInt();
+                                if(duration<1) {
+                                    System.out.println("INVALID: Duration of days should be real number");
+                                }else if(duration>Main.durationLimit) {
+                                    System.out.println("INVALID: Duration limit is only " + Main.durationLimit + "days");
+                                }else {
+                                    reserveToEdit.setDuration(duration);
+                                }
+                                break;
+                            case 0:
+                                isEdit=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+
+                        System.out.println();
+
+                        boolean isGood = method.checkReservation(reservations, reserveToEdit);
+                        if(isGood==true) {
+                            reservation = reserveToEdit;
+                            System.out.println("Reservation is modified successfully!");
+                            break;
+                        } else {
+                            System.out.println("ERROR: Modification of reservation is unsuccessful!");
+                            break;
+                        }
+                    }//End of Modify reservation
                     break;
-                case 3:
+                case 3:     //Cancel reservation
+                    boolean isCancel = true;
+                    while(isCancel==true) {
+                        Reservation reservation = null;
+                        int roomNum = 0;
+
+                        System.out.println("\n=====CANCEL-RESERVATIONS=====");
+                        method.displayReservations(reservations);
+                        System.out.print("Enter reservation room number to cancel: ");
+                        roomNum = method.inputInt();
+
+                        //Checks if roomNum exist
+                        boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
+                        if(isExist==false) {
+                            System.out.println("INVALID: Room number do not have a reservation");
+                            break;
+                        }
+
+                        reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
+
+                        boolean isCont = method.isContinue("Do you want to cancel reservation?");
+                        if(isCont==true) {
+                            reservations.remove(reservation);
+                            System.out.println("Cancel of reservation is successful");
+                            break;
+                        }else {
+                            System.out.println("Cancel of reservation is unsuccessful");
+                            break;
+                        }
+                    }//End of isCancel loop
                     break;
                 case 0:
                     isReservation=false;
@@ -892,7 +1521,7 @@ public class Admin {
     public void goReports(ArrayList<ArrayList> all) {
         boolean isReports = true;
         while(isReports==true) {
-            System.out.println("=====REPORTS=====");
+            System.out.println("\n=====REPORTS=====");
             System.out.println("[1] Accounts");
             System.out.println("[2] Rooms");
             System.out.println("[3] Reservations");

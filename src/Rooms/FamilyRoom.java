@@ -1,6 +1,7 @@
 package Rooms;
 
 public class FamilyRoom extends Room {
+    private double reservationCost = 350;
 
     public FamilyRoom() {
         super();
@@ -21,5 +22,11 @@ public class FamilyRoom extends Room {
         this.roomType = "Family";
         this.ratePerDay = 300;
     }
+
+    public void setRatePerDay(double rate) {super.ratePerDay = rate;}
+    public double getRatePerDay() {return this.ratePerDay;}
+
+    public double getReservationPrice() {return this.reservationCost;}
+    public void setReservationPrice(double price) {this.reservationCost=price;}
 
 }

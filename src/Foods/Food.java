@@ -38,6 +38,6 @@ public class Food {
     public double getPrice() {return price;}
 
     public void setStocks(int stock) {this.stocks=stock;}
-    public double getStocks() {return stocks;}
+    public int getStocks() {return stocks;}
 
 }

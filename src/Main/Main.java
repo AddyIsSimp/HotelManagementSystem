@@ -2,16 +2,22 @@ package Main;
 
 import Entity.*;
 import Rooms.*;
-import Menus.*;
 import Amenity.*;
 import Foods.*;
+import Transaction.Order;
 
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
 
+    //BUGS
+    //  Admin-Reservation-ModifyReservation - checkReservation returns to false;
+    //  When delete the amenity in the previous number then add a new one will result in wrong code.
+    //  The checkReservation for amenity should be added in the check Reservation
+
     //TO-DO
+    //  There should be a message when a customer reach its time of reservation/ and a follow-up payment for the kulang
     //  Admin-Room Management-Method-setRate()  - to modify the rate of the room
     //  Methods-computeBills()
     //  Methods-paymentProcess()
@@ -31,21 +37,21 @@ public class Main {
     public static ArrayList<Customer> customersList = new ArrayList<>();
     public static ArrayList<Staff> staffsList = new ArrayList<>();
     public static ArrayList<Room> rooms = new ArrayList<>();
-    public static ArrayList<Amenity> amenities = new ArrayList<Amenity>();
+    public static ArrayList<Amenity> amenities = new ArrayList<>();
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
     public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
     public static ArrayList<Reservation> reservations = new ArrayList<>();
 
-    public static Staff staffAcct = null;
-    public static Customer customerAcct = null;
+    public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
+
+    public static Date globalDate = new Date(8, 4, 2024);
 
     //MAIN METHOD
     public static void main(String[] args) {
 
         while(true) {
 
-        //    try {
                 //SAMPLE CREDENTIALS
                 //Main.AdminPage(); Username = Admin123, Password = admin123
                 customersList.add(new Customer("Beth", "Sophia"));
@@ -76,6 +82,7 @@ public class Main {
                 foods.add(new Dessert("Macaroni", 170, 30));
 
                 menus.add(new Menu("Adrian", foods.get(1), foods.get(3), foods.get(5), foods.get(7)));
+                menus.add(new Menu("Santos", foods.get(0), foods.get(2), foods.get(4), foods.get(6)));
 
                 rooms.add(new SingleRoom(5));
                 rooms.add(new SingleRoom(2));
@@ -88,8 +95,20 @@ public class Main {
                 rooms.add(new CoupleRoom(10));
                 rooms.add(new CoupleRoom(9));
 
-                System.out.println("HOTEL MANAGEMENT SYSTEM");
+                method.addAmenity(amenities, "Karaoke");
+                method.addAmenity(amenities, "Pool");
+                method.addAmenity(amenities, "Karaoke");
+                method.addAmenity(amenities, "ReceptionHall");
+                method.addAmenity(amenities, "GameRoom");
 
+                reservations.add(new Reservation(customersList.get(0), rooms.get(5), (new Date(26, 27,2024)), 3));
+                reservations.add(new Reservation(customersList.get(0), rooms.get(1), (new Date(11, 12,2024)), 3));
+                reservations.add(new Reservation(customersList.get(0), rooms.get(6), (new Date(20, 13,2024)), 3));
+                reservations.add(new Reservation(customersList.get(0), amenities.get(2), (new Date(20, 13,2024)), 3));
+
+            System.out.println("HOTEL MANAGEMENT SYSTEM");
+
+                int count = 0;
                 //MAIN LOOP
                 while (main) {
                     Person loginPerson;             //stores the person that Login
@@ -97,10 +116,14 @@ public class Main {
                     boolean isStaff = false;
                     boolean isCustomer = false;
 
-                    System.out.println("=====SELECT-USER=====");
+                    if(count==0) {
+                        System.out.println("=====SELECT-USER=====");
+                        count++;
+                    }else System.out.println("\n=====SELECT-USER=====");
                     System.out.println("[1] ADMIN");
                     System.out.println("[2] STAFF");
                     System.out.println("[3] CUSTOMER");
+                    System.out.println("[4] SET CURRENT DATE");
                     System.out.print("Enter choice: ");
                     choice = method.inputInt();
 
@@ -112,12 +135,17 @@ public class Main {
                             break;
                         case 2:
                             isStaff = staffP.loginStaff(staffsList);
-                            if (isStaff == true) StaffPage(staffAcct);
+                            if (isStaff == true) StaffPage(StaffPage.staffAcct);
                             break;
                         case 3:
                             isCustomer = EnterCustomer();
                             if (isCustomer == true) CustomerPage();
                             else continue;
+                            break;
+                        case 4:
+                            globalDate = method.inputDate();
+                            System.out.print("Date is successfully set to ");
+                            globalDate.displayDate();
                             break;
                         default:
                             if (choice != -1) System.out.println("INVALID: Use indicated number only");
@@ -135,7 +163,7 @@ public class Main {
 //=====================================METHODS================================================
     static void AdminPage() {
         boolean adminMain = true;
-        while(adminMain==true) {
+        Admin : while(adminMain==true) {
 
             try {
                 int choice = 0;
@@ -144,7 +172,7 @@ public class Main {
 
                 boolean isAdminPage = true;
                 while (isAdminPage == true) {
-                    System.out.println("==========ADMIN==========");
+                    System.out.println("\n==========ADMIN==========");
                     System.out.println("[1] Manage Accounts");
                     System.out.println("[2] Manage Rooms");
                     System.out.println("[3] Food Service");
@@ -160,7 +188,7 @@ public class Main {
                             admin.manageAccounts(customersList, staffsList, admin);
                             break;
                         case 2:
-                            admin.manageRoom(rooms);
+                            admin.manageRoom(rooms, amenities);
                             break;
                         case 3:
                             admin.foodService(menus);
@@ -175,9 +203,19 @@ public class Main {
                             admin.goReports(all);
                             break;
                         case 0:
-                            System.out.println("Log-out successfully");
-                            adminMain = false;
-                            isAdminPage = false;
+                            while(true) {
+                                System.out.println("Do you want to log-out? [1]Yes/[2]No");
+                                choice = method.inputInt();
+                                if(choice==1) {
+                                    System.out.println("Log-out successfully");
+                                    adminMain = false;
+                                    isAdminPage = false;
+                                    break;
+                                }else if(choice==2) continue Admin;
+                                else {
+                                    System.out.println("INVALID: Use indicated number only!");
+                                }
+                            }
                             break;
                         default:
                             System.out.println("INVALID: Use indicated number only!");
@@ -191,15 +229,16 @@ public class Main {
     }//End of AdminPage method
 
     static void StaffPage(Staff staff) {
+        int choice = 0;
         boolean staffMain = true;
-        while(staffMain==true) {
+        Staff: while(staffMain==true) {
             try {
 
                 int pick = 0;
                 boolean isStaffPage = true;
 
                 while (isStaffPage == true) {
-                    System.out.println("==========STAFF==========");
+                    System.out.println("\n==========STAFF==========");
                     System.out.println("[1] Room management");
                     System.out.println("[2] Customer management");
                     System.out.println("[3] Reservations");
@@ -222,9 +261,19 @@ public class Main {
                             staffP.goSales(staff);
                             break;
                         case 0:
-                            System.out.println("Log-out successfully");
-                            staffMain = false;
-                            isStaffPage = false;
+                            while(true) {
+                                System.out.println("Do you want to log-out? [1]Yes/[2]No");
+                                choice = method.inputInt();
+                                if(choice==1) {
+                                    System.out.println("Log-out successfully");
+                                    staffMain = false;
+                                    isStaffPage = false;
+                                    break;
+                                }else if(choice==2) continue Staff;
+                                else {
+                                    System.out.println("INVALID: Use indicated number only!");
+                                }
+                            }
                             break;
                         default:
                             System.out.println("INVALID: Use indicated number only!");
@@ -238,15 +287,15 @@ public class Main {
     }//End of Main.StaffPage method
 
     static void CustomerPage() {
+        int choice = 0;
         boolean customerMain = true;
-        while(customerMain==true) {
+        Customer : while(customerMain==true) {
             try {
-
                 int pick = 0;
                 boolean isCustomerPage = true;
 
                 while (isCustomerPage == true) {
-                    System.out.println("==========CUSTOMERS==========");
+                    System.out.println("\n==========CUSTOMERS==========");
                     System.out.println("[1] Account");
                     System.out.println("[2] Rooms");
                     System.out.println("[3] Reservation");
@@ -257,7 +306,7 @@ public class Main {
 
                     switch (pick) {
                         case 1:
-                            customerP.goAccount(customerAcct);
+                            customerP.goAccount(CustomerPage.customerAcct);
                             break;
                         case 2:
                             customerP.goSelectRoom(rooms);
@@ -269,9 +318,19 @@ public class Main {
                             customerP.goHotelOrders(orders);
                             break;
                         case 0:
-                            System.out.println("Log-out successfully");
-                            customerMain = false;
-                            isCustomerPage = false;
+                            while(true) {
+                                System.out.println("Do you want to log-out? [1]Yes/[2]No");
+                                 choice = method.inputInt();
+                                if(choice==1) {
+                                    System.out.println("Log-out successfully");
+                                    customerMain = false;
+                                    isCustomerPage = false;
+                                    break;
+                                }else if(choice==2) continue Customer;
+                                else {
+                                    System.out.println("INVALID: Use indicated number only!");
+                                }
+                            }
                             break;
                         default:
                             System.out.println("INVALID: Use indicated number only!");
@@ -295,7 +354,7 @@ public class Main {
 
             Customer:
             while (true) {
-                System.out.println("======CUSTOMER======");
+                System.out.println("\n======CUSTOMER======");
                 System.out.println("[1] Login");
                 System.out.println("[2] Register");
                 choice = method.inputInt("Enter choice: ");

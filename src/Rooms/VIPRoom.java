@@ -1,6 +1,8 @@
 package Rooms;
 
 public class VIPRoom extends Room{
+    private double reservationCost = 850;
+
     public VIPRoom() {
         super();
         setRoomType();
@@ -18,8 +20,13 @@ public class VIPRoom extends Room{
 
     public void setRoomType() {
         this.roomType = "VIP";
-        this.ratePerDay = 1000;
+        this.ratePerDay = 800;
     }
 
+    public void setRatePerDay(double rate) {super.ratePerDay = rate;}
+    public double getRatePerDay() {return this.ratePerDay;}
+
+    public double getReservationPrice() {return this.reservationCost;}
+    public void setReservationPrice(double price) {this.reservationCost=price;}
 
 }

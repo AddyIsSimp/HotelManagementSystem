@@ -5,14 +5,14 @@ import Rooms.Date;
 import Rooms.Reservation;
 import Rooms.Room;
 import Amenity.*;
-import Menus.*;
+import Transaction.Order;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Scanner;
 
 public class CustomerPage {
+
+    public static Customer customerAcct = null;
 
     private Scanner sc = new Scanner(System.in);
     private Methods method = new Methods();
@@ -33,7 +33,7 @@ public class CustomerPage {
         String email;
 
         while(main) {
-            System.out.println("=====REGISTER=====");   //Gather credentials
+            System.out.println("\n=====REGISTER=====");   //Gather credentials
             System.out.print("Enter Name: ");
             name = sc.nextLine();
 
@@ -71,7 +71,7 @@ public class CustomerPage {
         boolean isLogin = false;
 
         while(isLogin==false) {
-            System.out.println("=====CUSTOMER=====");
+            System.out.println("\n=====CUSTOMER=====");
             System.out.print("Username: ");
             un = sc.nextLine();
             System.out.print("Password: ");
@@ -81,8 +81,9 @@ public class CustomerPage {
             for(int i = 0; i<customersList.size(); i++) {
                 Customer temp = customersList.get(i);
                 if(temp.getName().equals(un) && temp.getPassword().equals(pw)) {
-                    Main.customerAcct = temp;
+                    customerAcct = temp;
                     isLogin = true;
+                    System.out.println("\nLogin successfully");
                     break;
                 }
             }
@@ -103,7 +104,7 @@ public class CustomerPage {
     public void goAccount(Customer customer) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====ACCOUNTS=====");
+            System.out.println("\n=====ACCOUNTS=====");
             System.out.println("[1] Account details");
             System.out.println("[2] Transaction history");
             System.out.println("[0] Back");
@@ -127,7 +128,7 @@ public class CustomerPage {
     public void goSelectRoom(ArrayList<Room> rooms) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====SELECT-ROOMS=====");
+            System.out.println("\n=====SELECT-ROOMS=====");
             System.out.println("[1] Select room");
             System.out.println("[2] View category");
             System.out.println("[0] Back");
@@ -138,10 +139,13 @@ public class CustomerPage {
                     boolean isSelect = true;
                     while(isSelect==true) {
                         method.displayAllRoom(rooms);
-                        System.out.println();
+                        method.isGoBack();
+                        break;
                     }
                     break;
                 case 2:
+                    method.displayRoomCategory(rooms);
+                    method.isGoBack();
                     break;
                 case 0:
                     isManage=false;
@@ -157,11 +161,11 @@ public class CustomerPage {
                                   ArrayList<Amenity> amenities,
                                   ArrayList<Reservation> reservations) {
 
-        ArrayList<Reservation> customerReservations = Main.customerAcct.getReservations();
+        ArrayList<Reservation> customerReservations = customerAcct.getReservations();
         boolean isManage = true;
         while(isManage==true) {
 
-            System.out.println("=====BOOK-RESERVATION=====");
+            System.out.println("\n=====BOOK-RESERVATION=====");
             System.out.println("[1] Rooms");
             System.out.println("[2] Amenities");
             System.out.println("[3] Reservations");
@@ -172,7 +176,7 @@ public class CustomerPage {
                 case 1:     //ROOMS
                     boolean isRoom = true;
                     while(isRoom==true) {
-                        System.out.println("=====ROOM-LIST=====");
+                        System.out.println("\n=====ROOM-LIST=====");
                         System.out.println("[1] Display room");
                         System.out.println("[2] Display by category");
                         System.out.println("[0] Back");
@@ -188,14 +192,21 @@ public class CustomerPage {
 
                                     method.displayAllRoomForCustomer(rooms);
 
-                                    System.out.println("===SELECT-ROOM===");
+                                    System.out.println("\n===SELECT-ROOM===");
                                     room = method.selectRoom(rooms);
                                     start = method.inputDate();     //Set the date
-                                    System.out.println("===SET-DURATION===");
-                                    System.out.print("Enter duration of reservation(days) : ");
-                                    duration = method.inputInt();
 
-                                    Reservation reservation = new Reservation(Main.customerAcct, room, start, duration);
+                                    while(true) {
+                                        System.out.println("\n===SET-DURATION===");
+                                        System.out.print("Enter duration of reservation(days) : ");
+                                        duration = method.inputInt();
+                                        if(duration>Main.durationLimit) {       //Should not exceed the limit
+                                            System.out.println("INVALID: Use indicated number only!");
+                                            continue;
+                                        }else break;
+                                    }
+
+                                    Reservation reservation = new Reservation(customerAcct, room, start, duration);
                                     ArrayList<Date> durationDay = reservation.getDuration(start, duration);
 
                                     boolean isUnique = method.checkReservation(reservations, reservation);
@@ -206,15 +217,43 @@ public class CustomerPage {
                                         else break;
                                     }
 
-
-
                                     reservations.add(reservation);
-                                    Main.customerAcct.addReservation(reservation);
+                                    customerAcct.addReservation(reservation);
                                     break;
                                 }
                                 break;
                             case 2:
-                                method.displayRoomCategory(rooms);
+                                boolean displayCategory = true;
+                                while(displayCategory==true) {
+                                    Date start = null;
+                                    Room room = null;
+                                    int duration = 0;
+
+                                    method.displayRoomCategory(rooms);
+
+                                    System.out.println("\n===SELECT-ROOM===");
+                                    room = method.selectRoom(rooms);
+                                    start = method.inputDate();     //Set the date
+                                    System.out.println("\n===SET-DURATION===");
+                                    System.out.print("Enter duration of reservation(days) : ");
+                                    duration = method.inputInt();
+
+                                    Reservation reservation = new Reservation(customerAcct, room, start, duration);
+                                    ArrayList<Date> durationDay = reservation.getDuration(start, duration);
+
+                                    boolean isUnique = method.checkReservation(reservations, reservation);
+                                    if(isUnique==false) {
+                                        boolean isCont = method.stateError("The room " + room.getRoomNum()
+                                                + " is already reserved");
+                                        if(isCont==true) continue;
+                                        else break;
+                                    }
+
+                                    reservations.add(reservation);
+                                    customerAcct.addReservation(reservation);
+                                    break;
+
+                                }
                                 break;
                             case 0:
                                 isRoom=false;
@@ -224,22 +263,81 @@ public class CustomerPage {
                         }
                     }
                     break;
-                case 2:     //AMENITIES
+                case 2:     //AMENITIES-RESERVATION
+                    boolean amenityRsrv = true;
+                    while(amenityRsrv==true) {
+                        Amenity amenity = null;
+                        Date start = null;
+                        int duration = 0;
+
+                        method.displayAmenities(amenities);
+
+                        System.out.println("\n===SELECT-AMENITY===");
+                        amenity = method.selectAmenity(amenities);
+                        if(amenity==null) break;    //Exit
+                        start = method.inputDate();     //Set the date
+                        System.out.println("\n===SET-DURATION===");
+                        System.out.print("Enter duration of reservation(days) : ");
+                        duration = method.inputInt();
+
+                        Reservation reservation = new Reservation(customerAcct, amenity, start, duration);
+                        ArrayList<Date> durationDay = reservation.getDuration(start, duration);
+
+                        boolean isUnique = method.checkReservation(reservations, reservation);
+                        if(isUnique==false) {
+                            boolean isCont = method.stateError("The amenity " + amenity.getAmenityCode()
+                                    + " is already reserved");
+                            if(isCont==true) continue;
+                            else break;
+                        }
+
+
+
+                        reservations.add(reservation);
+                        customerAcct.addReservation(reservation);
+                        break;
+
+                    }
                     break;
                 case 3:     //RESERVATIONS
                     if(customerReservations.size()!=0) {     //If there is reservation in maincustomer
-                        for(int i = 0; i<customerReservations.size();i++) {
-                            Reservation reservation = customerReservations.get(i);
-                            Room room = reservation.getRoom();
-                            Date start = reservation.getStartDate();
-                            Date end = reservation.getEndDate();
-                            System.out.println((i+1) + " " + room.getRoomNum() + " " +
-                                    room.getRoomType());
-                            System.out.print(" || Start: ");
-                            start.displayDate();
-                            System.out.print(" || End: ");
-                            end.displayDate();
-                        }
+                        boolean displayRsrv = true;
+                        while(displayRsrv==true) {
+                            ArrayList<Reservation> roomList = new ArrayList<>();
+                            ArrayList<Reservation> amenityList = new ArrayList<>();
+
+                            if(reservations.size()==0) {    //No reservations found
+                                System.out.println("\nThere is no reservations");
+                                break;
+                            }
+
+                            for(int i = 0; i<reservations.size(); i++) {    //Filter the reservation either room or amenity
+                                Reservation reservation = reservations.get(i);
+                                if(reservation.getRoom()!=null) {
+                                    roomList.add(reservation);
+                                }else if(reservation.getAmenity()!=null) {
+                                    amenityList.add(reservation);
+                                }
+                            }
+
+                            if(roomList.size()!=0) {    //There is a room reservation
+                                System.out.println("=====ROOM-RESERVED=====");
+                            }else {
+                                System.out.println("There is no room reserved");
+                            }
+
+                            for (int i = 0; i < customerReservations.size(); i++) {
+                                Reservation reservation = customerReservations.get(i);
+                                Room room = reservation.getRoom();
+                                Date start = reservation.getStartDate();
+
+                                System.out.print((i + 1) + " " + room.getRoomNum() + " " +
+                                        room.getRoomType());
+                                System.out.print(" || Start: ");
+                                start.displayDate();
+                                System.out.print(" || Duration: ");
+                            }
+                        }//End of displayRsrv loop
                     }else {     //Else no reservations
                         System.out.println("No reservations listed");
                     }
@@ -257,10 +355,10 @@ public class CustomerPage {
     public void goHotelOrders(ArrayList<Order> orders) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====IN-HOTEL-ORDERS=====");
+            System.out.println("\n=====IN-HOTEL-ORDERS=====");
             System.out.println("[1] Room/Amenity Occupied");
             System.out.println("[2] Food Order");
-            System.out.println("[2] Check-out");
+            System.out.println("[3] Check-out");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 

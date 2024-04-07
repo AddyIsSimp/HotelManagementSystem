@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Entity.*;
-import Foods.Food;
-import Foods.MainDish;
-import Menus.Menu;
+import Foods.Menu;
 import Rooms.*;
+import Amenity.*;
+import Transaction.ReserveTransact;
+import Transaction.RoomTransact;
+import Transaction.Transact;
 
 public class Methods{
 
@@ -22,6 +24,163 @@ public class Methods{
 
     //====================================USEFUL METHODS============================================
 
+    public void addAmenity(ArrayList<Amenity> amenities, String amenityType) {
+        sortAmenity(amenities);
+        int gameNum = 0;
+        int karaokeNum = 0;
+        int poolNum = 0;
+        int hallNum = 0;
+
+        for(int i = 0; i<amenities.size(); i++) {       //Counts the amenity type in the arraylist
+            Amenity amenity = amenities.get(i);
+            if(amenity.getClass()== GameRoom.class) {gameNum++;}
+            else if(amenity.getClass()== Karaoke.class) {karaokeNum++;}
+            else if(amenity.getClass()== Pool.class) {poolNum++;}
+            else if(amenity.getClass()== ReceptionHall.class) {hallNum++;}
+        }
+
+        switch (amenityType) {
+            case "GameRoom":
+                gameNum++;
+                if (gameNum < 10) amenities.add(new GameRoom("G0" + gameNum));
+                else amenities.add(new GameRoom("G" + gameNum));
+                break;
+            case "Karaoke":
+                karaokeNum++;
+                if (karaokeNum < 10) amenities.add(new Karaoke("K0" + karaokeNum));
+                else amenities.add(new Karaoke("K" + karaokeNum));
+                break;
+            case "Pool":
+                poolNum++;
+                if (poolNum < 10) amenities.add(new Pool("P0" + poolNum));
+                else amenities.add(new Karaoke("P" + karaokeNum));
+                break;
+            case "ReceptionHall":
+                hallNum++;
+                if (hallNum < 10) amenities.add(new ReceptionHall("H0" + hallNum));
+                else amenities.add(new ReceptionHall("H" + hallNum));
+                break;
+            default:
+                System.out.println("INVALID: Amenity is unknown!");
+                break;
+        }
+    }
+
+    public void displayAmenities(ArrayList<Amenity> amenities) {
+        sortAmenity(amenities);
+        System.out.println("\n=====AMENITIES-LIST=====");
+        for(int i = 0; i<amenities.size(); i++) {
+            Amenity amenity = amenities.get(i);
+            System.out.print(i+1 + " ");
+
+            if(amenity.getClass()==Karaoke.class) {     //Display the type of amenity
+                System.out.print("Karaoke");
+            }else if(amenity.getClass()==ReceptionHall.class) {
+                System.out.print("Reception Hall");
+            }else if(amenity.getClass()==Pool.class) {
+                System.out.print("Pool");
+            }else if(amenity.getClass()==GameRoom.class){
+                System.out.print("Game Room");
+            }
+
+            System.out.print(" || Amenity Code: " + amenity.getAmenityCode());
+            System.out.println(" || Reservation cost: " + amenity.getReservationCost());
+        }
+    }
+
+    void sortAmenity(ArrayList<Amenity> amenities) {
+        ArrayList<GameRoom> games = new ArrayList<>();
+        ArrayList<Karaoke> karaokes = new ArrayList<>();
+        ArrayList<Pool> pools = new ArrayList<>();
+        ArrayList<ReceptionHall> halls = new ArrayList<>();
+        ArrayList<Amenity> allAmenities = new ArrayList<>();      //Store here the sorted obj
+
+        for(int i = 0; i<amenities.size(); i++) {
+            Amenity amenity = amenities.get(i);
+            if(amenity.getClass()==GameRoom.class) games.add((GameRoom) amenity);
+            else if(amenity.getClass()==Karaoke.class) karaokes.add((Karaoke) amenity);
+            else if(amenity.getClass()==Pool.class) pools.add((Pool) amenity);
+            if(amenity.getClass()==ReceptionHall.class) halls.add((ReceptionHall) amenity);
+        }
+
+        amenities.removeAll(amenities);
+
+        //Add here the algo to sort the amenity by number
+        for(int i = 0; i< games.size(); i++) {
+            GameRoom game = games.get(i);
+            String amenityCode = game.getAmenityCode();
+            for(int j = i+1; j<games.size(); j++) {
+                GameRoom game2 = games.get(j);
+                String amenityCode2 = game2.getAmenityCode();
+                if(amenityCode.compareTo(amenityCode2)>0) {
+                    GameRoom temp = new GameRoom(game);
+                    game = new GameRoom(game2);
+                    game2 = new GameRoom(temp);
+                }
+            }
+        }
+
+        for(int i = 0; i< karaokes.size(); i++) {
+            Karaoke kon = karaokes.get(i);
+            String amenityCode = kon.getAmenityCode();
+            for(int j = i+1; j<karaokes.size(); j++) {
+                Karaoke kon2 = karaokes.get(j);
+                String amenityCode2 = kon2.getAmenityCode();
+                if(amenityCode.compareTo(amenityCode2)>0) {
+                    Karaoke temp = new Karaoke(kon);
+                    kon = new Karaoke(kon2);
+                    kon2 = new Karaoke(temp);
+                }
+            }
+        }
+
+        for(int i = 0; i< pools.size(); i++) {
+            Pool pool = pools.get(i);
+            String amenityCode = pool.getAmenityCode();
+            for(int j = i+1; j<pools.size(); j++) {
+                Pool pool2 = pools.get(j);
+                String amenityCode2 = pool2.getAmenityCode();
+                if(amenityCode.compareTo(amenityCode2)>0) {
+                    Pool temp = new Pool(pool);
+                    pool = new Pool(pool2);
+                    pool2 = new Pool(temp);
+                }
+            }
+        }
+
+        for(int i = 0; i< halls.size(); i++) {
+            ReceptionHall hall = halls.get(i);
+            String amenityCode = hall.getAmenityCode();
+            for(int j = i+1; j<halls.size(); j++) {
+                ReceptionHall hall2 = halls.get(j);
+                String amenityCode2 = hall2.getAmenityCode();
+                if(amenityCode.compareTo(amenityCode2)>0) {
+                    ReceptionHall temp = new ReceptionHall(hall);
+                    hall = new ReceptionHall(hall2);
+                    hall2 = new ReceptionHall(temp);
+                }
+            }
+        }
+
+        //Add here the algo to add all amenities in allAmenities
+        for(Karaoke kon : karaokes) amenities.add(kon);
+        for(GameRoom game : games) amenities.add(game);
+        for(Pool pool : pools) amenities.add(pool);
+        for(ReceptionHall hall : halls) amenities.add(hall);
+    }
+
+    public Amenity getAmenity(ArrayList<Amenity> amenities, String amenityCode) {
+        Amenity amenity = null;
+        for(int i = 0; i<amenities.size(); i++) {
+            Amenity amenity1 = amenities.get(i);
+            if(amenity1.getAmenityCode().equals(amenityCode)) {
+                amenity = amenity1;
+                break;
+            }
+        }
+        return  amenity;
+    }
+
     public void displayAllRoom(ArrayList<Room> rooms) {     //Display all rooms despite occupied or not
         sortRooms(rooms);
         if(rooms.size()!=0) {       //If there is room existing
@@ -34,6 +193,42 @@ public class Methods{
         }else System.out.println("\nThere is no room found\n");
     }
 
+    public ArrayList<Room> getRoomsType(ArrayList<Room> rooms, String roomType) {       //Return an arraylist of Room filter with roomtype
+        ArrayList<Room> roomsType = null;
+
+        for(int i = 0; i<rooms.size(); i++) {
+            Room room = rooms.get(i);
+            if(room.getRoomType().equals(roomType)==true) roomsType.add(room);
+        }
+
+        return roomsType;
+    }
+
+    public ArrayList<Amenity> getAmenitiesType(ArrayList<Amenity> amenities, String amenityType) {       //Return an arraylist of Room filter with roomtype
+        ArrayList<Amenity> amenityList = new ArrayList<>();
+
+        for(int i = 0; i<amenities.size(); i++) {
+            Amenity amenity = amenities.get(i);
+            if(amenity.getAmenityType().equals(amenityType)==true) amenityList.add(amenity);
+        }
+
+        return amenityList;
+    }
+
+    public void setPriceRooms(ArrayList<Room> rooms, double rate) {     //Set the rate of rooms in ArrayList
+        for(int i = 0; i<rooms.size();i++) {
+            Room room = rooms.get(i);
+            room.setRatePerDay(rate);
+        }
+    }
+
+    public void setRsrvCostAmenities(ArrayList<Amenity> amenities, double rate) {     //Set the reservation cost in ArrayList
+        for(int i = 0; i<amenities.size();i++) {
+            Amenity amenity = amenities.get(i);
+            amenity.setReservationCost(rate);
+        }
+    }
+
     public void displayAllRoomForCustomer(ArrayList<Room> rooms) {     //Display all rooms despite occupied or not
         sortRooms(rooms);
         if(rooms.size()!=0) {       //If there is room existing
@@ -41,7 +236,8 @@ public class Methods{
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
                 if(room.getIsOccupied()==false && room.getIsDisabled()==false) {    //Filtering out those unavailable room
-                    System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType());
+                    System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType()
+                    + " || Cost: " + room.getRatePerDay());
                 }
             }
         }else System.out.println("\nThere is no room found\n");
@@ -56,6 +252,20 @@ public class Methods{
             }
         }
         return roomNums;
+    }
+
+    public Room getRoomWithRoomNumber(ArrayList<Room> rooms, int roomNum) {
+        Room thisRoom = null;
+
+        for(int i = 0; i<rooms.size(); i++) {
+            Room room = rooms.get(i);
+            if(room.getRoomNum()==roomNum) {
+                thisRoom = room;
+                break;
+            }
+        }
+
+        return thisRoom;
     }
 
     public void displayAvailRoomNum(ArrayList<Room> rooms) {       //Display the list of room number
@@ -104,7 +314,7 @@ public class Methods{
             else if(rooms.get(i).getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) rooms.get(i));
         }
 
-        if(rooms.size()!=0) System.out.println("===ROOMS-IN-CATEGORY===");
+        if(rooms.size()!=0) System.out.println("\n===ROOMS-IN-CATEGORY===");
         else System.out.println("\nThere is no room found!\n");
 
         if(snRooms.size()!=0) System.out.println("===SINGLE-ROOMS===");
@@ -127,8 +337,6 @@ public class Methods{
             System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
                     " || Disabled: " + vpRoom.getIsDisabled());
         }
-
-        isGoBack();
     }
 
     public void displayRoomByNum(ArrayList<Room> rooms) {       //Display room by sorted room number
@@ -469,6 +677,23 @@ public class Methods{
         }
     }
 
+    public boolean isContinue(String statement) {       //Return boolean if still want to continue or not
+        String choice = null;
+        while(true) {
+            System.out.print(statement);
+            System.out.println(" [1]Yes/[2]No");
+            choice = sc.nextLine();
+
+            switch (choice) {
+                case "1":
+                    return true;
+                case "2":
+                    return false;
+                default:
+            }
+        }
+    }
+
     public boolean isGoBack() {     //This is to ask user if go back for avoiding print issue
         while(true) {
             System.out.print("Press 0 to go back: ");
@@ -514,6 +739,37 @@ public class Methods{
             return -1;
         }
         return choiceNum;
+    }
+
+    public double inputDouble() {
+        double choiceNum = -1;
+        try {
+            String choice = sc.nextLine();
+            boolean isAllNum = doubleChecker(choice);
+            choiceNum = StrToDbl(choice);
+        } catch(Exception e) {
+            return -1;
+        }
+        return choiceNum;
+    }
+
+    public boolean doubleChecker(String s) {
+        boolean isDigit = true;
+
+        //checks every digit if all is numbers
+        for(int i = 0;i<s.length(); i++) {
+            String ch = Character.toString(s.charAt(i));
+            if(Character.isDigit(s.charAt(i))!=true) {
+                if(ch.equals(".")) {
+                    continue;
+                }else {
+                    isDigit = false;
+                    break;
+                }
+            }
+        }
+
+        return isDigit;
     }
 
     boolean digitChecker(String s) {
@@ -687,6 +943,36 @@ public class Methods{
         else return null;
     }
 
+    public int selectMenuIndex(ArrayList<Menu> menus) {
+        int menuIndex = -1;
+        while(true) {
+            System.out.println("=====MENU-LIST=====");
+            if (menus.size() == 0) System.out.println("There is no menu created");
+            for (int i = 0; i < menus.size(); i++) {        //Display all menu created
+                Menu menu = menus.get(i);
+                System.out.print((i + 1) + " Name: " + menu.getMenuName()
+                        + " || Food: " + menu.getMainDish().getFoodName());
+                if (menu.getSideDish() != null) System.out.print(" , " + menu.getSideDish().getFoodName());
+                if (menu.getDrinks() != null) System.out.print(" , " + menu.getDrinks().getFoodName());
+                if (menu.getDessert() != null) System.out.print(" , " + menu.getDessert().getFoodName());
+                System.out.print(" || Price: " + menu.getTotalPrice());
+                System.out.println("");
+            }
+
+            System.out.print("\nSelect menu number: ");
+            int menuNum = inputInt();
+            if(menuNum>menus.size() || menuNum<0) {
+                System.out.println("INVALID: Pick number with existing menu or 0 to exit");
+                continue;
+            }
+            if(menuNum==0) break;
+            menuIndex = menuNum;
+            break;
+        }
+        if(menuIndex==-1) return -1;
+        else return menuIndex;
+    }
+
     public Menu checkMenuExist(ArrayList<Menu> menus, String menuName) {    //Returns a menu if that menuname existed in list
         Menu foundMenu = null;
         for(int i = 0; i<menus.size(); i++) {
@@ -699,16 +985,12 @@ public class Methods{
         return foundMenu;
     }
 
-    public void showMainDish(ArrayList<Food> foods) {
-
-    }
-
     public Room selectRoom(ArrayList<Room> rooms) {     //select Room and check if it is vacant
         Room room = null;
         boolean isFound = false;
         while(isFound==false) {
             int roomNum = 0;
-            System.out.print("Enter room number:");
+            System.out.print("Enter room number: ");
             roomNum = inputInt();
 
             for(int i = 0; i<rooms.size(); i++) {
@@ -730,32 +1012,135 @@ public class Methods{
         return room;
     }
 
-    public boolean checkReservation(ArrayList<Reservation> reservations, Reservation reservation) {
-        boolean isGood = true;
+    public Amenity selectAmenity(ArrayList<Amenity> amenities) {     //select Room and check if it is vacant
+        Amenity amenity = null;
+        boolean isFound = false;
+        while(isFound==false) {
+            String amenityCode = null;
+            System.out.print("Enter amenity code:");
+            amenityCode = sc.nextLine();
 
-        for(int i = 0; i<reservations.size(); i++) {            //Scans per reservations saved
-            Reservation reserveList = reservations.get(i);      //Get the reservation in ArrayList
-            ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
-            for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
-                Date date = durationDays.get(j);                //Get the date in durationDays
-                ArrayList<Date> durationToRsrv = reservation.getDuration(reservation.getStartDate(), reservation.getDuration());
-                for(int k = 0; k<durationToRsrv.size(); k++) {
-                    if(durationToRsrv.get(k).equals(date)) isGood = false;     //There is a conflict in Date;
+            for(int i = 0; i<amenities.size(); i++) {
+                Amenity temp = amenities.get(i);
+                if(temp.getAmenityCode().equals(amenityCode)) {
+                    amenity = temp;
+                    isFound=true;
+                    break;
                 }
             }
+
+            if(isFound==false) {
+                System.out.println("INVALID: Amenity not found with the specified amenity code");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+        }
+        return amenity;
+    }
+
+    public boolean checkReservation(ArrayList<Reservation> reservations, Reservation reserve) {
+        boolean isGood = true;      //Signs if there is a conflict or no conflict in date
+        boolean isRoom = false;
+        boolean isAmenity = false;
+
+        //Checks whether reserve is amenity or room reserve
+        if(reserve.getRoom()!=null) {
+            isRoom = true;
+        } else if(reserve.getAmenity()!=null) {
+            isAmenity = true;
         }
 
+        if(isRoom==true) {
+            for(int i = 0; i<reservations.size(); i++) {
+                Reservation reserveList = reservations.get(i);
+                if(reserveList.getRoom()!=null) {   //Reservation is room
+
+                    Room roomList = reserveList.getRoom();  //Get the room reservation in list
+                    Room room = reserve.getRoom();          //Get the room reservation in reserve
+                    if(roomList!=room) continue;
+                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
+                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
+                        Date date = durationDays.get(j);                //Get the date in durationDays
+                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
+                        for(int k = 0; k<durationToRsrv.size(); k++) {
+                            if(durationToRsrv.get(k)==(date)) isGood = false;     //There is a conflict in Date;
+                        }
+                    }
+                }else continue;
+            }
+        }else if(isAmenity==true) {
+            for(int i = 0; i<reservations.size(); i++) {
+                Reservation reserveList = reservations.get(i);
+                if(reserveList.getAmenity()!=null) {   //Reservation is amenity
+                    Amenity amenityList = reserveList.getAmenity();  //Get the amenity reservation in list
+                    Amenity amenity = reserve.getAmenity();          //Get the amenity reservation in reserve
+                    if(amenityList.equals(amenity)==false) {
+                        continue;
+                    }
+
+                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
+                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
+                        Date date = durationDays.get(j);                //Get the date in durationDays
+                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
+                        for(int k = 0; k<durationToRsrv.size(); k++) {
+                            if(durationToRsrv.get(k).equals(date)) {
+                                System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
+                                isGood = false;     //There is a conflict in Date;
+                            }
+                        }
+                    }
+                }else continue;
+            }
+        }
         return isGood;
     }
 
     public void displayReservations(ArrayList<Reservation> reservations) {
         System.out.println("=====RESERVATIONS=====");
         if(reservations.size()==0) System.out.println("There is no reservations");
-        for(int i = 0; i<reservations.size(); i++) {
+        ArrayList<Reservation> roomRsrv = new ArrayList<>();
+        ArrayList<Reservation> amenityRsrv = new ArrayList<>();
+
+        for(int i = 0; i< reservations.size(); i++) {       //Filter the kind of reservation
             Reservation reservation = reservations.get(i);
-            Room room = reservation.getRoom();
-            System.out.println("[" + (i+1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
-                    room.getRoomType() + " Cost: " + reservation.getReservationPrice());
+            if(reservation.getRoom()!=null) {
+                roomRsrv.add(reservation);
+            }else if(reservation.getAmenity()!=null) {
+                amenityRsrv.add(reservation);
+            }
+        }
+
+        System.out.println("=====ROOM-RESERVED=====");
+        if(roomRsrv.size()!=0) {
+            for(int i = 0; i<roomRsrv.size(); i++) {
+                Reservation reservation = roomRsrv.get(i);
+                Room room = reservation.getRoom();
+                System.out.print("[" + (i + 1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
+                        room.getRoomType());
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+            }
+        }else {
+            System.out.println("There is no room reserved");
+        }
+
+        System.out.println("=====AMENITY-RESERVED=====");
+        if(amenityRsrv.size()!=0) {
+            for(int i = 0; i<amenityRsrv.size(); i++) {
+                Reservation reservation = amenityRsrv.get(i);
+                Amenity amenity = reservation.getAmenity();
+                System.out.print("[" + (i + 1) + "] " + "Amenity code " + amenity.getAmenityCode() + " || Type: " +
+                        amenity.getAmenityType());
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+            }
+        }else {
+            System.out.println("There is no amenity reserved");
         }
     }
 
@@ -764,12 +1149,12 @@ public class Methods{
         Date date = null;
 
         while(isInput==true) {
-            System.out.println("===SET-DATE===");
+            System.out.println("\n===SET-DATE===");
             System.out.print("Date: ");
             int day = inputInt();
 
             if(day>31 || day<1) {     //Scans if date is proper
-                System.out.println("INVALID: Date is not tarung");
+                System.out.println("INVALID: Date should be valid(1-31)");
                 boolean isCont = isContinue();
                 if(isCont==true) continue;
                 else break;
@@ -779,7 +1164,7 @@ public class Methods{
             int month = inputInt();
 
             if(month>12 || month<1) {     //Scans if date is proper
-                System.out.println("INVALID: Month is not tarung");
+                System.out.println("INVALID: Month should be valid(1-12)!");
                 boolean isCont = isContinue();
                 if(isCont==true) continue;
                 else break;
@@ -789,7 +1174,7 @@ public class Methods{
             int year = inputInt();
 
             if(year<2024) {     //Scans if date is proper
-                System.out.println("INVALID: Year is nalapas");
+                System.out.println("INVALID: Year should not be less than 2024");
                 boolean isCont = isContinue();
                 if(isCont==true) continue;
                 else break;
@@ -802,17 +1187,140 @@ public class Methods{
         return date;
     }
 
-//    public Transact computeBills(Reservation reservation) {
-//
-//    }
-//
-//    public Transact computeBills(Room room) {
-//
-//    }
-//
-//    public Transact paymentProcess() {
-//        System.out.println("=====PAYMENT=====");
-//    }
+    public int getReservationRoomIndex(ArrayList<Reservation> reservations, int roomNum) {
+        int index = -1;
+
+        for(int i = 0; i<reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if(reservation.getRoom().getRoomNum()==roomNum) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+    public boolean isReservationRoomNumExist(ArrayList<Reservation> reservations, int roomNum) {
+        boolean isExist = false;
+
+        for(int i = 0; i<reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if(reservation.getRoom().getRoomNum()==roomNum) {
+                isExist = true;
+                break;
+            }
+        }
+
+        return isExist;
+    }
+
+    public double computeBills(Reservation reservation) {       //This is for reservation
+        double bills = 0;
+        double rsrvCost = 0;
+        if(reservation.getRoom()!=null) {   //The reserve is room
+           rsrvCost = reservation.getRoom().getReservationPrice();
+        }else if(reservation.getAmenity()!=null) {      //The reserved is amenity
+            rsrvCost = reservation.getAmenity().getReservationCost();
+        }
+
+        rsrvCost *= reservation.getDuration();
+        rsrvCost/=2;
+        bills = rsrvCost;
+
+        return bills;
+    }
+
+    public Transact paymentProcess(Room room, int duration) {
+        Transact transact = null;
+        double bills = room.getRatePerDay()*duration;
+        double cash = 0;
+        boolean successTransact = false;
+
+        while(true) {
+            System.out.println("=====PAYMENT=====");
+            bills = room.getRatePerDay() * duration;
+            System.out.println("Room: " + room.getRoomType() + " " + room.getRoomNum());
+            System.out.println("Rate per day: " + room.getRatePerDay());
+            System.out.println("Duration(days): " + duration);
+            System.out.println("Total bills: (" + room.getRatePerDay() + " x " + duration + "days = " + bills);
+
+            boolean isCash = true;
+            while(isCash==true) {
+                System.out.println("\nEnter cash: ");
+                cash = inputDouble();
+                if (cash == -1) {
+                    System.out.println("INVALID: Input real numbers only!");
+                    continue;
+                }
+
+                if(cash==bills) {
+                    System.out.println("\nThank you for the exact amount");
+                }else if(cash>bills) {
+                    System.out.println("\nChange: " + (cash-bills));
+                }else {
+                    System.out.println("\nInsufficicent amount of cash! ");
+                    continue;
+                }
+                successTransact = true;
+                break;
+            }//End of isCash loop
+
+            if(successTransact==true) transact = new RoomTransact(CustomerPage.customerAcct, Main.globalDate, bills);
+            return transact;
+
+        }//End of main loop
+    }
+
+    public Transact paymentProcess(Reservation reservation) {
+        Transact transact = null;
+        double bills = computeBills(reservation);
+        double cash = 0;
+        double rsrvCost = 0;
+        boolean successTransact = false;
+
+        System.out.println("=====PAYMENT=====");
+        if(reservation.getRoom()!=null) {       //Reserved is room
+            Room room = reservation.getRoom();
+            System.out.println("Room: " + room.getRoomType() + " " + room.getRoomNum());
+            System.out.println("Rate per day: " + room.getReservationPrice());
+            rsrvCost = room.getReservationPrice();
+        } else if(reservation.getAmenity()!=null) {     //Reserved is amenity
+            Amenity amenity = reservation.getAmenity();
+            System.out.println("Amenity: " + amenity.getAmenityType() + " " + amenity.getAmenityCode());
+            System.out.println("Rate per day: " + amenity.getReservationCost());
+            rsrvCost = amenity.getReservationCost();
+        }
+
+        System.out.println("Duration(days): " + reservation.getDuration());
+        System.out.println("Total bills: (" + rsrvCost + " x " + reservation.getDuration() + "days)/2 = " + bills);
+
+        while(true) {
+            System.out.println("\nEnter cash: ");
+            cash = inputDouble();
+            if (cash == -1) {
+                System.out.println("INVALID: Input real numbers only!");
+            }
+
+            if(cash==bills) {
+                System.out.println("\nThank you for the exact amount");
+            }else if(cash>bills) {
+                System.out.println("\nChange: " + (cash-bills));
+            }else {
+                System.out.println("\nInsufficicent amount of cash! ");
+                continue;
+            }
+            successTransact = true;
+            break;
+        }
+
+        //Save the transaction info
+        if(successTransact==true) {
+            transact = new ReserveTransact(reservation.getCustomer(), reservation.getStartDate(), bills);
+        }
+
+        return transact;
+    }
 
 }
 

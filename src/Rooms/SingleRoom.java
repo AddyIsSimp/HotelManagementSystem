@@ -2,6 +2,7 @@ package Rooms;
 import java.util.ArrayList;
 
 public class SingleRoom extends Room {
+    private double reservationCost = 150;
 
     public SingleRoom() {
         super();
@@ -23,6 +24,11 @@ public class SingleRoom extends Room {
         this.ratePerDay = 100;
     }
 
+    public void setRatePerDay(double rate) {super.ratePerDay = rate;}
+    public double getRatePerDay() {return this.ratePerDay;}
+
+    public double getReservationPrice() {return this.reservationCost;}
+    public void setReservationPrice(double price) {this.reservationCost=price;}
 
 }
 

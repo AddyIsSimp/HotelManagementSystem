@@ -2,12 +2,14 @@ package Main;
 
 import Entity.*;
 import Rooms.*;
-import Menus.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class StaffPage {
+
+    public static Staff staffAcct = null;
+
     private Scanner sc = new Scanner(System.in);
     private String choice = null;
     private Methods method = new Methods();
@@ -19,7 +21,7 @@ public class StaffPage {
         boolean isLogin = false;
 
         while(true) {
-            System.out.println("=====STAFF=====");
+            System.out.println("\n=====STAFF=====");
             System.out.print("Username: ");
             un = sc.nextLine();
             System.out.print("Password: ");
@@ -29,7 +31,7 @@ public class StaffPage {
             for(int i = 0; i<staffsList.size(); i++) {
                 Staff temp = staffsList.get(i);
                 if(temp.getName().equals(un) && temp.getPassword().equals(pw)) {
-                    Main.staffAcct = temp;
+                    staffAcct = temp;
                     isLogin = true;
                     return true;
                 }
@@ -50,7 +52,7 @@ public class StaffPage {
     public void goManageRoom(ArrayList<Room> rooms) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====MANAGE-ROOMS=====");
+            System.out.println("\n=====MANAGE-ROOMS=====");
             System.out.println("[1] Display rooms");
             System.out.println("[2] View category");
             System.out.println("[0] Back");
@@ -74,7 +76,7 @@ public class StaffPage {
     public void goCustomerAccount(ArrayList<Customer> customers) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====CUSTOMER-ACCOUNT=====");
+            System.out.println("\n=====CUSTOMER-ACCOUNT=====");
             System.out.println("[1] Register customer");
             System.out.println("[2] View all customers");
             System.out.println("[0] Back");
@@ -98,7 +100,7 @@ public class StaffPage {
     public void goReservations(ArrayList<Reservation> reservations) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====RESERVATIONS=====");
+            System.out.println("\n=====RESERVATIONS=====");
             System.out.println("[1] View all reservations");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
@@ -119,7 +121,7 @@ public class StaffPage {
     public void goSales(Staff staff) {
         boolean isManage = true;
         while(isManage==true) {
-            System.out.println("=====SALES=====");
+            System.out.println("\n=====SALES=====");
             System.out.println("[1] Sales");
             System.out.println("[2] Total sales");
             System.out.println("[0] Back");

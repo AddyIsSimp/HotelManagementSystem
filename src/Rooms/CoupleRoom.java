@@ -1,6 +1,7 @@
 package Rooms;
 
 public class CoupleRoom extends Room{
+    private double reservationCost = 250;
 
     public CoupleRoom() {
         super();
@@ -19,11 +20,13 @@ public class CoupleRoom extends Room{
 
     public void setRoomType() {
         this.roomType = "Couple";
-        this.ratePerDay = 100;
+        this.ratePerDay = 200;
     }
 
-    public void setRate() {
+    public void setRatePerDay(double rate) {super.ratePerDay = rate;}
+    public double getRatePerDay() {return this.ratePerDay;}
 
-    }
+    public double getReservationPrice() {return this.reservationCost;}
+    public void setReservationPrice(double price) {this.reservationCost=price;}
 
 }

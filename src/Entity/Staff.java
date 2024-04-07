@@ -1,4 +1,6 @@
 package Entity;
+import Transaction.Transact;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Staff extends Person{

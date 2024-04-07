@@ -1,6 +1,4 @@
-package Menus;
-
-import Foods.*;
+package Foods;
 
 public class Menu {
     private String menuName;
@@ -35,6 +33,24 @@ public class Menu {
         this.sideDish = null;
         this.dessert = null;
         computeTotalPrice();
+    }
+
+    public Menu(Menu menu) {
+        this.menuName = menu.getMenuName();
+        this.mainDish = menu.getMainDish();
+        this.sideDish = menu.getSideDish();
+        this.drinks = menu.getDrinks();
+        this.dessert = menu.getDessert();
+        this.totalPrice = menu.getTotalPrice();
+    }
+
+    public Menu() {
+        this.menuName = null;
+        this.mainDish = null;
+        this.sideDish = null;
+        this.drinks = null;
+        this.dessert = null;
+        this.totalPrice = 0;
     }
 
     public void setMenuName(String menuName) {this.menuName = menuName;}

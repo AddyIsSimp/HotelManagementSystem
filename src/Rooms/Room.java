@@ -6,6 +6,7 @@ public class Room {
 
     protected String roomType;
     private int roomNum;
+    protected double reservationCost;
     protected double ratePerDay;
     private boolean isOccupied;
     private boolean isDisabled;
@@ -28,8 +29,6 @@ public class Room {
         this.isOccupied = isOccupied;
     }
 
-
-
     //SETTER & GETTER
     public String getRoomType() {return roomType;}
     public void setRoomType() {this.roomType = null;}
@@ -45,5 +44,8 @@ public class Room {
 
     public double getRatePerDay() {return ratePerDay;}
     public void setRatePerDay(double rate) {this.ratePerDay = rate;}
+
+    public double getReservationPrice() {return this.reservationCost;}
+    public void setReservationPrice(double price) {this.reservationCost=price;}
 
 }
