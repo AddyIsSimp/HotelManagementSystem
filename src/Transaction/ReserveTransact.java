@@ -3,15 +3,18 @@ package Transaction;
 import Entity.Customer;
 import Entity.Staff;
 import Rooms.Date;
+import Rooms.Reservation;
 
 public class ReserveTransact extends Transact {
     private String transactType = "Reservation";        //Reservation, room, orders
+    private Reservation reservation;
 
     public ReserveTransact() {
     }
 
-    public ReserveTransact(Customer customer, Date dateOfTrans, double amount) {
+    public ReserveTransact(Customer customer, Date dateOfTrans, double amount, Reservation reservation) {
         super(customer, dateOfTrans, amount);
+        this.reservation = reservation;
     }
 
     public void setCustomer(Customer customer) {super.customer = customer;}

@@ -1343,7 +1343,7 @@ public class Methods{
 
         //Save the transaction info
         if(successTransact==true) {
-            transact = new ReserveTransact(reservation.getCustomer(), reservation.getStartDate(), bills);
+            transact = new ReserveTransact(reservation.getCustomer(), reservation.getStartDate(), bills, reservation);
         }
 
         return transact;
