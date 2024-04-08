@@ -4,9 +4,9 @@ import Entity.Staff;
 import Foods.Food;
 import Main.Methods;
 import Foods.Menu;
-import Transaction.Order;
 import Rooms.*;
 import Rooms.Date;
+import Rooms.Reservation;
 
 import java.util.*;
 
@@ -19,7 +19,6 @@ public class ForCodeTrial {
     public static ArrayList<Amenity> amenities = new ArrayList<>();
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
-    //public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
     public static ArrayList<Reservation> reservations = new ArrayList<>();
 
     public static int durationLimit = 10;
@@ -91,7 +90,7 @@ public class ForCodeTrial {
         }
 
         if(isRoom==true) {
-            for(int i = 0; i<reservations.size(); i++) {
+            for(int i = 0; i< reservations.size(); i++) {
                 System.out.println("Sulod dre 1");
                 Reservation reserveList = reservations.get(i);
                 if(reserveList.getRoom()!=null) {   //Reservation is room
@@ -110,7 +109,7 @@ public class ForCodeTrial {
                 }else continue;
             }
         }else if(isAmenity==true) {
-            for(int i = 0; i<reservations.size(); i++) {
+            for(int i = 0; i< reservations.size(); i++) {
                 Reservation reserveList = reservations.get(i);
                 if(reserveList.getAmenity()!=null) {   //Reservation is amenity
                     System.out.println("Sulod dre 2");

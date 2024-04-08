@@ -6,7 +6,6 @@ import Rooms.Date;
 
 public class ReserveTransact extends Transact {
     private String transactType = "Reservation";        //Reservation, room, orders
-    private boolean isFullyPaid = false;
 
     public ReserveTransact() {
     }
@@ -26,7 +25,4 @@ public class ReserveTransact extends Transact {
 
     public void setTransactType(String string) {this.transactType = transactType;}
     public String getTransactType() {return this.transactType;}
-
-    public void setFullyPaid(boolean isIt) {this.isFullyPaid= isIt;}
-    public boolean getFullyPaid() {return this.isFullyPaid;}
 }

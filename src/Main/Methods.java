@@ -7,9 +7,7 @@ import Entity.*;
 import Foods.Menu;
 import Rooms.*;
 import Amenity.*;
-import Transaction.ReserveTransact;
-import Transaction.RoomTransact;
-import Transaction.Transact;
+import Transaction.*;
 
 public class Methods{
 
@@ -1004,10 +1002,8 @@ public class Methods{
 
             if(isFound==false) {
                 System.out.println("INVALID: Room not found with the specified room number");
-                boolean isCont = isContinue();
-                if(isCont==true) continue;
-                else break;
             }
+            break;
         }
         return room;
     }
@@ -1052,7 +1048,7 @@ public class Methods{
         }
 
         if(isRoom==true) {
-            for(int i = 0; i<reservations.size(); i++) {
+            for(int i = 0; i< reservations.size(); i++) {
                 Reservation reserveList = reservations.get(i);
                 if(reserveList.getRoom()!=null) {   //Reservation is room
 
@@ -1070,7 +1066,7 @@ public class Methods{
                 }else continue;
             }
         }else if(isAmenity==true) {
-            for(int i = 0; i<reservations.size(); i++) {
+            for(int i = 0; i< reservations.size(); i++) {
                 Reservation reserveList = reservations.get(i);
                 if(reserveList.getAmenity()!=null) {   //Reservation is amenity
                     Amenity amenityList = reserveList.getAmenity();  //Get the amenity reservation in list
@@ -1118,6 +1114,8 @@ public class Methods{
                 Room room = reservation.getRoom();
                 System.out.print("[" + (i + 1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
                         room.getRoomType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
                 System.out.print(" || Duration: " + reservation.getDuration());
                 if (reservation.getDuration() == 1) System.out.print("day");
                 else System.out.print("days");
@@ -1134,6 +1132,8 @@ public class Methods{
                 Amenity amenity = reservation.getAmenity();
                 System.out.print("[" + (i + 1) + "] " + "Amenity code " + amenity.getAmenityCode() + " || Type: " +
                         amenity.getAmenityType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
                 System.out.print(" || Duration: " + reservation.getDuration());
                 if (reservation.getDuration() == 1) System.out.print("day");
                 else System.out.print("days");
@@ -1190,7 +1190,7 @@ public class Methods{
     public int getReservationRoomIndex(ArrayList<Reservation> reservations, int roomNum) {
         int index = -1;
 
-        for(int i = 0; i<reservations.size(); i++) {
+        for(int i = 0; i< reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
             if(reservation.getRoom().getRoomNum()==roomNum) {
                 index = i;
@@ -1201,10 +1201,37 @@ public class Methods{
         return index;
     }
 
+    public ArrayList<ReserveTransact> getReservationTransact(ArrayList<Transact> transacts) {
+        ArrayList<ReserveTransact> reservations = new ArrayList<>();
+
+        for(int i = 0; i< transacts.size(); i++) {
+            Transact transact = transacts.get(i);
+            if(transact.getClass()==ReserveTransact.class) {
+                reservations.add((ReserveTransact) transact);
+            }
+        }
+
+        return reservations;
+    }
+
+    public HotelTransact getHotelTransact(ArrayList<Transact> transacts) {
+        HotelTransact hotelTransact = null;
+
+        for(int i = 0; i< transacts.size(); i++) {
+            Transact transact = transacts.get(i);
+            if(transact.getClass()==HotelTransact.class) {
+                hotelTransact = (HotelTransact) transact;
+                break;
+            }
+        }
+
+        return hotelTransact;
+    }
+
     public boolean isReservationRoomNumExist(ArrayList<Reservation> reservations, int roomNum) {
         boolean isExist = false;
 
-        for(int i = 0; i<reservations.size(); i++) {
+        for(int i = 0; i< reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
             if(reservation.getRoom().getRoomNum()==roomNum) {
                 isExist = true;
@@ -1231,8 +1258,8 @@ public class Methods{
         return bills;
     }
 
-    public RoomTransact paymentProcess(Room room, int duration) {
-        RoomTransact transact = null;
+    public HotelTransact paymentProcess(Room room, int duration) {
+        HotelTransact transact = null;
         double bills = room.getRatePerDay()*duration;
         double cash = 0;
         boolean successTransact = false;
@@ -1266,9 +1293,10 @@ public class Methods{
                 break;
             }//End of isCash loop
 
-            if(successTransact==true) transact = new RoomTransact(CustomerPage.customerAcct, room, Main.globalDate, bills);
-            return transact;
+            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, Main.globalDate, bills);
+            break;
         }//End of main loop
+        return transact;
     }
 
     public Transact paymentProcess(Reservation reservation) {

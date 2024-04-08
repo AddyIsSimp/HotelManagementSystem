@@ -1,12 +1,11 @@
 package Rooms;
 import Entity.Customer;
-import Entity.Person;
-import Rooms.Room;
 import Amenity.*;
+import Transaction.Transact;
 
 import java.util.ArrayList;
 
-public class Reservation {
+public class Reservation extends Transact {
 
     //Assign the reservation in RoomNum not in the room instance
 

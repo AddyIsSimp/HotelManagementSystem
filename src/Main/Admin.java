@@ -4,6 +4,7 @@ import Entity.*;
 import Rooms.*;
 import Foods.*;
 import Amenity.*;
+import Rooms.Reservation;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -330,7 +331,7 @@ public class Admin {
                 case 1:
                     boolean isRoom = true;
                     while(isRoom==true) {
-                        System.out.println("=====ROOMS=====");
+                        System.out.println("\n=====ROOMS=====");
                         System.out.println("[1] View rooms");
                         System.out.println("[2] Add room");
                         System.out.println("[3] Edit room");
@@ -340,10 +341,10 @@ public class Admin {
                         choice = method.inputInt("Enter choice: ");
 
                         switch(choice) {
-                            case 1:
+                            case 1:     //View room
                                 boolean isView = true;
                                 while(isView==true) {
-                                    System.out.println("===VIEW-ROOMS===");
+                                    System.out.println("\n===VIEW-ROOMS===");
                                     System.out.println("[1] Display All");
                                     System.out.println("[2] In category");
                                     System.out.println("[0] Back");
@@ -366,11 +367,11 @@ public class Admin {
                                     }
                                 }
                                 break;
-                            case 2:
-                                boolean isAdd = true;
+                            case 2:     //Add room
+                                boolean isAdd  = true;
                                 while(isAdd==true) {
                                     //Set the room number of new room
-                                    System.out.println("=====ADD-ROOM=====");
+                                    System.out.println("\n=====ADD-ROOM=====");
                                     System.out.println("Existing rooms: ");
                                     method.displayAvailRoomNum(rooms);
                                     roomNum = method.inputInt("Set the room number: ");
@@ -384,7 +385,7 @@ public class Admin {
                                     }
 
                                     //Set the type of room
-                                    System.out.println("Select type of room");
+                                    System.out.println("\nSelect type of room");
                                     System.out.println("[1]Single Room");
                                     System.out.println("[2]Couple Room");
                                     System.out.println("[3]Family Room");
@@ -421,11 +422,11 @@ public class Admin {
                                 }
                                 }
                                 break;
-                            case 3:
+                            case 3:     //Edit room
                                 //EDIT ROOMS - enable or disable the room
                                 boolean isEdit = true;
                                 while(isEdit==true) {
-                                    System.out.println("=====EDIT-ROOM=====");
+                                    System.out.println("\n=====EDIT-ROOM=====");
                                     method.displayAllRoom(rooms);
                                     roomNum = method.inputInt("Select room number to edit: ");
                                     roomIndex = method.isRoomNumReturnIndex(rooms, roomNum);    //get the index of rooms
@@ -445,9 +446,11 @@ public class Admin {
                                                         roomEdit.setIsDisabled(false);
                                                         System.out.println("Room is enabled successfully!");
                                                         isDisable = false;
+                                                        isEdit = false;
                                                         break;
                                                     case 2:
                                                         isDisable = false;
+                                                        isEdit = false;
                                                         break;
                                                     default:
                                                         System.out.println("INVALID: Use indicated number only!");
@@ -464,9 +467,11 @@ public class Admin {
                                                     case "1":
                                                         roomEdit.setIsDisabled(true);
                                                         System.out.println("Room is disabled successfully!");
+                                                        isEdit = false;
                                                         isDisable = false;
                                                         break;
                                                     case "2":
+                                                        isEdit = false;
                                                         isDisable = false;
                                                         break;
                                                     default:
@@ -488,7 +493,7 @@ public class Admin {
                                 while(isEditPrice==true) {
                                     ArrayList<Room> roomsType = null;
                                     double rate = 0;
-                                    System.out.println("=====SET-ROOM-PRICE=====");
+                                    System.out.println("\n=====SET-ROOM-PRICE=====");
                                     System.out.println("[1] Single Room");
                                     System.out.println("[2] Couple Room");
                                     System.out.println("[3] Family Room");
@@ -558,7 +563,7 @@ public class Admin {
                                 boolean isDelete = true;
 
                                 while(isDelete==true) {
-                                    System.out.println("=====DELETE-ROOM=====");
+                                    System.out.println("\n=====DELETE-ROOM=====");
                                     method.displayAllRoom(rooms);
                                     roomNum = method.inputInt("Select room number to delete: ");
 

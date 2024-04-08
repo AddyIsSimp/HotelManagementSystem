@@ -4,10 +4,8 @@ import Entity.*;
 import Rooms.*;
 import Amenity.*;
 import Foods.*;
-import Transaction.Order;
-import Transaction.ReserveTransact;
-import Transaction.RoomTransact;
-import Transaction.Transact;
+import Transaction.HotelTransact;
+import Rooms.Reservation;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -15,16 +13,19 @@ import java.util.ArrayList;
 public class Main {
 
     //BUGS
-    //  Admin-Reservation-ModifyReservation - checkReservation returns to false;
+    //  Admin-Edit reservation
     //  When delete the amenity in the previous number then add a new one will result in wrong code.
-    //  The checkReservation for amenity should be added in the check Reservation
 
     //TO-DO
-    //  There should be a message when a customer reach its time of reservation/ and a follow-up payment for the kulang
+    //  The reservation is a fully paid reservation but when cancelling reserve it should return only 50
     //  Admin-Room Management-Method-setRate()  - to modify the rate of the room
     //  Methods-computeBills()
     //  Methods-paymentProcess()
     //Create a method to search for duplicate reservation in RoomsList and reservations
+
+    //NOTE;
+    //  The customer should have only 1 room transact and orders transact
+    //  HotelTransact - displays the room amenity occupied and menu selected, and bills
 
     //INSTANCE VARIABLES
 
@@ -43,14 +44,9 @@ public class Main {
     public static ArrayList<Amenity> amenities = new ArrayList<>();
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
-    public static ArrayList<Reservation> reservations = new ArrayList<>();
 
-    public static ArrayList<ReserveTransact> pendingReservation = new ArrayList<>();
-    public static ArrayList<RoomTransact> roomTransacts = new ArrayList<>();
-
-    //  DILI SURE NI public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders of customer ug maremove if mocheck out na ang
-    //      customer ibalhin sa past order sa customer account
-    //Diri magbase sa katong nag-occupy ug room/ ug sa katong naay reserve
+    public static ArrayList<Reservation> reservations = new ArrayList<>();      //Re
+    public static ArrayList<HotelTransact> roomTransacts = new ArrayList<>();                   //InHotelTransacts
 
     public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
 
@@ -113,6 +109,7 @@ public class Main {
             reservations.add(new Reservation(customersList.get(0), rooms.get(1), (new Date(11, 12, 2024)), 3));
             reservations.add(new Reservation(customersList.get(0), rooms.get(6), (new Date(20, 13, 2024)), 3));
             reservations.add(new Reservation(customersList.get(0), amenities.get(2), (new Date(20, 13, 2024)), 3));
+            reservations.add(new Reservation(customersList.get(0), amenities.get(2), (new Date(30, 13, 2024)), 3));
 
             System.out.println("HOTEL MANAGEMENT SYSTEM");
 
@@ -306,7 +303,7 @@ public class Main {
                 boolean isCustomerPage = true;
 
                 while (isCustomerPage == true) {
-                    System.out.println("\n==========CUSTOMERS==========");
+                    System.out.println("\n==========CUSTOMER==========");
                     System.out.println("[1] Account");
                     System.out.println("[2] Rooms");
                     System.out.println("[3] Reservation");
@@ -323,7 +320,7 @@ public class Main {
                             customerP.goSelectRoom(rooms);
                             break;
                         case 3:
-                            customerP.goBookReservation(rooms, amenities, reservations);
+                            customerP.goBookReservation(rooms, amenities);
                             break;
                         case 4:
                             customerP.goHotelOrders();

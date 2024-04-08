@@ -2,20 +2,31 @@ package Transaction;
 
 import Entity.Customer;
 import Entity.Staff;
+import Foods.Menu;
 import Rooms.Date;
 import Rooms.Room;
+import Amenity.*;
 
-public class RoomTransact extends Transact{
+import java.util.ArrayList;
+
+public class HotelTransact extends Transact{
     protected Room room;
-    private String transactType = "Room";        //Reservation, room, orders
+    protected Amenity amenity;
+    ArrayList<Menu> menuOrdered = new ArrayList<>();
+    private String transactType = "Hotel";        //Nag-occupy na ug room ug amenity
 
-    public RoomTransact() {
+    public HotelTransact() {
 
     }
 
-    public RoomTransact(Customer customer, Room room, Date dateOfTrans, double amount) {
+    public HotelTransact(Customer customer, Room room, Date dateOfTrans, double amount) {
         super(customer, dateOfTrans, amount);
         this.room = room;
+    }
+
+    public HotelTransact(Customer customer, Amenity amenity, Date dateOfTrans, double amount) {
+        super(customer, dateOfTrans, amount);
+        this.amenity = amenity;
     }
 
     public void setCustomer(Customer customer) {super.customer = customer;}
@@ -23,6 +34,9 @@ public class RoomTransact extends Transact{
 
     public void setRoom(Room room) {this.room = room;}
     public Room getRoom() {return room;}
+
+    public void setAmenity(Amenity amenity) {this.amenity = amenity;}
+    public Amenity getAmenity() {return amenity;}
 
     public void setStaff(Staff staff) {this.staff = staff;}
     public Staff getStaff() {return this.staff;}

@@ -26,6 +26,7 @@ public class Date {
     public void displayDate() {
         System.out.println(date + "/" + month + "/" + year);
     }
+    public void displayDate2() {System.out.print(date + "/" + month + "/" + year);}
 
     public boolean equals(Object obj) {
         // check for reference equality.

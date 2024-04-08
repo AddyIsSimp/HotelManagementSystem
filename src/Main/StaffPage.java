@@ -2,6 +2,7 @@ package Main;
 
 import Entity.*;
 import Rooms.*;
+import Rooms.Reservation;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -60,8 +61,11 @@ public class StaffPage {
 
             switch(choice) {
                 case 1:
+                    method.displayAllRoom(rooms);
                     break;
                 case 2:
+                    System.out.println("Displaying Available Rooms");
+                    method.displayAvailRoomNum(rooms);
                     break;
                 case 0:
                     isManage=false;
@@ -72,7 +76,7 @@ public class StaffPage {
         }
     }
 
-    //================================CUSTOMER-ACCOUNT
+    //================================CUSTOMER-ACCOUNT================================
     public void goCustomerAccount(ArrayList<Customer> customers) {
         boolean isManage = true;
         while(isManage==true) {
@@ -86,6 +90,8 @@ public class StaffPage {
                 case 1:
                     break;
                 case 2:
+                    System.out.println("Displaying all customers");
+                    method.displayCustomer(customers);
                     break;
                 case 0:
                     isManage=false;
@@ -96,7 +102,7 @@ public class StaffPage {
         }
     }
 
-    //================================RESERVATIONS
+    //================================RESERVATIONS================================
     public void goReservations(ArrayList<Reservation> reservations) {
         boolean isManage = true;
         while(isManage==true) {
@@ -107,6 +113,8 @@ public class StaffPage {
 
             switch(choice) {
                 case 1:
+                    System.out.println("Displaying all reservations room");
+                    method.displayReservations(reservations);
                     break;
                 case 0:
                     isManage=false;
@@ -117,7 +125,7 @@ public class StaffPage {
         }
     }
 
-    //================================SALES
+    //================================SALES================================
     public void goSales(Staff staff) {
         boolean isManage = true;
         while(isManage==true) {
