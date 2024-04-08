@@ -1231,8 +1231,8 @@ public class Methods{
         return bills;
     }
 
-    public Transact paymentProcess(Room room, int duration) {
-        Transact transact = null;
+    public RoomTransact paymentProcess(Room room, int duration) {
+        RoomTransact transact = null;
         double bills = room.getRatePerDay()*duration;
         double cash = 0;
         boolean successTransact = false;
@@ -1240,14 +1240,14 @@ public class Methods{
         while(true) {
             System.out.println("=====PAYMENT=====");
             bills = room.getRatePerDay() * duration;
-            System.out.println("Room: " + room.getRoomType() + " " + room.getRoomNum());
+            System.out.println("Room: " + room.getRoomType() + " #" + room.getRoomNum());
             System.out.println("Rate per day: " + room.getRatePerDay());
             System.out.println("Duration(days): " + duration);
-            System.out.println("Total bills: (" + room.getRatePerDay() + " x " + duration + "days = " + bills);
+            System.out.println("Total bills: " + room.getRatePerDay() + " x " + duration + "days = " + bills);
 
             boolean isCash = true;
             while(isCash==true) {
-                System.out.println("\nEnter cash: ");
+                System.out.print("\nEnter cash: ");
                 cash = inputDouble();
                 if (cash == -1) {
                     System.out.println("INVALID: Input real numbers only!");
@@ -1266,9 +1266,8 @@ public class Methods{
                 break;
             }//End of isCash loop
 
-            if(successTransact==true) transact = new RoomTransact(CustomerPage.customerAcct, Main.globalDate, bills);
+            if(successTransact==true) transact = new RoomTransact(CustomerPage.customerAcct, room, Main.globalDate, bills);
             return transact;
-
         }//End of main loop
     }
 
@@ -1296,7 +1295,7 @@ public class Methods{
         System.out.println("Total bills: (" + rsrvCost + " x " + reservation.getDuration() + "days)/2 = " + bills);
 
         while(true) {
-            System.out.println("\nEnter cash: ");
+            System.out.print("\nEnter cash: ");
             cash = inputDouble();
             if (cash == -1) {
                 System.out.println("INVALID: Input real numbers only!");

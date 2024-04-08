@@ -9,8 +9,7 @@ import java.util.ArrayList;
 
 public class OrderTransact extends Transact {
     ArrayList<Menu> menuOrdered = new ArrayList<>();
-
-    private String transactType = "Order";        //Reservation, room, orders
+    private String transactType = "Order";
 
     public OrderTransact() {
 

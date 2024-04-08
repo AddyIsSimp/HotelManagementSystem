@@ -9,7 +9,6 @@ public class ReserveTransact extends Transact {
     private boolean isFullyPaid = false;
 
     public ReserveTransact() {
-
     }
 
     public ReserveTransact(Customer customer, Date dateOfTrans, double amount) {

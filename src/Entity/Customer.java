@@ -1,6 +1,7 @@
 package Entity;
 import java.util.ArrayList;
 
+import Foods.Menu;
 import Transaction.Order;
 import Rooms.Date;
 import Rooms.Reservation;
@@ -8,9 +9,9 @@ import Rooms.Room;
 import Transaction.Transact;
 
 public class Customer extends Person {
-    ArrayList<Transact> transactions = new ArrayList<>();
+    ArrayList<Transact> transHistory = new ArrayList<>();
+    ArrayList<Transact> transact = new ArrayList<>();
     private ArrayList<Reservation> reservations = new ArrayList<>();
-    private ArrayList<Order> orders = new ArrayList<>();            //Orders are for a specific check out only
     private double bills = 0;
     private double refunds = 0;
 
@@ -44,5 +45,8 @@ public class Customer extends Person {
     }
 
     public ArrayList<Reservation> getReservations() {return reservations;}
+
+    public void addTransact(Transact transact) {this.transact.add(transact);}
+    public ArrayList<Transact> getTransact() {return this.transact;}
 
 }

@@ -5,6 +5,9 @@ import Rooms.*;
 import Amenity.*;
 import Foods.*;
 import Transaction.Order;
+import Transaction.ReserveTransact;
+import Transaction.RoomTransact;
+import Transaction.Transact;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -40,8 +43,14 @@ public class Main {
     public static ArrayList<Amenity> amenities = new ArrayList<>();
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
-    public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
     public static ArrayList<Reservation> reservations = new ArrayList<>();
+
+    public static ArrayList<ReserveTransact> pendingReservation = new ArrayList<>();
+    public static ArrayList<RoomTransact> roomTransacts = new ArrayList<>();
+
+    //  DILI SURE NI public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders of customer ug maremove if mocheck out na ang
+    //      customer ibalhin sa past order sa customer account
+    //Diri magbase sa katong nag-occupy ug room/ ug sa katong naay reserve
 
     public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
 
@@ -50,108 +59,107 @@ public class Main {
     //MAIN METHOD
     public static void main(String[] args) {
 
-        while(true) {
+        while (true) {
 
-                //SAMPLE CREDENTIALS
-                //Main.AdminPage(); Username = Admin123, Password = admin123
-                customersList.add(new Customer("Beth", "Sophia"));
-                staffsList.add(new Staff("Dave", "Gaga-a", "Gaga-a"));
+            Scanner sc = new Scanner(System.in);    //Use for string inputs
+            Scanner in = new Scanner(System.in);    //Use for int /double inputs
+            int choice = 0;
+            String pick = null;
+            boolean main = true;
 
-                //Add all arraylist in all
-                all.add(customersList);
-                all.add(staffsList);
-                all.add(rooms);
-                all.add(reservations);
-                all.add(foods);
-                all.add(menus);
+            //SAMPLE CREDENTIALS
+            //Main.AdminPage(); Username = Admin123, Password = admin123
+            customersList.add(new Customer("Beth", "Sophia"));
+            staffsList.add(new Staff("Dave", "Gaga-a", "Gaga-a"));
 
-                //Local Main.Methods
-                Scanner sc = new Scanner(System.in);    //Use for string inputs
-                Scanner in = new Scanner(System.in);    //Use for int /double inputs
-                int choice = 0;
-                String pick = null;
-                boolean main = true;
+            //Add all arraylist in all
+            all.add(customersList);
+            all.add(staffsList);
+            all.add(rooms);
+            all.add(reservations);
+            all.add(foods);
+            all.add(menus);
 
-                foods.add(new MainDish("Humba", 120, 30));
-                foods.add(new MainDish("Tinola Manok", 170, 30));
-                foods.add(new SideDish("Crispy chicken", 120, 30));
-                foods.add(new SideDish("Toron", 170, 30));
-                foods.add(new Drinks("Lambanog", 120, 30));
-                foods.add(new Drinks("Red Horse", 170, 30));
-                foods.add(new Dessert("MangoFloat", 120, 30));
-                foods.add(new Dessert("Macaroni", 170, 30));
+            foods.add(new MainDish("Humba", 120, 30));
+            foods.add(new MainDish("Tinola Manok", 170, 30));
+            foods.add(new SideDish("Crispy chicken", 120, 30));
+            foods.add(new SideDish("Toron", 170, 30));
+            foods.add(new Drinks("Lambanog", 120, 30));
+            foods.add(new Drinks("Red Horse", 170, 30));
+            foods.add(new Dessert("MangoFloat", 120, 30));
+            foods.add(new Dessert("Macaroni", 170, 30));
 
-                menus.add(new Menu("Adrian", foods.get(1), foods.get(3), foods.get(5), foods.get(7)));
-                menus.add(new Menu("Santos", foods.get(0), foods.get(2), foods.get(4), foods.get(6)));
+            menus.add(new Menu("Adrian", foods.get(1), foods.get(3), foods.get(5), foods.get(7)));
+            menus.add(new Menu("Santos", foods.get(0), foods.get(2), foods.get(4), foods.get(6)));
 
-                rooms.add(new SingleRoom(5));
-                rooms.add(new SingleRoom(2));
-                rooms.add(new SingleRoom(11));
-                rooms.add(new SingleRoom(4));
-                rooms.add(new SingleRoom(3));
-                rooms.add(new CoupleRoom(7));
-                rooms.add(new CoupleRoom(6));
-                rooms.add(new CoupleRoom(8));
-                rooms.add(new CoupleRoom(10));
-                rooms.add(new CoupleRoom(9));
+            rooms.add(new SingleRoom(5));
+            rooms.add(new SingleRoom(2));
+            rooms.add(new SingleRoom(11));
+            rooms.add(new SingleRoom(4));
+            rooms.add(new SingleRoom(3));
+            rooms.add(new CoupleRoom(7));
+            rooms.add(new CoupleRoom(6));
+            rooms.add(new CoupleRoom(8));
+            rooms.add(new CoupleRoom(10));
+            rooms.add(new CoupleRoom(9));
 
-                method.addAmenity(amenities, "Karaoke");
-                method.addAmenity(amenities, "Pool");
-                method.addAmenity(amenities, "Karaoke");
-                method.addAmenity(amenities, "ReceptionHall");
-                method.addAmenity(amenities, "GameRoom");
+            method.addAmenity(amenities, "Karaoke");
+            method.addAmenity(amenities, "Pool");
+            method.addAmenity(amenities, "Karaoke");
+            method.addAmenity(amenities, "ReceptionHall");
+            method.addAmenity(amenities, "GameRoom");
 
-                reservations.add(new Reservation(customersList.get(0), rooms.get(5), (new Date(26, 27,2024)), 3));
-                reservations.add(new Reservation(customersList.get(0), rooms.get(1), (new Date(11, 12,2024)), 3));
-                reservations.add(new Reservation(customersList.get(0), rooms.get(6), (new Date(20, 13,2024)), 3));
-                reservations.add(new Reservation(customersList.get(0), amenities.get(2), (new Date(20, 13,2024)), 3));
+            reservations.add(new Reservation(customersList.get(0), rooms.get(5), (new Date(26, 27, 2024)), 3));
+            reservations.add(new Reservation(customersList.get(0), rooms.get(1), (new Date(11, 12, 2024)), 3));
+            reservations.add(new Reservation(customersList.get(0), rooms.get(6), (new Date(20, 13, 2024)), 3));
+            reservations.add(new Reservation(customersList.get(0), amenities.get(2), (new Date(20, 13, 2024)), 3));
 
             System.out.println("HOTEL MANAGEMENT SYSTEM");
 
-                int count = 0;
-                //MAIN LOOP
-                while (main) {
-                    Person loginPerson;             //stores the person that Login
-                    boolean isAdmin = false;
-                    boolean isStaff = false;
-                    boolean isCustomer = false;
+            int count = 0;
+            //MAIN LOOP
+            while (main) {
+                Person loginPerson;             //stores the person that Login
+                boolean isAdmin = false;
+                boolean isStaff = false;
+                boolean isCustomer = false;
 
-                    if(count==0) {
-                        System.out.println("=====SELECT-USER=====");
-                        count++;
-                    }else System.out.println("\n=====SELECT-USER=====");
-                    System.out.println("[1] ADMIN");
-                    System.out.println("[2] STAFF");
-                    System.out.println("[3] CUSTOMER");
-                    System.out.println("[4] SET CURRENT DATE");
-                    System.out.print("Enter choice: ");
-                    choice = method.inputInt();
+                if (count == 0) {
+                    System.out.println("=====SELECT-USER=====");
+                    count++;
+                } else System.out.println("\n=====SELECT-USER=====");
+                System.out.println("[1] ADMIN");
+                System.out.println("[2] STAFF");
+                System.out.println("[3] CUSTOMER");
+                System.out.println("[4] SET CURRENT DATE");
+                System.out.print("Enter choice: ");
+                choice = method.inputInt();
 
-                    switch (choice) {
-                        case 1:
-                            isAdmin = admin.loginAdmin();
-                            if (isAdmin == true) AdminPage();
-                            else continue;
-                            break;
-                        case 2:
-                            isStaff = staffP.loginStaff(staffsList);
-                            if (isStaff == true) StaffPage(StaffPage.staffAcct);
-                            break;
-                        case 3:
-                            isCustomer = EnterCustomer();
-                            if (isCustomer == true) CustomerPage();
-                            else continue;
-                            break;
-                        case 4:
-                            globalDate = method.inputDate();
-                            System.out.print("Date is successfully set to ");
-                            globalDate.displayDate();
-                            break;
-                        default:
-                            if (choice != -1) System.out.println("INVALID: Use indicated number only");
-                            continue;
-                    }
+                switch (choice) {
+                    case 1:
+                        isAdmin = admin.loginAdmin();
+                        if (isAdmin == true) AdminPage();
+                        else continue;
+                        break;
+                    case 2:
+                        isStaff = staffP.loginStaff(staffsList);
+                        if (isStaff == true) StaffPage(StaffPage.staffAcct);
+                        break;
+                    case 3:
+                        isCustomer = EnterCustomer();
+                        if (isCustomer == true) CustomerPage();
+                        else continue;
+                        break;
+                    case 4:
+                        globalDate = method.inputDate();
+                        System.out.print("Date is successfully set to ");
+                        globalDate.displayDate();
+                        break;
+                    default:
+                        if (choice != -1) System.out.println("INVALID: Use indicated number only");
+                        continue;
                 }
+            }
 //            } catch (Exception e) {
 //                System.out.println(e);
 //                System.out.println("ERROR: Please try again");
@@ -160,10 +168,11 @@ public class Main {
 
     }
 
-//=====================================METHODS================================================
+    //=====================================METHODS================================================
     static void AdminPage() {
         boolean adminMain = true;
-        Admin : while(adminMain==true) {
+        Admin:
+        while (adminMain == true) {
 
             try {
                 int choice = 0;
@@ -203,15 +212,15 @@ public class Main {
                             admin.goReports(all);
                             break;
                         case 0:
-                            while(true) {
+                            while (true) {
                                 System.out.println("Do you want to log-out? [1]Yes/[2]No");
                                 choice = method.inputInt();
-                                if(choice==1) {
+                                if (choice == 1) {
                                     System.out.println("Log-out successfully");
                                     adminMain = false;
                                     isAdminPage = false;
                                     break;
-                                }else if(choice==2) continue Admin;
+                                } else if (choice == 2) continue Admin;
                                 else {
                                     System.out.println("INVALID: Use indicated number only!");
                                 }
@@ -231,7 +240,8 @@ public class Main {
     static void StaffPage(Staff staff) {
         int choice = 0;
         boolean staffMain = true;
-        Staff: while(staffMain==true) {
+        Staff:
+        while (staffMain == true) {
             try {
 
                 int pick = 0;
@@ -261,15 +271,15 @@ public class Main {
                             staffP.goSales(staff);
                             break;
                         case 0:
-                            while(true) {
+                            while (true) {
                                 System.out.println("Do you want to log-out? [1]Yes/[2]No");
                                 choice = method.inputInt();
-                                if(choice==1) {
+                                if (choice == 1) {
                                     System.out.println("Log-out successfully");
                                     staffMain = false;
                                     isStaffPage = false;
                                     break;
-                                }else if(choice==2) continue Staff;
+                                } else if (choice == 2) continue Staff;
                                 else {
                                     System.out.println("INVALID: Use indicated number only!");
                                 }
@@ -289,7 +299,8 @@ public class Main {
     static void CustomerPage() {
         int choice = 0;
         boolean customerMain = true;
-        Customer : while(customerMain==true) {
+        Customer:
+        while (customerMain == true) {
             try {
                 int pick = 0;
                 boolean isCustomerPage = true;
@@ -315,18 +326,18 @@ public class Main {
                             customerP.goBookReservation(rooms, amenities, reservations);
                             break;
                         case 4:
-                            customerP.goHotelOrders(orders);
+                            customerP.goHotelOrders();
                             break;
                         case 0:
-                            while(true) {
+                            while (true) {
                                 System.out.println("Do you want to log-out? [1]Yes/[2]No");
-                                 choice = method.inputInt();
-                                if(choice==1) {
+                                choice = method.inputInt();
+                                if (choice == 1) {
                                     System.out.println("Log-out successfully");
                                     customerMain = false;
                                     isCustomerPage = false;
                                     break;
-                                }else if(choice==2) continue Customer;
+                                } else if (choice == 2) continue Customer;
                                 else {
                                     System.out.println("INVALID: Use indicated number only!");
                                 }
@@ -374,7 +385,7 @@ public class Main {
                         break Customer;
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("ERROR: Please try again!");
         }
         return isCustomer;

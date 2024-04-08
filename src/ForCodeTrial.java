@@ -19,7 +19,7 @@ public class ForCodeTrial {
     public static ArrayList<Amenity> amenities = new ArrayList<>();
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
-    public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
+    //public static ArrayList<Order> orders = new ArrayList<>();              //Store here are the orders
     public static ArrayList<Reservation> reservations = new ArrayList<>();
 
     public static int durationLimit = 10;

@@ -6,6 +6,8 @@ import Rooms.Reservation;
 import Rooms.Room;
 import Amenity.*;
 import Transaction.Order;
+import Transaction.RoomTransact;
+import Transaction.Transact;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -128,6 +130,10 @@ public class CustomerPage {
     public void goSelectRoom(ArrayList<Room> rooms) {
         boolean isManage = true;
         while(isManage==true) {
+            boolean isSelect = true;
+            Room selectRoom = null;
+            int duration = 0;
+
             System.out.println("\n=====SELECT-ROOMS=====");
             System.out.println("[1] Select room");
             System.out.println("[2] View category");
@@ -136,16 +142,64 @@ public class CustomerPage {
 
             switch(choice) {
                 case 1:
-                    boolean isSelect = true;
                     while(isSelect==true) {
                         method.displayAllRoom(rooms);
-                        method.isGoBack();
+                        selectRoom = method.selectRoom(rooms);
+
+                        if(selectRoom==null) {      //If do not found a room with the roomNum
+                            boolean isCont = method.stateError("Room is not found with the room number!");
+                            if(isCont==true) continue;
+                            else break;
+                        }
+
+                        while(true) {
+                            System.out.println("=====SET-DURATION=====");
+                            System.out.print("Enter duration(day): ");
+                            duration = method.inputInt();
+
+                            if (duration > Main.durationLimit) {
+                                System.out.println("INVALID: The duration should not exceed " + Main.durationLimit);
+                                continue;
+                            }
+                            break;
+                        }
+
+                        RoomTransact transact = method.paymentProcess(selectRoom, duration);
+                        Main.roomTransacts.add(transact);
+                        customerAcct.addTransact(transact);
+
                         break;
                     }
                     break;
                 case 2:
-                    method.displayRoomCategory(rooms);
-                    method.isGoBack();
+                    while(isSelect==true) {
+                        method.displayRoomCategory(rooms);
+                        selectRoom = method.selectRoom(rooms);
+
+                        if(selectRoom==null) {      //If do not found a room with the roomNum
+                            boolean isCont = method.stateError("Room is not found with the room number!");
+                            if(isCont==true) continue;
+                            else break;
+                        }
+
+                        while(true) {
+                            System.out.println("=====SET-DURATION=====");
+                            System.out.print("Enter duration(day): ");
+                            duration = method.inputInt();
+
+                            if (duration > Main.durationLimit) {
+                                System.out.println("INVALID: The duration should not exceed " + Main.durationLimit);
+                                continue;
+                            }
+                            break;
+                        }
+
+                        RoomTransact transact = method.paymentProcess(selectRoom, duration);
+                        Main.roomTransacts.add(transact);
+                        customerAcct.addTransact(transact);
+
+                        break;
+                    }
                     break;
                 case 0:
                     isManage=false;
@@ -352,7 +406,7 @@ public class CustomerPage {
     }
 
     //================================IN-HOTEL-ORDERS
-    public void goHotelOrders(ArrayList<Order> orders) {
+    public void goHotelOrders() {
         boolean isManage = true;
         while(isManage==true) {
             System.out.println("\n=====IN-HOTEL-ORDERS=====");
@@ -363,11 +417,11 @@ public class CustomerPage {
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
+                case 1:     //ROOM/AMENITY OCCUPIED
                     break;
-                case 2:
+                case 2:     //FOOD ORDER
                     break;
-                case 3:
+                case 3:     //CHECK-OUT
                     break;
                 case 0:
                     isManage=false;

@@ -2,12 +2,15 @@ package Transaction;
 import Entity.Customer;
 import Entity.Staff;
 import Rooms.Date;
+import Rooms.Room;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 public class Transact {
     protected Customer customer;
     protected Staff staff;                //If there is now a staff name means the cash is accepted by the staff
     protected Date date;
+    protected ArrayList<Transact> transacts = new ArrayList<>();
     private String transactType;        //Reservation, room, orders
     private double amount;
 
@@ -19,6 +22,10 @@ public class Transact {
         this.customer = customer;
         this.date = dateOfTrans;
         this.amount = amount;
+    }
+
+    public void displayTransact() {
+        System.out.print("Customer: " + customer + " || Type: " + transactType);
     }
 
     public void setCustomer(Customer customer) {this.customer = customer;}
