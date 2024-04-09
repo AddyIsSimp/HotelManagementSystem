@@ -47,6 +47,8 @@ public class Main {
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
 
+    public static ArrayList<Orders> orderedFood = new ArrayList<>();        //This is for staff acceptance of food orders
+
     public static ArrayList<Reservation> reservations = new ArrayList<>();          //Walaon koni sunod
 
     public static ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();              //reserveTransacts - nabayran nah
@@ -126,13 +128,15 @@ public class Main {
                 boolean isCustomer = false;
 
                 if (count == 0) {
-                    System.out.println("=====SELECT-USER=====");
+                    System.out.println("====================SELECT-USER===================");
                     count++;
-                } else System.out.println("\n=====SELECT-USER=====");
+                } else System.out.println("\n====================SELECT-USER===================");
+                System.out.print("Date: ");
+                globalDate.displayDate2();
+                System.out.println("\t\t\t\t Press 4 to set date");
                 System.out.println("[1] ADMIN");
                 System.out.println("[2] STAFF");
                 System.out.println("[3] CUSTOMER");
-                System.out.println("[4] SET CURRENT DATE");
                 System.out.print("Enter choice: ");
                 choice = method.inputInt();
 
@@ -349,6 +353,7 @@ public class Main {
                     }
                 }
             } catch (Exception e) {
+                System.out.println(e);
                 System.out.println("ERROR: Please try again!");
             }
 
@@ -387,6 +392,7 @@ public class Main {
                 }
             }
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("ERROR: Please try again!");
         }
         return isCustomer;

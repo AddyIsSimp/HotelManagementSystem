@@ -1519,7 +1519,6 @@ public class Methods{
         }
 
         rsrvCost *= reservation.getDuration();
-        rsrvCost/=2;
         bills = rsrvCost;
 
         return bills;
@@ -1532,7 +1531,7 @@ public class Methods{
         boolean successTransact = false;
 
         while(true) {
-            System.out.println("=====PAYMENT=====");
+            System.out.println("\n=====RECEIPT=====");
             bills = room.getRatePerDay() * duration;
             System.out.println("Room: " + room.getRoomType() + " #" + room.getRoomNum());
             System.out.println("Rate per day: " + room.getRatePerDay());
@@ -1560,7 +1559,8 @@ public class Methods{
                 break;
             }//End of isCash loop
 
-            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, Main.globalDate, bills, duration);
+            Date dateTrans = new Date(Main.globalDate);
+            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, dateTrans, bills, duration);
             break;
         }//End of main loop
         return transact;
@@ -1573,7 +1573,7 @@ public class Methods{
         double rsrvCost = 0;
         boolean successTransact = false;
 
-        System.out.println("=====PAYMENT=====");
+        System.out.println("\n=====RECEIPT=====");
         if(reservation.getRoom()!=null) {       //Reserved is room
             Room room = reservation.getRoom();
             System.out.println("Room: " + room.getRoomType() + " " + room.getRoomNum());
@@ -1587,7 +1587,7 @@ public class Methods{
         }
 
         System.out.println("Duration(days): " + reservation.getDuration());
-        System.out.println("Total bills: (" + rsrvCost + " x " + reservation.getDuration() + "days)/2 = " + bills);
+        System.out.println("Total bills: " + rsrvCost + " x " + reservation.getDuration() + "days = " + bills);
 
         while(true) {
             System.out.print("\nEnter cash: ");

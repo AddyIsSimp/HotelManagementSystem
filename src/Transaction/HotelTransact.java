@@ -15,6 +15,7 @@ public class HotelTransact extends Transact{
     ArrayList<Menu> menuOrdered = new ArrayList<>();
     private String transactType = "Hotel";        //Nag-occupy na ug room ug amenity
     private int duration;
+    private double bills;
 
     public HotelTransact() {
 
@@ -24,14 +25,17 @@ public class HotelTransact extends Transact{
         super(customer, dateOfTrans, amount);
         this.room = room;
         this.duration = duration;
-        calculateEndDate();
+        System.out.print("DAte of Trans:");
+        dateOfTrans.displayDate();
+        this.endDate = calculateEndDate(dateOfTrans, duration);
+        System.out.println("End date2: ");
     }
 
     public HotelTransact(Customer customer, Amenity amenity, Date dateOfTrans, double amount, int duration) {
         super(customer, dateOfTrans, amount);
         this.amenity = amenity;
         this.duration = duration;
-        calculateEndDate();
+        this.endDate = calculateEndDate(dateOfTrans, duration);
     }
 
     public void setCustomer(Customer customer) {super.customer = customer;}
@@ -40,7 +44,10 @@ public class HotelTransact extends Transact{
     public void setRoom(Room room) {this.room = room;}
     public Room getRoom() {return room;}
 
-    public void addMenuOrder(Menu menu) {menuOrdered.add(menu);}
+    public void addMenuOrder(Menu menu) {
+        menuOrdered.add(menu);
+        this.bills += menu.getTotalPrice();
+    }
     public ArrayList<Menu> getMenuOrdered() {return menuOrdered;}
 
     public void setAmenity(Amenity amenity) {this.amenity = amenity;}
@@ -52,26 +59,31 @@ public class HotelTransact extends Transact{
     public void setStartDate(Date date) {this.startDate = date;}
     public Date getStartDate() {return startDate;}
 
-    public void calculateEndDate() {
-        Date date = startDate;
-        int duration = this.duration;
+    public Date calculateEndDate(Date dateOfTrans, int duration) {
+        System.out.println("Nisolod sa calculateEndDAte1");
+        Date date = dateOfTrans;
 
         for(int i = 0; i<duration; i++) {
             if(date.getDate()<=31 ) {   //Not lapse in 31 days
-                date.incrementDate();
+                date.setDate(date.incrementDate());
             }else {     //if lapse in 31 days
                 if(date.getMonth()<=12) {   //Not lapse in 12 months
-                    date.incrementMonth();
+                    date.setMonth(date.incrementMonth());
                     date.setDate(1);
                 }else {   //lapse in 12 months
-                    date.incrementYear();
+                    date.setYear(date.incrementYear());
                     date.setMonth(1);
                     date.setDate(1);
                 }
             }
         }
+
+        System.out.print("End Date is: ");
+        date.displayDate();
         this.endDate = date;
+        return date;
     }
+    public Date getEndDate() {return this.endDate;}
 
     public void setTransactType(String string) {this.transactType = transactType;}
     public String getTransactType() {return this.transactType;}

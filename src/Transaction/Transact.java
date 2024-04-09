@@ -38,9 +38,6 @@ public class Transact {
     public void setStartDate(Date date) {this.startDate = date;}
     public Date getStartDate() {return startDate;}
 
-    public void setEndDate(Date date) {this.endDate = date;}
-    public Date setEndDate() {return endDate;}
-
     public void setTransactType(String string) {this.transactType = transactType;}
     public String getTransactType() {return this.transactType;}
 

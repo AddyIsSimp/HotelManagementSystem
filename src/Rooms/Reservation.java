@@ -137,19 +137,16 @@ public class Reservation extends Transact {
 
     public void computeRoomReservePrice() {
         double price = room.getReservationPrice()*duration;
-        price/=2;
         this.reservationPrice = price;
     }
 
     public void computeAmenityReservePrice() {
         double price = amenity.getReservationCost()*duration;
-        price/=2;
         this.reservationPrice = price;
     }
 
     public void computePriceRoom() {
         double price = room.getRatePerDay()*duration;
-        price/=2;
         this.reservationPrice = price;
     }
 
