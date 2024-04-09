@@ -14,6 +14,7 @@ public class StaffPage {
     private Scanner sc = new Scanner(System.in);
     private String choice = null;
     private Methods method = new Methods();
+    private CustomerPage customerPage = new CustomerPage();
 
     //LOGIN STAFF
     boolean loginStaff(ArrayList<Staff> staffsList) {
@@ -52,20 +53,54 @@ public class StaffPage {
     //================================MANAGE-ROOMS
     public void goManageRoom(ArrayList<Room> rooms) {
         boolean isManage = true;
+        ArrayList<Room> occupiedRoom = new ArrayList<>();
+        ArrayList<Room> availRoom = new ArrayList<>();
+        ArrayList<Room> disableRoom = new ArrayList<>();
+
+        if(rooms.size()!=0) {
+            for(int i = 0; i<rooms.size(); i++) {
+                Room room = rooms.get(i);
+                if(room.getIsOccupied()==true) {
+                    occupiedRoom.add(room);
+                }else if(room.getIsOccupied()==false) availRoom.add(room);
+                if(room.getIsDisabled()==true) disableRoom.add(room);
+            }
+        }
+
         while(isManage==true) {
             System.out.println("\n=====MANAGE-ROOMS=====");
-            System.out.println("[1] Display rooms");
-            System.out.println("[2] View category");
+            System.out.println("[1] Display occupied rooms");
+            System.out.println("[2] Display available rooms");
+            System.out.println("[3] Display disabled rooms");
+            System.out.println("[4] View category");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
-                    method.displayAllRoom(rooms);
+                case 1:     //display occupied rooms
+                    if(occupiedRoom.size()==0) {
+                        System.out.println("\nThere are no rooms occupied");
+                    }else {
+                        System.out.println("=====OCCUPIED-ROOM=====");
+                        for(int i = 0; i<occupiedRoom.size(); i++) {
+                            Room room = occupiedRoom.get(i);
+                            System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
+                                    room.getRoomNum() + " || Customer: ");
+                        }
+                    }
                     break;
-                case 2:
-                    System.out.println("Displaying Available Rooms");
-                    method.displayAvailRoomNum(rooms);
+                case 2:     //display available roos
+                    if(rooms.size()==0) {
+                        System.out.println("\nThere are no rooms");
+                    }else {
+                        for(int i = 0; i<availRoom.size(); i++) {
+                            Room room = availRoom.get(i);
+                            System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
+                                    room.getRoomNum() + " || Customer: ");
+                        }
+                    }
+                    break;
+                case 3:     //display occupied room
                     break;
                 case 0:
                     isManage=false;
@@ -88,11 +123,13 @@ public class StaffPage {
 
             switch(choice) {
                 case 1:
+                    Customer customer = customerPage.register(customers);
+                    customers.add(customer);
                     break;
                 case 2:
-                    System.out.println("Customer List");
+                    System.out.println("=====Customer Lists=====");
                     method.displayCustomer(customers);
-                    System.out.println();
+                    method.isGoBack();
                     break;
                 case 0:
                     isManage=false;
@@ -114,7 +151,6 @@ public class StaffPage {
 
             switch(choice) {
                 case 1:
-                    System.out.println("Displaying all reservations room");
                     method.displayReservations(reservations);
                     break;
                 case 0:
