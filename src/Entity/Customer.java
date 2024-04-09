@@ -17,6 +17,7 @@ public class Customer extends Person {
         this.name = null;
         setPassword(null);
         setEmail(null);
+
     }
 
     public Customer(String name, String password) {

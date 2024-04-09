@@ -1,11 +1,14 @@
 package Rooms;
 
+import Entity.Customer;
+
 import java.util.ArrayList;
 
 public class Room {
 
     protected String roomType;
     private int roomNum;
+    protected Customer customerOccupy;
     protected double reservationCost;
     protected double ratePerDay;
     private boolean isOccupied;
@@ -32,6 +35,9 @@ public class Room {
     //SETTER & GETTER
     public String getRoomType() {return roomType;}
     public void setRoomType() {this.roomType = null;}
+
+    public Customer getCustomerOccupy() {return customerOccupy;}
+    public void setCustomerOccupy(Customer customer) {this.customerOccupy = customer;}
 
     public int getRoomNum() {return roomNum;}
     public void setRoomNum(int roomNum) {this.roomNum = roomNum;}

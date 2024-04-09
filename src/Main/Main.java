@@ -6,6 +6,7 @@ import Amenity.*;
 import Foods.*;
 import Transaction.HotelTransact;
 import Rooms.Reservation;
+import Transaction.ReserveTransact;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Main {
     //  When delete the amenity in the previous number then add a new one will result in wrong code.
 
     //TO-DO
+    //  Create a method to check the stock supply of food in the menu if the food stock is 0;
     //  The reservation is a fully paid reservation but when cancelling reserve it should return only 50
     //  Admin-Room Management-Method-setRate()  - to modify the rate of the room
     //  Methods-computeBills()
@@ -45,8 +47,10 @@ public class Main {
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
 
-    public static ArrayList<Reservation> reservations = new ArrayList<>();      //Re
-    public static ArrayList<HotelTransact> roomTransacts = new ArrayList<>();                   //InHotelTransacts
+    public static ArrayList<Reservation> reservations = new ArrayList<>();          //Walaon koni sunod
+
+    public static ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();              //reserveTransacts - nabayran nah
+    public static ArrayList<HotelTransact> roomTransacts = new ArrayList<>();                   //InHotelTransacts - nabayran nah
 
     public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
 
@@ -65,7 +69,7 @@ public class Main {
 
             //SAMPLE CREDENTIALS
             //Main.AdminPage(); Username = Admin123, Password = admin123
-            customersList.add(new Customer("Beth", "Sophia"));
+            customersList.add(new Customer("Beth", "Sophia", "Tajale"));
             staffsList.add(new Staff("Dave", "Gaga-a", "Gaga-a"));
 
             //Add all arraylist in all
@@ -323,7 +327,7 @@ public class Main {
                             customerP.goBookReservation(rooms, amenities);
                             break;
                         case 4:
-                            customerP.goHotelOrders();
+                            customerP.goHotelOrders(foods);
                             break;
                         case 0:
                             while (true) {

@@ -1,6 +1,7 @@
 package Main;
 
 import Entity.Customer;
+import Foods.Food;
 import Foods.Menu;
 import Rooms.Date;
 import Rooms.Reservation;
@@ -26,7 +27,7 @@ public class CustomerPage {
 
     //=============================CUSTOMERS================================
     //REGISTER CUSTOMER
-    Customer register(ArrayList<Customer> customersList) {
+    public Customer register(ArrayList<Customer> customersList) {
         Customer newUser = new Customer();
         boolean main = true;
         boolean isCreate = false;       //indicates if successfully created
@@ -110,14 +111,18 @@ public class CustomerPage {
             System.out.println("\n=====ACCOUNTS=====");
             System.out.println("[1] Account details");
             System.out.println("[2] Transaction history");
+            System.out.println("[3] Change password");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
                 case 1:
-                    System.out.println("Name : " + customer.getName());
-                    System.out.println("Number of Visit: "  );
-                    System.out.println("Username: " + customer.getEmail());
+                        System.out.println("\n=====ACCOUNT======");
+                        System.out.println("Name : " + customerAcct.getName());
+                        System.out.println("Number of Visit: ");
+                        System.out.println("Contact: " + customerAcct.getEmail());
+                        method.isGoBack();
+
                     break;
                 case 2:
                     break;
@@ -157,7 +162,7 @@ public class CustomerPage {
                         }
 
                         while(true) {
-                            System.out.println("=====SET-DURATION=====");
+                            System.out.println("\n=====SET-DURATION=====");
                             System.out.print("Enter duration(day): ");
                             duration = method.inputInt();
 
@@ -171,6 +176,7 @@ public class CustomerPage {
                         HotelTransact transact = method.paymentProcess(selectRoom, duration);
                         Main.roomTransacts.add(transact);
                         customerAcct.addTransact(transact);
+                        selectRoom.setCustomerOccupy(customerAcct);
                         System.out.print("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
 
                         break;
@@ -178,8 +184,7 @@ public class CustomerPage {
                     break;
                 case 2:
                     while(isSelect==true) {
-                        method.displayRoomCategory(rooms);
-                        selectRoom = method.selectRoom(rooms);
+                        selectRoom = method.displaySelectRoomCategory(rooms);
 
                         if(selectRoom==null) {      //If do not found a room with the roomNum
                             boolean isCont = method.stateError("Room is not found with the room number!");
@@ -188,7 +193,7 @@ public class CustomerPage {
                         }
 
                         while(true) {
-                            System.out.println("=====SET-DURATION=====");
+                            System.out.println("\n=====SET-DURATION=====");
                             System.out.print("Enter duration(day): ");
                             duration = method.inputInt();
 
@@ -202,6 +207,7 @@ public class CustomerPage {
                         HotelTransact transact = method.paymentProcess(selectRoom, duration);
                         Main.roomTransacts.add(transact);
                         customerAcct.addTransact(transact);
+                        selectRoom.setCustomerOccupy(customerAcct);     //Set the customerOccupy in room to the customer account
                         System.out.print("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
 
 
@@ -345,7 +351,7 @@ public class CustomerPage {
                         }
                     }
                     break;
-                case 2:     //AMENITIES-RESERVATION
+                case 2:     //AMENITIES-RESERVATIONS
                     boolean amenityRsrv = true;
                     while(amenityRsrv==true) {
                         Amenity amenity = null;
@@ -435,10 +441,11 @@ public class CustomerPage {
     }
 
     //================================IN-HOTEL-ORDERS
-    public void goHotelOrders() {
+    public void goHotelOrders(ArrayList<Food> foodInventory) {
         boolean isManage = true;
         HotelTransact inHotelOrder = null;
         ArrayList<Transact> transacts = customerAcct.getTransact();
+        HotelTransact hotelTransact = method.getHotelTransact(customerAcct.getTransact());
 
         for(int i = 0; i< transacts.size(); i++) {
             Transact transact = transacts.get(i);
@@ -463,6 +470,7 @@ public class CustomerPage {
 
             switch(choice) {
                 case 1:     //ROOM/AMENITY OCCUPIED
+                    System.out.println("=====OCCUPIED=====");
                     if(inHotelOrder.getRoom()!=null) {
                         Room room = inHotelOrder.getRoom();
                         System.out.println("Room Number: " + room.getRoomType() + " #" + room.getRoomNum());
@@ -470,11 +478,12 @@ public class CustomerPage {
                         Amenity amenity = inHotelOrder.getAmenity();
                         System.out.println("Amenity: " + amenity.getAmenityType() + " #" + amenity.getAmenityCode());
                     }
+                    method.isGoBack();
                     break;
                 case 2:     //FOOD ORDER
                     boolean isOrder = true;
                     while(isOrder==true) {
-                        System.out.println("=====FOOD-ORDER=====");
+                        System.out.println("\n=====FOOD-ORDER=====");
                         System.out.println("[1] Show food order");
                         System.out.println("[2] Create an order");
                         System.out.println("[0] Back");
@@ -483,7 +492,22 @@ public class CustomerPage {
 
                         switch(choice) {
                             case 1:
-
+                                ArrayList<Menu> menuOrdered = hotelTransact.getMenuOrdered();
+                                if(menuOrdered.size()==0) {
+                                    System.out.println("\nFood order is not available when not occupying a room/amenity");
+                                    break;
+                                } else {
+                                    System.out.println("=====ORDERS=====");
+                                    for(int i = 0; i<menuOrdered.size(); i++) {
+                                        Menu menu = menuOrdered.get(i);
+                                        System.out.print((i + 1) + " Name: " + menu.getMenuName()
+                                                + " || Food: " + menu.getMainDish().getFoodName());
+                                        if (menu.getSideDish() != null) System.out.print(" , " + menu.getSideDish().getFoodName());
+                                        if (menu.getDrinks() != null) System.out.print(" , " + menu.getDrinks().getFoodName());
+                                        if (menu.getDessert() != null) System.out.print(" , " + menu.getDessert().getFoodName());
+                                        System.out.print(" || Price: " + menu.getTotalPrice());
+                                    }
+                                }
                                 break;
                             case 2:
                                 while(true) {
@@ -493,8 +517,18 @@ public class CustomerPage {
                                         break;
                                     }
 
-                                    double bill = menuSelect.getTotalPrice();
+                                    double bill = menuSelect.getTotalPrice();   //Get the bill
+                                    Food foodConflict = method.createMenuOrder(foodInventory, menuSelect);
+                                    if(foodConflict!=null) {
+                                        System.out.println("INVALID: The food '"+ foodConflict + "' stock is depleted");
+                                        boolean isCont = method.isContinue();
+                                        if(isCont==true){
+                                            break;
+                                        }
+                                    }
 
+                                    hotelTransact.addMenuOrder(menuSelect);
+                                    System.out.println("");
                                     //Get order transact if there is
 
                                 }

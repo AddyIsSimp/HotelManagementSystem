@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Entity.*;
-import Foods.Menu;
+import Foods.*;
 import Rooms.*;
 import Amenity.*;
 import Transaction.*;
@@ -312,29 +312,257 @@ public class Methods{
             else if(rooms.get(i).getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) rooms.get(i));
         }
 
-        if(rooms.size()!=0) System.out.println("\n===ROOMS-IN-CATEGORY===");
-        else System.out.println("\nThere is no room found!\n");
+        boolean isCategory = true;
+        while(isCategory==true) {
+            if (rooms.size() != 0) System.out.println("\n===ROOMS-IN-CATEGORY===");
+            else {
+                System.out.println("\nThere is no room found!\n");
+                return;
+            }
 
-        if(snRooms.size()!=0) System.out.println("===SINGLE-ROOMS===");
-        for (SingleRoom snRoom: snRooms) {
-            System.out.println("Room Number: " + snRoom.getRoomNum() + " || Occupied: " + snRoom.getIsOccupied() +
-                            " || Disabled: " + snRoom.getIsDisabled());
+            System.out.println("[1]Single room");
+            System.out.println("[2]Couple room");
+            System.out.println("[3]Family room");
+            System.out.println("[4]VIP room");
+            System.out.println("[0]Back");
+            System.out.print("Enter choice: ");
+            pick = inputInt();
+
+            switch (pick) {
+                case 1:     //Single room
+                    if (snRooms.size() != 0) {
+                        System.out.println("\n===SINGLE-ROOMS===");
+                        for (SingleRoom snRoom : snRooms) {
+                            System.out.println("Room Number: " + snRoom.getRoomNum() + " || Occupied: " + snRoom.getIsOccupied() +
+                                    " || Disabled: " + snRoom.getIsDisabled());
+                        }
+                        isGoBack();
+                    } else {
+                        System.out.println("\nThere is no single room");
+                        continue;
+                    }
+                    break;
+                case 2:     //couple room
+                    if (cpRooms.size() != 0) {
+                        System.out.println("\n===COUPLE-ROOMS===");
+                        for (CoupleRoom cpRoom : cpRooms) {
+                            System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Occupied: " + cpRoom.getIsOccupied() +
+                                    " || Disabled: " + cpRoom.getIsDisabled());
+                        }
+                        isGoBack();
+                    }else {
+                        System.out.println("\nThere is no couple room");
+                        continue;
+                    }
+                    break;
+                case 3:     //Family room
+                    if (fmRooms.size() != 0) {
+                        System.out.println("\n===FAMILY-ROOMS===");
+                        for (FamilyRoom fmRoom : fmRooms) {
+                            System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Occupied: " + fmRoom.getIsOccupied() +
+                                    " || Disabled: " + fmRoom.getIsDisabled());
+                        }
+                        isGoBack();
+                    }else {
+                        System.out.println("\nThere is no family rooms");
+                        continue;
+                    }
+
+                    break;
+                case 4:     //vip room
+                    if (vpRooms.size() != 0) {
+                        System.out.println("\n===VIP-ROOMS===");
+                        for (VIPRoom vpRoom : vpRooms) {
+                            System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
+                                    " || Disabled: " + vpRoom.getIsDisabled());
+                        }
+                        isGoBack();
+                    }else {
+                        System.out.println("\nThere is no VIP rooms");
+                        continue;
+                    }
+                    break;
+                case 0:
+                    isCategory = false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
         }
-        if(cpRooms.size()!=0) System.out.println("===COUPLE-ROOMS===");
-        for (CoupleRoom cpRoom: cpRooms) {
-            System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Occupied: " + cpRoom.getIsOccupied() +
-                    " || Disabled: " + cpRoom.getIsDisabled());
+    }
+
+    public Room displaySelectRoomCategory(ArrayList<Room> rooms) {    //Display all room in category
+        ArrayList<SingleRoom> snRooms = new ArrayList<SingleRoom>();
+        ArrayList<CoupleRoom> cpRooms = new ArrayList<CoupleRoom>();
+        ArrayList<FamilyRoom> fmRooms = new ArrayList<FamilyRoom>();
+        ArrayList<VIPRoom> vpRooms = new ArrayList<VIPRoom>();
+        Room room = null;
+
+        sortRooms(rooms);
+
+        for (int i = 0; i< rooms.size(); i++) {     // To separate each subclasses
+            if(rooms.get(i).getRoomType().equals("Single")==true) {snRooms.add((SingleRoom) rooms.get(i));}
+            else if(rooms.get(i).getRoomType().equals("Couple")==true) {cpRooms.add((CoupleRoom) rooms.get(i));}
+            else if(rooms.get(i).getRoomType().equals("Family")==true) fmRooms.add((FamilyRoom) rooms.get(i));
+            else if(rooms.get(i).getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) rooms.get(i));
         }
-        if(fmRooms.size()!=0) System.out.println("===FAMILY-ROOMS===");
-        for (FamilyRoom fmRoom: fmRooms) {
-            System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Occupied: " + fmRoom.getIsOccupied() +
-                    " || Disabled: " + fmRoom.getIsDisabled());
+
+        boolean isCategory = true;
+        while(isCategory==true) {
+            if (rooms.size() != 0) System.out.println("\n===ROOMS-IN-CATEGORY===");
+            else {
+                System.out.println("\nThere is no room found!\n");
+                return room;
+            }
+
+            System.out.println("[1]Single room");
+            System.out.println("[2]Couple room");
+            System.out.println("[3]Family room");
+            System.out.println("[4]VIP room");
+            System.out.println("[0]Back");
+            System.out.print("Enter choice: ");
+            pick = inputInt();
+
+            switch (pick) {
+                case 1:     //Single room
+                    if (snRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===SINGLE-ROOMS===");
+                            for (SingleRoom snRoom : snRooms) {
+                                System.out.println("Room Number: " + snRoom.getRoomNum() + " || Occupied: " + snRoom.getIsOccupied() +
+                                        " || Disabled: " + snRoom.getIsDisabled());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(SingleRoom snRoom : snRooms) {      //Find the room with room number inputted
+                                if(snRoom.getRoomNum()==pick) {
+                                    room=snRoom;
+                                    isFound = true;
+                                    return snRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    } else {
+                        System.out.println("\nThere is no single room");
+                        continue;
+                    }
+                    break;
+                case 2:     //couple room
+                    if (cpRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===COUPLE-ROOMS===");
+                            for (CoupleRoom cpRoom : cpRooms) {
+                                System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Occupied: " + cpRoom.getIsOccupied() +
+                                        " || Disabled: " + cpRoom.getIsDisabled());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(CoupleRoom cpRoom : cpRooms) {      //Find the room with room number inputted
+                                if(cpRoom.getRoomNum()==pick) {
+                                    room=cpRoom;
+                                    isFound = true;
+                                    return cpRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no couple room");
+                        continue;
+                    }
+                    break;
+                case 3:     //Family room
+                    if (fmRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===FAMILY-ROOMS===");
+                            for (FamilyRoom fmRoom : fmRooms) {
+                                System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Occupied: " + fmRoom.getIsOccupied() +
+                                        " || Disabled: " + fmRoom.getIsDisabled());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(FamilyRoom fmRoom : fmRooms) {      //Find the room with room number inputted
+                                if(fmRoom.getRoomNum()==pick) {
+                                    room=fmRoom;
+                                    isFound = true;
+                                    return fmRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no family rooms");
+                        continue;
+                    }
+
+                    break;
+                case 4:     //vip room
+                    if (vpRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===VIP-ROOMS===");
+                            for (VIPRoom vpRoom : vpRooms) {
+                                System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
+                                        " || Disabled: " + vpRoom.getIsDisabled());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(VIPRoom vpRoom : vpRooms) {      //Find the room with room number inputted
+                                if(vpRoom.getRoomNum()==pick) {
+                                    room=vpRoom;
+                                    isFound = true;
+                                    return vpRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no VIP rooms");
+                        continue;
+                    }
+                    break;
+                case 0:
+                    isCategory = false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
         }
-        if(vpRooms.size()!=0) System.out.println("===VIP-ROOMS===");
-        for (VIPRoom vpRoom: vpRooms) {
-            System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
-                    " || Disabled: " + vpRoom.getIsDisabled());
-        }
+        return room;
     }
 
     public void displayRoomByNum(ArrayList<Room> rooms) {       //Display room by sorted room number
@@ -910,6 +1138,45 @@ public class Methods{
         }
     }
 
+    public Food createMenuOrder(ArrayList<Food> inventory, Menu menuSelect) {   //Delete the stocks in the inventory, return food that have 0 stocks
+        Food foodConflict = null;          //If the food return is null the create menu is successful
+
+        //Checks the
+        if(menuSelect.getMainDish()!=null) {
+            MainDish main =(MainDish) menuSelect.getMainDish();
+            if(main.getStocks()<=0) {   //If the food have 0 stocks end the order
+                return main;
+            }else {                     //If the food have inventory
+                main.setStocks(main.getStocks()-1);
+            }
+        }
+        if(menuSelect.getSideDish()!=null) {
+            SideDish side =(SideDish) menuSelect.getSideDish();
+            if(side.getStocks()<=0) {   //If the food have 0 stocks end the order
+                return side;
+            }else {                     //If the food have inventory
+                side.setStocks(side.getStocks()-1);
+            }
+        }
+        if(menuSelect.getDessert()!=null) {
+            Dessert dessert =(Dessert) menuSelect.getDessert();
+            if(dessert.getStocks()<=0) {   //If the food have 0 stocks end the order
+                return dessert;
+            }else {                     //If the food have inventory
+                dessert.setStocks(dessert.getStocks()-1);
+            }
+        }
+        if(menuSelect.getDrinks()!=null) {
+            Drinks drink =(Drinks) menuSelect.getDrinks();
+            if(drink.getStocks()<=0) {   //If the food have 0 stocks end the order
+                return drink;
+            }else {                     //If the food have inventory
+                drink.setStocks(drink.getStocks()-1);
+            }
+        }
+        return foodConflict;
+    }
+
     public Menu selectMenu(ArrayList<Menu> menus) {
         Menu menuSelect = null;
         while(true) {
@@ -1293,7 +1560,7 @@ public class Methods{
                 break;
             }//End of isCash loop
 
-            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, Main.globalDate, bills);
+            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, Main.globalDate, bills, duration);
             break;
         }//End of main loop
         return transact;

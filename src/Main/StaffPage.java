@@ -90,8 +90,9 @@ public class StaffPage {
                 case 1:
                     break;
                 case 2:
-                    System.out.println("Displaying all customers");
+                    System.out.println("Customer List");
                     method.displayCustomer(customers);
+                    System.out.println();
                     break;
                 case 0:
                     isManage=false;
