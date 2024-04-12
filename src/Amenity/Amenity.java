@@ -10,6 +10,13 @@ public class Amenity {
         this.amenityCode = null;
     }
 
+    public Amenity(Amenity amenity) {
+        this.amenityCode = amenity.getAmenityCode();
+        this.amenityType = amenity.getAmenityType();
+        this.reservationCost = amenity.getReservationCost();
+        this.isReserved = amenity.getReserved();
+    }
+
     public Amenity(String amenityCode){
         this.amenityCode = amenityCode;
     }

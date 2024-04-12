@@ -8,8 +8,10 @@ public class Pool extends Amenity {
         super();
     }
 
-    public Pool(Pool pool) {
+    public Pool(Amenity pool) {
         this.setAmenityCode(pool.getAmenityCode());
+        this.setAmenityType("Pool");
+        this.setReservationCost(pool.getReservationCost());
     }
 
     public Pool(String amenityCode){

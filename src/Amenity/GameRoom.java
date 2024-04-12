@@ -10,10 +10,10 @@ public class GameRoom extends Amenity{
         this.setReservationCost(2000);
     }
 
-    public GameRoom(GameRoom game) {
+    public GameRoom(Amenity game) {
         this.setAmenityCode(game.getAmenityCode());
         this.setAmenityType("GameRoom");
-        this.setReservationCost(2000);
+        this.setReservationCost(game.getReservationCost());
     }
     public GameRoom(String amenityCode){
         super(amenityCode);

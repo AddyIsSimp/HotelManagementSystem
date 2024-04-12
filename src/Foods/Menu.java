@@ -53,6 +53,7 @@ public class Menu {
         this.totalPrice = 0;
     }
 
+
     public void setMenuName(String menuName) {this.menuName = menuName;}
     public String getMenuName() {return menuName;}
 

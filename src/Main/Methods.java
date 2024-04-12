@@ -182,7 +182,7 @@ public class Methods{
     public void displayAllRoom(ArrayList<Room> rooms) {     //Display all rooms despite occupied or not
         sortRooms(rooms);
         if(rooms.size()!=0) {       //If there is room existing
-            System.out.println("===ROOMS-LIST===");
+            System.out.println("\n===ROOMS-LIST===");
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
                 System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType()
@@ -230,7 +230,7 @@ public class Methods{
     public void displayAllRoomForCustomer(ArrayList<Room> rooms) {     //Display all rooms despite occupied or not
         sortRooms(rooms);
         if(rooms.size()!=0) {       //If there is room existing
-            System.out.println("===ROOMS-LIST===");
+            System.out.println("\n===ROOMS-LIST===");
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
                 if(room.getIsOccupied()==false && room.getIsDisabled()==false) {    //Filtering out those unavailable room
@@ -903,6 +903,21 @@ public class Methods{
         }
     }
 
+    public void isGoContinue() {
+        boolean isContinue = true;
+        while(isContinue==true) {
+            System.out.print("Press 1 to continue: ");
+            pick = inputInt();
+            switch (pick) {
+                case 1:
+                    isContinue=false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+    }
+
     public boolean isContinue(String statement) {       //Return boolean if still want to continue or not
         String choice = null;
         while(true) {
@@ -1124,7 +1139,7 @@ public class Methods{
     //===============================NEW ADDED METHODS===========================
 
     public void displayMenus(ArrayList<Menu> menus) {
-        System.out.println("=====MENU-LIST=====");
+        System.out.println("\n=====MENU-LIST=====");
         if(menus.size()==0) System.out.println("There is no menu created");
         for(int i = 0; i<menus.size(); i++) {        //Display all menu created
             Menu menu = menus.get(i);
@@ -1180,7 +1195,7 @@ public class Methods{
     public Menu selectMenu(ArrayList<Menu> menus) {
         Menu menuSelect = null;
         while(true) {
-            System.out.println("=====MENU-LIST=====");
+            System.out.println("\n=====MENU-LIST=====");
             if (menus.size() == 0) System.out.println("There is no menu created");
             for (int i = 0; i < menus.size(); i++) {        //Display all menu created
                 Menu menu = menus.get(i);
@@ -1360,7 +1375,7 @@ public class Methods{
     }
 
     public void displayReservations(ArrayList<Reservation> reservations) {
-        System.out.println("=====RESERVATIONS=====");
+        System.out.println("\n=====RESERVATIONS=====");
         if(reservations.size()==0) System.out.println("There is no reservations");
         ArrayList<Reservation> roomRsrv = new ArrayList<>();
         ArrayList<Reservation> amenityRsrv = new ArrayList<>();
@@ -1452,6 +1467,28 @@ public class Methods{
             break;
         }
         return date;
+    }
+
+    public int compareDate(Date date, Date date2) {      //Date1 and date2  //0 if equal, -1 if date less than date2, 1 if date greater than date2
+        if(date.getYear()==date2.getYear()) {                   //Same year
+            if(date.getMonth()==date2.getMonth()) {             //Same month
+                if(date.getDate()==date2.getDate()) {           //Same date
+                    return 0;
+                }else if(date.getDate()==date2.getDate()) {     //date1 date is lesser than
+                    return -1;
+                }else {
+                    return 1;
+                }
+            }else if(date.getMonth()<date2.getMonth()) {        //date1 month lesser than date 2
+                return -1;
+            }else {                                             //date1 month lesser than date 2
+                return 1;
+            }
+        }else if(date.getYear()<date2.getYear()) {              //date1 year lesser than date2
+            return -1;
+        }else {                                                 //date 1 year higher than date2
+            return 1;
+        }
     }
 
     public int getReservationRoomIndex(ArrayList<Reservation> reservations, int roomNum) {
@@ -1560,10 +1597,50 @@ public class Methods{
             }//End of isCash loop
 
             Date dateTrans = new Date(Main.globalDate);
-            if(successTransact==true) transact = new HotelTransact(CustomerPage.customerAcct, room, dateTrans, bills, duration);
+            if(successTransact==true) transact = new HotelTransact(dateTrans, CustomerPage.customerAcct, room, dateTrans, 0, duration, bills);
             break;
         }//End of main loop
         return transact;
+    }
+
+    public boolean paymentProcess(HotelTransact inHotelOrder) {
+        boolean isPaid = false;
+        double bills = inHotelOrder.getBills();
+        double cash = 0;
+        boolean successTransact = false;
+
+        while(true) {
+            System.out.println("\n=====RECEIPT=====");
+            ArrayList<Menu> menuOrder = inHotelOrder.getMenuOrdered();
+            for(int i = 0; i<menuOrder.size(); i++) {
+                Menu menu = menuOrder.get(i);
+                System.out.println("Menu: " + menu.getMenuName() + " || Cost: " + menu.getTotalPrice());
+            }
+            System.out.println("Total bills: " + inHotelOrder.getBills());
+
+            boolean isCash = true;
+            while(isCash==true) {
+                System.out.print("\nEnter cash: ");
+                cash = inputDouble();
+                if (cash == -1) {
+                    System.out.println("INVALID: Input real numbers only!");
+                    continue;
+                }
+
+                if(cash==bills) {
+                    System.out.println("\nThank you for the exact amount");
+                }else if(cash>bills) {
+                    System.out.println("\nChange: " + (cash-bills));
+                }else {
+                    System.out.println("\nInsufficicent amount of cash! ");
+                    continue;
+                }
+                isPaid=true;
+                break;
+            }//End of isCash loop
+            break;
+        }//End of main loop
+        return isPaid;
     }
 
     public Transact paymentProcess(Reservation reservation) {
@@ -1576,8 +1653,8 @@ public class Methods{
         System.out.println("\n=====RECEIPT=====");
         if(reservation.getRoom()!=null) {       //Reserved is room
             Room room = reservation.getRoom();
-            System.out.println("Room: " + room.getRoomType() + " " + room.getRoomNum());
-            System.out.println("Rate per day: " + room.getReservationPrice());
+            System.out.println("Room: " + room.getRoomType() + " #" + room.getRoomNum());
+            System.out.println("Reservation cost: " + room.getReservationPrice());
             rsrvCost = room.getReservationPrice();
         } else if(reservation.getAmenity()!=null) {     //Reserved is amenity
             Amenity amenity = reservation.getAmenity();
@@ -1610,7 +1687,8 @@ public class Methods{
 
         //Save the transaction info
         if(successTransact==true) {
-            transact = new ReserveTransact(reservation.getCustomer(), reservation.getStartDate(), bills, reservation);
+            Date  dateTrans = new Date(Main.globalDate);
+            transact = new ReserveTransact(dateTrans, reservation.getCustomer(), reservation.getStartDate(), bills, reservation);
         }
 
         return transact;

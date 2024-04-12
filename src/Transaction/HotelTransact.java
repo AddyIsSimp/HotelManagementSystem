@@ -14,29 +14,31 @@ public class HotelTransact extends Transact{
     protected Amenity amenity;
     ArrayList<Menu> menuOrdered = new ArrayList<>();
     private String transactType = "Hotel";        //Nag-occupy na ug room ug amenity
+    private double roomCost;
     private int duration;
-    private double bills;
 
     public HotelTransact() {
 
     }
 
-    public HotelTransact(Customer customer, Room room, Date dateOfTrans, double amount, int duration) {
-        super(customer, dateOfTrans, amount);
+    public HotelTransact(Date transactionDate, Customer customer, Room room, Date startDate, double bills, int duration, double roomCost) {
+        super(transactionDate, customer, startDate, bills);
+        this.roomCost = roomCost;
         this.room = room;
         this.duration = duration;
-        System.out.print("DAte of Trans:");
-        dateOfTrans.displayDate();
-        this.endDate = calculateEndDate(dateOfTrans, duration);
-        System.out.println("End date2: ");
+        this.endDate = calculateEndDate(startDate, duration);
     }
 
-    public HotelTransact(Customer customer, Amenity amenity, Date dateOfTrans, double amount, int duration) {
-        super(customer, dateOfTrans, amount);
+    public HotelTransact(Date transactionDate, Customer customer, Amenity amenity, Date startDate, double bills, int duration, double roomCost) {
+        super(transactionDate, customer, startDate, bills);
+        this.roomCost = roomCost;
         this.amenity = amenity;
         this.duration = duration;
-        this.endDate = calculateEndDate(dateOfTrans, duration);
+        this.endDate = calculateEndDate(startDate, duration);
     }
+
+    public void setDateOfTrans(Date currentDate) {this.dateOfTrans = currentDate;}
+    public Date getDateOfTrans() {return this.dateOfTrans;}
 
     public void setCustomer(Customer customer) {super.customer = customer;}
     public Customer getCustomer(){return this.customer;}
@@ -53,6 +55,9 @@ public class HotelTransact extends Transact{
     public void setAmenity(Amenity amenity) {this.amenity = amenity;}
     public Amenity getAmenity() {return amenity;}
 
+    public void setRoomCost(double cost) {this.roomCost = cost;}
+    public double getRoomCost() {return roomCost;}
+
     public void setStaff(Staff staff) {this.staff = staff;}
     public Staff getStaff() {return this.staff;}
 
@@ -60,7 +65,6 @@ public class HotelTransact extends Transact{
     public Date getStartDate() {return startDate;}
 
     public Date calculateEndDate(Date dateOfTrans, int duration) {
-        System.out.println("Nisolod sa calculateEndDAte1");
         Date date = dateOfTrans;
 
         for(int i = 0; i<duration; i++) {
@@ -78,7 +82,6 @@ public class HotelTransact extends Transact{
             }
         }
 
-        System.out.print("End Date is: ");
         date.displayDate();
         this.endDate = date;
         return date;

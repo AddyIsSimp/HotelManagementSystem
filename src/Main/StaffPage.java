@@ -90,17 +90,32 @@ public class StaffPage {
                     }
                     break;
                 case 2:     //display available roos
+                    System.out.println("=====Available-Rooms=====");
                     if(rooms.size()==0) {
-                        System.out.println("\nThere are no rooms");
+                        System.out.println("\nThere are no available rooms");
                     }else {
                         for(int i = 0; i<availRoom.size(); i++) {
                             Room room = availRoom.get(i);
                             System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
-                                    room.getRoomNum() + " || Customer: ");
+                                    room.getRoomNum());
                         }
                     }
                     break;
-                case 3:     //display occupied room
+                case 3:
+                    if(disableRoom.size()==0) {
+                        System.out.println("\nThere are no disabled rooms");
+                    }else {
+                        System.out.println("=====Disabled-Rooms=====");
+                        for(int i = 0; i<disableRoom.size(); i++) {
+                            Room room = disableRoom.get(i);
+                            System.out.println((i+i) + "Room: " + room.getRoomType() + " " +
+                                    room.getRoomNum() + "|| Customer: ");
+                        }
+                    }
+                    break;
+                case 4:
+                    System.out.println("=====Room-Category=====");
+                    method.displayRoomCategory(rooms);
                     break;
                 case 0:
                     isManage=false;
@@ -162,28 +177,6 @@ public class StaffPage {
         }
     }
 
-    //================================SALES================================
-    public void goSales(Staff staff) {
-        boolean isManage = true;
-        while(isManage==true) {
-            System.out.println("\n=====SALES=====");
-            System.out.println("[1] Sales");
-            System.out.println("[2] Total sales");
-            System.out.println("[0] Back");
-            int choice = method.inputInt("Enter choice: ");
 
-            switch(choice) {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 0:
-                    isManage=false;
-                    break;
-                default:
-                    System.out.println("INVALID: Use indicated number only!");
-            }
-        }
-    }
 
 }

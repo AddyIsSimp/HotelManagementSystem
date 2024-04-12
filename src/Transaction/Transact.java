@@ -13,21 +13,33 @@ public class Transact {
     protected Date endDate;
     protected ArrayList<Transact> transacts = new ArrayList<>();
     private String transactType;        //Reservation, room, orders
-    private double amount;
+    protected double bills;
+    protected Date dateOfTrans;
 
     public Transact() {
 
     }
 
-    public Transact(Customer customer, Date dateOfTrans, double amount) {
+    public Transact(Date transactionDate, Customer customer, Date startDate, double amount) {
+        this.dateOfTrans = transactionDate;
         this.customer = customer;
         this.startDate = dateOfTrans;
-        this.amount = amount;
+        this.bills = amount;
+    }
+
+    public Transact(Date transactionDate, Customer customer, Date startDate, double amount, String transactType) {
+        this.dateOfTrans = transactionDate;
+        this.customer = customer;
+        this.startDate = dateOfTrans;
+        this.bills = amount;
     }
 
     public void displayTransact() {
         System.out.print("Customer: " + customer + " || Type: " + transactType);
     }
+
+    public void setDateOfTrans(Date currentDate) {this.dateOfTrans = currentDate;}
+    public Date getDateOfTrans() {return this.dateOfTrans;}
 
     public void setCustomer(Customer customer) {this.customer = customer;}
     public Customer getCustomer(){return this.customer;}
@@ -41,7 +53,7 @@ public class Transact {
     public void setTransactType(String string) {this.transactType = transactType;}
     public String getTransactType() {return this.transactType;}
 
-    public void setAmount(double amount) {this.amount = amount;}
-    public double getAmount() {return this.amount;}
+    public void setBills(double amount) {this.bills = amount;}
+    public double getBills() {return this.bills;}
 
 }

@@ -18,8 +18,12 @@ public class Room {
         roomNum = -1;
     }
 
-    protected Room(Room ob) {
+    public Room(Room ob) {
+        this.roomType = ob.roomType;
         this.roomNum = ob.roomNum;
+        this.reservationCost = ob.reservationCost;
+        this.isDisabled = ob.getIsDisabled();
+        this.ratePerDay = ob.ratePerDay;
         this.isOccupied = ob.isOccupied;
     }
 

@@ -8,8 +8,10 @@ public class ReceptionHall extends Amenity{
         super();
     }
 
-    public ReceptionHall(ReceptionHall hall) {
+    public ReceptionHall(Amenity hall) {
         this.setAmenityCode(hall.getAmenityCode());
+        this.setAmenityType("ReceptionHall");
+        this.setReservationCost(hall.getReservationCost());
     }
 
     public ReceptionHall(String amenityCode){

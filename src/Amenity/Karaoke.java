@@ -8,8 +8,10 @@ public class Karaoke extends Amenity{
         super();
     }
 
-    public Karaoke(Karaoke kon) {
+    public Karaoke(Amenity kon) {
         this.setAmenityCode(kon.getAmenityCode());
+        this.setAmenityType("Karaoke");
+        this.setReservationCost(kon.getReservationCost());
     }
 
     public Karaoke(String amenityCode){

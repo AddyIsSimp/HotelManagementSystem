@@ -10,7 +10,6 @@ public class Customer extends Person {
     ArrayList<Transact> transHistory = new ArrayList<>();
     ArrayList<Transact> transact = new ArrayList<>();                       //For hotel transaction
     ArrayList<Reservation> reservations = new ArrayList<>();
-    private double bills = 0;
     private double refunds = 0;
 
     public Customer() {
@@ -35,6 +34,17 @@ public class Customer extends Person {
     public void addReservation(Room room, Date startDate, int duration) {
         reservations.add(new Reservation(room, startDate, duration));
     }
+
+    public void addRefund(double refund) {this.refunds+=refund;}
+    public double getRefunds() {
+        return refunds;
+    }
+    public void sendRefunds() {
+        refunds = 0;
+    }
+
+    public void addTransHistory(Transact transact) {this.transHistory.add(transact);}
+    public ArrayList<Transact> getTransHistory() {return transHistory;}
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
