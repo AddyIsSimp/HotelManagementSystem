@@ -1426,6 +1426,78 @@ public class Methods{
         }
     }
 
+    public ArrayList<ReserveTransact> getReserveTransact(ArrayList<Transact> transacts) {
+        ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();
+
+        if(transacts.size()!=0){    //Have transactions
+            for(Transact transact: transacts) {
+                if(transact.getClass()==ReserveTransact.class) reserveTransacts.add((ReserveTransact) transact);
+            }
+        }
+        return reserveTransacts;
+    }
+
+    public void displayReserveTransacts(ArrayList<ReserveTransact> reserveTransacts) {
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+        if(reserveTransacts.size()!=0) {    //There is a reserve transaction
+            for(int i = 0; i<reserveTransacts.size(); i++) {
+                Reservation reservation = reserveTransacts.get(i).getReservation();
+                reservations.add(reservation);
+            }
+        }
+
+        System.out.println("\n=====RESERVATIONS=====");
+        if(reservations.size()==0) System.out.println("There is no reservations");
+        ArrayList<Reservation> roomRsrv = new ArrayList<>();
+        ArrayList<Reservation> amenityRsrv = new ArrayList<>();
+
+        for(int i = 0; i< reservations.size(); i++) {       //Filter the kind of reservation
+            Reservation reservation = reservations.get(i);
+            if(reservation.getRoom()!=null) {
+                roomRsrv.add(reservation);
+            }else if(reservation.getAmenity()!=null) {
+                amenityRsrv.add(reservation);
+            }
+        }
+
+        System.out.println("=====ROOM-RESERVED=====");
+        if(roomRsrv.size()!=0) {
+            for(int i = 0; i<roomRsrv.size(); i++) {
+                Reservation reservation = roomRsrv.get(i);
+                Room room = reservation.getRoom();
+                System.out.print("[" + (i + 1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
+                        room.getRoomType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+            }
+        }else {
+            System.out.println("There is no room reserved");
+        }
+
+        System.out.println("=====AMENITY-RESERVED=====");
+        if(amenityRsrv.size()!=0) {
+            for(int i = 0; i<amenityRsrv.size(); i++) {
+                Reservation reservation = amenityRsrv.get(i);
+                Amenity amenity = reservation.getAmenity();
+                System.out.print("[" + (i + 1) + "] " + "Amenity code " + amenity.getAmenityCode() + " || Type: " +
+                        amenity.getAmenityType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+            }
+        }else {
+            System.out.println("There is no amenity reserved");
+        }
+    }
+
     public Date inputDate() {
         boolean isInput = true;
         Date date = null;
@@ -1462,8 +1534,13 @@ public class Methods{
                 else break;
             }
 
-
             date = new Date(day, month, year);
+
+            if(compareDate(date, Main.globalDate)==-1) {
+                System.out.println("INVALID: You cannot select date from the past");
+                continue;
+            }
+
             break;
         }
         return date;
@@ -1598,6 +1675,8 @@ public class Methods{
 
             Date dateTrans = new Date(Main.globalDate);
             if(successTransact==true) transact = new HotelTransact(dateTrans, CustomerPage.customerAcct, room, dateTrans, 0, duration, bills);
+            transact.setIsPaid(true);
+            Main.sales.add(transact);
             break;
         }//End of main loop
         return transact;
@@ -1611,6 +1690,9 @@ public class Methods{
 
         while(true) {
             System.out.println("\n=====RECEIPT=====");
+
+            System.out.println("Hotel transact: ");
+
             ArrayList<Menu> menuOrder = inHotelOrder.getMenuOrdered();
             for(int i = 0; i<menuOrder.size(); i++) {
                 Menu menu = menuOrder.get(i);
@@ -1635,7 +1717,10 @@ public class Methods{
                     System.out.println("\nInsufficicent amount of cash! ");
                     continue;
                 }
-                isPaid=true;
+                inHotelOrder.setIsPaid(true);
+                isPaid = true;
+                HotelTransact inHotel = new HotelTransact(inHotelOrder, inHotelOrder.getDuration());
+                Main.sales.add(inHotel);
                 break;
             }//End of isCash loop
             break;
@@ -1689,9 +1774,32 @@ public class Methods{
         if(successTransact==true) {
             Date  dateTrans = new Date(Main.globalDate);
             transact = new ReserveTransact(dateTrans, reservation.getCustomer(), reservation.getStartDate(), bills, reservation);
+            transact.setIsPaid(true);
+            Main.sales.add(transact);
         }
 
         return transact;
+    }
+
+    public int findWeek(int d) {
+        int week = 0;
+        if(d>0 && d<=7) week = 1;
+        else if(d>7 && d<=14) week = 2;
+        else if(d>14 && d<=21) week = 3;
+        else if(d>21 && d<=30) week = 4;
+        else week = 0;
+
+        return week;
+    }
+
+    public double getStaffSales(Staff staff) {      //Returns the sales of the staff
+        double sale = 0;
+        ArrayList<Transact> saleTransacts = staff.getSales();
+        for(int i = 0; i< saleTransacts.size(); i++) {      //Get the sale transact
+            Transact transact = saleTransacts.get(i);
+            sale+=transact.getBills();
+        }
+        return sale;
     }
 
 }

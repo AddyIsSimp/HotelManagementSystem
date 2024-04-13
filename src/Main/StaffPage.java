@@ -3,7 +3,11 @@ package Main;
 import Entity.*;
 import Rooms.*;
 import Rooms.Reservation;
+import Transaction.HotelTransact;
+import Transaction.ReserveTransact;
+import Transaction.Transact;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -177,6 +181,80 @@ public class StaffPage {
         }
     }
 
+    public void goAcceptPayment(ArrayList<Transact> sales) {
+        int pick = 0;
+        boolean acceptMain = true;
+        ArrayList<String> listOfPayment = new ArrayList<>();
+        while(acceptMain==true) {
+            System.out.println("\n=====ACCEPT-PAYMENT=====");
 
+            if(sales.size()==0) {       //There are no payment
+                System.out.println("\nThere are no payments currently!");
+                break;
+            }
+
+            for(int i = 0; i<sales.size(); i++) {                   //Display each sale details
+                Transact transact = sales.get(i);
+                Customer customer = transact.getCustomer();
+                System.out.print("[" + (i+1) + "] Customer: " + customer.getName());
+                if(transact.getClass()==HotelTransact.class) {      //Transact is hotelTransact
+                    System.out.print(" || Type: HotelTransact");
+                }else if(transact.getClass()== ReserveTransact.class) {     //Transact is ReserveTransact
+                    System.out.print(" || Type: ReserveTransact");
+                }
+                System.out.print(" || Bills: " + transact.getBills());
+                System.out.print(" || Transaction date: ");
+                transact.getDateOfTrans().displayDate();
+                listOfPayment.add(method.IntToStr(i+1));
+            }
+
+            if(sales.size()!=0) System.out.println("[a] Accept all");
+            System.out.print("Enter choice: ");
+            choice = sc.nextLine();
+
+            if(choice.equals("0")) break;       //Exit clause
+
+            //ACCEPT ALL SALES
+            if(choice.equalsIgnoreCase("a")) {
+                int saleTransactCount=0;
+                for(int i = 0; i<sales.size(); i++) {
+                    Transact transact = sales.get(i);
+                    transact.setStaff(staffAcct);       //Set the transaction owner to this staff
+                    staffAcct.addSales(transact);       //Add the transact in staff sale list
+                    Main.pastTransacts.add(transact);   //Save this transact in pastTransacts
+                    sales.remove(transact);
+                    saleTransactCount++;
+                }
+                System.out.println("\nSuccessfully accepted " + saleTransactCount + " payment!");
+            }
+
+            //GET THE PAYMENT INDEX
+            boolean isPaymentFound = false;
+            int indexPayment = 0;       //index of payment if found
+            for(int i = 0; i< listOfPayment.size(); i++) {      //Finds the index of payment
+                if(choice.equalsIgnoreCase(listOfPayment.get(i))) {     //Get the index of
+                    indexPayment = i+1;
+                    isPaymentFound=true;
+                    break;
+                }
+            }
+
+            if(isPaymentFound==false) {     //If choice is not on the given list
+                System.out.println("INVALID: Payment number is not found!");
+                boolean isCont = method.isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+
+            //GET THE TRANSACT OBJECT
+            Transact transact = sales.get(indexPayment-1);
+            transact.setStaff(staffAcct);       //Set the transaction owner to this staff
+            staffAcct.addSales(transact);       //Add the transact in staff sale list
+            Main.pastTransacts.add(transact);   //Save this transact in pastTransacts
+            sales.remove(transact);
+            System.out.println("\nSuccesfully accepted payment number " + indexPayment);
+            break;
+        }//end of AcceptMain loop
+    }
 
 }

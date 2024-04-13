@@ -7,16 +7,21 @@ import Foods.*;
 import Transaction.HotelTransact;
 import Rooms.Reservation;
 import Transaction.ReserveTransact;
+import Transaction.Transact;
 
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
 
+    //View reservations in staffPage naay bug yata
+    //Refund function kulang
+    //Same ra ang transact na save sa sales
+
     //SET-DATE CONFIGURATION- reservations, occupy rooms/amenity, bills
 
     //BUGS
-    //  Admin-Edit reservation
+    //  checkDate() method
     //  When delete the amenity in the previous number then add a new one will result in wrong code.
 
     //TO-DO
@@ -47,11 +52,13 @@ public class Main {
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
 
     public static ArrayList<Orders> orderedFood = new ArrayList<>();        //This is for staff acceptance of food orders
+    public static ArrayList<Transact> sales = new ArrayList<>();
 
-    public static ArrayList<Reservation> reservations = new ArrayList<>();          //Walaon koni sunod
+    public static ArrayList<Reservation> reservations = new ArrayList<>();
 
     public static ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();              //reserveTransacts - nabayran nah
     public static ArrayList<HotelTransact> roomTransacts = new ArrayList<>();                   //InHotelTransacts - nabayran nah
+    public static ArrayList<Transact> pastTransacts = new ArrayList<>();                        //Save here the past transactions
 
     public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
 
@@ -122,8 +129,9 @@ public class Main {
                         customersList.get(0),
                         (new Date(12, 3, 2024)),
                         200,
-                        (new Reservation(rooms.get(2), (new Date(1,1,2024)), 3)));
+                        (new Reservation(rooms.get(2), (new Date(8,6,2024)), 3)));
                 customersList.get(0).addTransact(res1);
+                reserveTransacts.add(res1);
 
                 System.out.println("HOTEL MANAGEMENT SYSTEM");
 
@@ -136,11 +144,11 @@ public class Main {
                     boolean isCustomer = false;
 
                     if (count == 0) {
-                        System.out.println("====================SELECT-USER===================");
+                        System.out.println("=======================SELECT-USER======================");
                         count++;
-                    } else System.out.println("\n====================SELECT-USER===================");
+                    } else System.out.println("\n=======================SELECT-USER======================");
                     System.out.print("Date: ");
-                    globalDate.displayDate2();
+                    globalDate.displayDate3();
                     System.out.println("\t\t\t\t Press 4 to set date");
                     System.out.println("[1] ADMIN");
                     System.out.println("[2] STAFF");
@@ -164,19 +172,21 @@ public class Main {
                             else continue;
                             break;
                         case 4:
-                            globalDate = method.inputDate();
-                            System.out.print("Date is successfully set to ");
-                            globalDate.displayDate();
+                            Date newDate = method.inputDate();
+                            if(method.compareDate(newDate, globalDate)==1) {        //New date is greater than previous date then save as globaldate
+                                globalDate = newDate;
+                                System.out.print("Date is successfully set to ");
+                                globalDate.displayDate();
+                            }else if(method.compareDate(newDate, globalDate)==0) {      //Same date, not save as global date
+                                System.out.println("The date is the same on the previous date");
+                            }else {
+                                System.out.println("Cannot set date from previous day, Time travel is impossible!");
+                            }
                             break;
                         default:
-                            if (choice != -1) System.out.println("INVALID: Use indicated number only");
-                            continue;
+                            System.out.println("INVALID: Use indicated number only");
                     }
                 }
-//            } catch (Exception e) {
-//                System.out.println(e);
-//                System.out.println("ERROR: Please try again");
-//            }
             }
         }catch(Exception e) {
             System.out.println("An error has occured!");
@@ -189,6 +199,7 @@ public class Main {
     //=====================================METHODS================================================
     static void AdminPage() {
         boolean adminMain = true;
+        checkAccountForDate();
         Admin:
         while (adminMain == true) {
 
@@ -200,6 +211,9 @@ public class Main {
                 boolean isAdminPage = true;
                 while (isAdminPage == true) {
                     System.out.println("\n==========ADMIN==========");
+                    System.out.print("Date: ");
+                    Main.globalDate.displayDate3();
+                    System.out.println("");
                     System.out.println("[1] Manage Accounts");
                     System.out.println("[2] Manage Rooms");
                     System.out.println("[3] Food Service");
@@ -266,10 +280,14 @@ public class Main {
                 boolean isStaffPage = true;
 
                 while (isStaffPage == true) {
-                    System.out.println("\n==========STAFF==========");
+                    System.out.println("\n===============STAFF===============");
+                    System.out.print("Date: ");
+                    globalDate.displayDate3();
+                    System.out.println("");
                     System.out.println("[1] Room management");
                     System.out.println("[2] Customer management");
                     System.out.println("[3] Reservations");
+                    System.out.println("[4] Accept payment");
                     System.out.println("[0] Logout");
                     System.out.print("Enter choice: ");
                     pick = method.inputInt();
@@ -283,6 +301,9 @@ public class Main {
                             break;
                         case 3:
                             staffP.goReservations(reservations);
+                            break;
+                        case 4:
+                            staffP.goAcceptPayment(sales);      //Get the sales in customer to be accepted by staff
                             break;
                         case 0:
                             while (true) {
@@ -315,7 +336,6 @@ public class Main {
         customerP.checkAccountForDate();
 
         int choice = 0;
-        HotelTransact inHotelOrder = method.getHotelTransact(CustomerPage.customerAcct.getTransact());
         boolean customerMain = true;
         Customer:
 
@@ -326,15 +346,17 @@ public class Main {
                 boolean isCustomerPage = true;
 
                 while (isCustomerPage == true) {
-                    System.out.println("\n==========CUSTOMER==========");
+                    System.out.println("\n===============CUSTOMER===============");
+                    HotelTransact inHotelOrder = method.getHotelTransact(CustomerPage.customerAcct.getTransact());
 
-                    if(inHotelOrder!=null) {
+                    if(inHotelOrder!=null && inHotelOrder.getBills()!=0) {
                         System.out.print("Date: ");
-                        Main.globalDate.displayDate2();
+                        Main.globalDate.displayDate3();
                         System.out.println("\t\tBill: " + inHotelOrder.getBills());
                     }else {
                         System.out.print("Date: ");
-                        Main.globalDate.displayDate();
+                        Main.globalDate.displayDate3();
+                        System.out.println("");
                     }
 
                     System.out.println("[1] Account");
@@ -422,5 +444,56 @@ public class Main {
         }
         return isCustomer;
     }//End of Enter Customer
+
+    static void checkAccountForDate() {
+        ArrayList<HotelTransact> inHotel = roomTransacts;
+        ArrayList<ReserveTransact> reserveTransact = reserveTransacts;
+        ArrayList<Reservation> reservations1 = reservations;
+        Date globalDate = Main.globalDate;      //current date
+
+        System.out.println("Nisulod dre first");
+
+        //CHECK HOTEL TRANSACTION OF CUSTOMER
+        if(inHotel!=null) {     //Remove the customer hotel transaction if past global date and no bills
+            for(int i = 0; i<inHotel.size(); i++) {
+                HotelTransact inHotelTransact = inHotel.get(i);
+                if (inHotelTransact.getBills() == 0) {          //Delete transaction with no balance and add it on pastTransactions
+                    if (method.compareDate(inHotelTransact.getEndDate(), globalDate) == -1) {  //Over due in inHotel transact
+                        Customer customer = inHotelTransact.getCustomer();
+                        ArrayList<Transact> customerTransact = customer.getTransact();
+                        pastTransacts.add(inHotelTransact);
+                        customerTransact.remove(inHotelTransact);
+                        Main.roomTransacts.remove(inHotelTransact);
+                        System.out.println(customer.getName() + " occupation has ended!");
+                        method.isGoContinue();
+                    }//Overdue in inHotel
+                }
+            }
+        }//End of checkHotelTransaction of Customer
+
+        //THERE IS A RESERVATION TRANSACTION OF CUSTOMER
+        if(reserveTransact.size()!=0) {
+            System.out.println("Nisodlud dre sa reservationn");
+            boolean noConflict = true;
+            //check if there is a reservation within this current date
+            for(int i = 0; i<reserveTransact.size(); i++) {//Get the reserve transact
+                System.out.println("Reservation: " + i);
+                ReserveTransact reserve = reserveTransact.get(i);
+                Reservation reservation = reserve.getReservation();        //Retrieve the reservation in transact
+                Customer customerAcct = reserve.getCustomer();
+
+                //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
+                if (method.compareDate(reservation.getEndDate(), globalDate) == -1) {
+                    System.out.println("Greater than");
+                    customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
+                    pastTransacts.add(reserve);
+                    Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
+                    Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                    Main.reservations.remove(reservation);          //Remove the reservation in reservations
+                    System.out.println("Your reservation have ended!");
+                }
+            }//End of Reservation forloop
+        }//End of check HotelReservationTransact
+    }
 
 }

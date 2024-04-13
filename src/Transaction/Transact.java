@@ -14,10 +14,18 @@ public class Transact {
     protected ArrayList<Transact> transacts = new ArrayList<>();
     private String transactType;        //Reservation, room, orders
     protected double bills;
+    protected boolean isPaid;
     protected Date dateOfTrans;
 
     public Transact() {
 
+    }
+
+    public Transact(Transact transact) {
+        this.setDateOfTrans(transact.getDateOfTrans());
+        this.setCustomer(transact.getCustomer());
+        this.setStartDate(transact.getStartDate());
+        this.setBills(transact.getBills());
     }
 
     public Transact(Date transactionDate, Customer customer, Date startDate, double amount) {
@@ -43,6 +51,9 @@ public class Transact {
 
     public void setCustomer(Customer customer) {this.customer = customer;}
     public Customer getCustomer(){return this.customer;}
+
+    public void setIsPaid(boolean isPaid) {this.isPaid = isPaid;}
+    public boolean getIsPaid() {return isPaid;}
 
     public void setStaff(Staff staff) {this.staff = staff;}
     public Staff getStaff() {return this.staff;}

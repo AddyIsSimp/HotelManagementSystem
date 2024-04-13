@@ -5,6 +5,8 @@ import Rooms.*;
 import Foods.*;
 import Amenity.*;
 import Rooms.Reservation;
+import Transaction.ReserveTransact;
+import Transaction.Transact;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -1535,13 +1537,170 @@ public class Admin {
             int choice = method.inputInt("Enter choice: ");
 
             switch(choice) {
-                case 1:
+                case 1: //ACCOUNTS-REPORTS
+                    boolean isAccount = true;
+                    while(isAccount==true) {
+                        System.out.println("\n=====ACCOUNTS=====");
+                        System.out.println("[1] Customer");
+                        System.out.println("[2] Staff");
+                        System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
+                        choice = method.inputInt();
+
+                        switch (choice) {
+                            case 1:
+                                System.out.println("\n====CUSTOMER-LIST====");
+                                if(Main.customersList.size()!=0) {      //There is a customer registered
+                                    for (int i = 0; i < Main.customersList.size(); i++) {
+                                        Customer customer = Main.customersList.get(i);
+                                        int transactNum = customer.getTransact().size() + customer.getTransHistory().size();
+                                        System.out.print((i + 1) + " " + customer.getName() + " || Transacts: " + transactNum);
+                                        System.out.println(" || Contact: " + customer.getEmail());
+                                    }
+                                }else {
+                                    System.out.println("\nThere is no customer registered!");
+                                }
+                                break;
+                            case 2:
+                                System.out.println("\n====STAFF-LIST====");
+                                if(Main.staffsList.size()!=0) {      //There is a staff registered
+                                    for (int i = 0; i < Main.staffsList.size(); i++) {
+                                        Staff staff = Main.staffsList.get(i);
+                                        System.out.print((i + 1) + " " + staff.getName() + " || Sales: " + method.getStaffSales(staff));
+                                        System.out.println(" || Contact: " + staff.getEmail());
+                                    }
+                                }else {
+                                    System.out.println("\nThere is no staff registered!");
+                                }
+                                break;
+                            case 0:
+                                isAccount=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                     break;
-                case 2:
+                case 2:     //ROOMS-REPORTS
+                    boolean isRooms = true;
+                    while(isRooms==true){
+                        StaffPage staffP = new StaffPage();
+                        staffP.goManageRoom(Main.rooms);
+                    }
                     break;
-                case 3:
+                case 3:     //RESERVATION-REPORTS
+                    boolean isReservation = true;
+                    while(isReservation==true) {
+                        ArrayList<ReserveTransact> reserveTransacts = Main.reserveTransacts;
+                        System.out.println("=====RESERVATIONS=====");
+                        System.out.println("[1] Pending reservation");
+                        System.out.println("[2] Reservation history");
+                        System.out.println("[0] Back");
+                        choice = method.inputInt();
+
+                        switch (choice) {
+                            case 1:
+                                System.out.println("===PENDING-RESERVATION===");
+                                if(reserveTransacts.size()!=0) {       //There is pending reservation
+                                    method.displayReserveTransacts(Main.reserveTransacts);
+                                }else {         //There is no pending
+                                    System.out.println("\nThere is no pending reservations listed!");
+                                }
+                                break;
+                            case 2:
+                                boolean isHistory = true;
+                                while(isHistory==true) {
+                                    System.out.println("===RESERVATION-HISTORY===");
+                                    ArrayList<ReserveTransact> reserveTransacts1 = method.getReserveTransact(Main.pastTransacts);
+                                    method.displayReserveTransacts(reserveTransacts1);
+                                    break;
+                                }
+                                break;
+                            case 0:
+                                isReservation=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                        break;
+                    }
                     break;
-                case 4:
+                case 4:     //SALES-REPORTS
+                    boolean isSales = true;
+                    while(isSales==true) {
+                        System.out.println("=====SALES=====");
+                        System.out.println("[1] Sales per staff");
+                        System.out.println("[2] Total sales");
+                        System.out.println("[0] Back");
+                        choice = method.inputInt();
+
+                        switch (choice) {
+                            case 1:
+                                boolean perStaff = true;
+                                while(perStaff==true) {
+                                    Staff staffFound = null;
+                                    ArrayList<Transact> sales = new ArrayList<>();
+
+                                    System.out.println("\n====SALES-PER-STAFF=====");
+                                    System.out.print("Enter staff name: ");
+                                    String staffName = sc.nextLine();
+
+                                    for(int i = 0; i<Main.staffsList.size(); i++) {     //Find the staff in staffList
+                                        Staff staff = Main.staffsList.get(i);
+                                        if(staff.getName().equals(staffName)) {         //Staff is found
+                                            staffFound=staff;
+                                            break;
+                                        }
+                                    }
+
+                                    if(staffFound==null) {      //Staff is not found
+                                        System.out.println("\nThere are no staff registered with same name!");
+                                        break;
+                                    }
+
+                                    sales = staffFound.getSales();
+                                    if(sales.size()!=0) {
+                                        System.out.println("\nThis staff have no sales recorded!");
+                                        break;
+                                    }
+
+                                    System.out.println("\n===SALES===");
+                                    System.out.println("Name: " + staffFound.getName());
+                                    System.out.println("[1] Daily");
+                                    System.out.println("[2] Weekly");
+                                    System.out.println("[3] Monthly");
+                                    System.out.println("[0] Back");
+                                    System.out.print("Enter choice: ");
+                                    choice = method.inputInt();
+
+                                    switch (choice) {
+                                        case 1:     //DAILY
+                                            ArrayList<Transact> dailyTransacts = new ArrayList<>();
+
+                                            for(int i = 0; i<sales.size(); i++) {
+                                                //if()
+                                            }
+                                            break;
+                                        case 2:     //WEEKLY
+                                            break;
+                                        case 3:     //MONTHLY
+                                            break;
+                                        case 0:
+                                            perStaff=false;
+                                            break;
+                                        default:
+                                    }
+                                }
+                                break;
+                            case 2:
+                                break;
+                            case 0:
+                                isSales=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                     break;
                 case 0:
                     isReports=false;

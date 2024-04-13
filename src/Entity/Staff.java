@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 public class Staff extends Person{
     private ArrayList<Transact> sales = new ArrayList<>();
-    private Scanner sc = new Scanner(System.in);
 
     public Staff() {
     }
@@ -21,20 +20,23 @@ public class Staff extends Person{
         setEmail(email);
     }
 
-    Staff registerStaff(ArrayList<Staff> staffs){        //The parameter is to check whether there is duplicate name
-        Staff newStaff = null;         //new staff instance
-        boolean isDupl = false;         //if staff name is duplicate
+//    Staff registerStaff(ArrayList<Staff> staffs){        //The parameter is to check whether there is duplicate name
+//        Staff newStaff = null;         //new staff instance
+//        boolean isDupl = false;         //if staff name is duplicate
+//
+//        System.out.print("Enter name: ");
+//        newStaff.name = sc.nextLine();
+//        for(int i = 0; i<staffs.size(); i++) {      //Checks if there is duplicate nam
+//            Staff staf1 = staffs.get(i);
+//            if(staf1.name.equalsIgnoreCase(newStaff.name)) {
+//                isDupl=true;
+//                break;
+//            }
+//        }
+//        return newStaff;
+//    }
 
-        System.out.print("Enter name: ");
-        newStaff.name = sc.nextLine();
-        for(int i = 0; i<staffs.size(); i++) {      //Checks if there is duplicate nam
-            Staff staf1 = staffs.get(i);
-            if(staf1.name.equalsIgnoreCase(newStaff.name)) {
-                isDupl=true;
-                break;
-            }
-        }
-        return newStaff;
-    }
+    public void addSales(Transact transact) {this.sales.add(transact);}
+    public ArrayList<Transact> getSales() {return this.sales;}
 
 }

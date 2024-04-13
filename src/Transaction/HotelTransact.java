@@ -21,6 +21,14 @@ public class HotelTransact extends Transact{
 
     }
 
+    public HotelTransact(HotelTransact transact, int duration) {
+        super(transact.getDateOfTrans(), transact.getCustomer(), transact.getStartDate(), transact.getBills());
+        this.roomCost = transact.getRoomCost();
+        this.room = transact.getRoom();
+        this.duration = duration;
+        this.endDate = transact.calculateEndDate(transact.getStartDate(), duration);
+    }
+
     public HotelTransact(Date transactionDate, Customer customer, Room room, Date startDate, double bills, int duration, double roomCost) {
         super(transactionDate, customer, startDate, bills);
         this.roomCost = roomCost;
@@ -82,7 +90,6 @@ public class HotelTransact extends Transact{
             }
         }
 
-        date.displayDate();
         this.endDate = date;
         return date;
     }
@@ -91,4 +98,6 @@ public class HotelTransact extends Transact{
     public void setTransactType(String string) {this.transactType = transactType;}
     public String getTransactType() {return this.transactType;}
 
+    public int getDuration() {return this.duration;}
+    public void setDuration(int duration) {this.duration = duration;}
 }

@@ -24,9 +24,10 @@ public class Date {
     }
 
     public void displayDate() {
-        System.out.println(date + "/" + month + "/" + year);
+        System.out.println(month + "/" + date + "/" + year);
     }
-    public void displayDate2() {System.out.print(date + "/" + month + "/" + year);}
+    public void displayDate2() {System.out.print(month + "/" + date + "/" + year);}
+    public void displayDate3() {System.out.print(monthValue(month) + "," + date + "," + year);}
 
     public boolean equals(Object obj) {
         // check for reference equality.
@@ -55,5 +56,35 @@ public class Date {
     public int incrementDate() {return getDate()+1;}
     public int incrementMonth() {return getMonth()+1;}
     public int incrementYear() {return getYear()+1;}
+
+    static String monthValue(int d) {
+        String month = null;
+        if(d==1) {
+            month="January";
+        }else if(d==2) {
+            month="February";
+        }else if(d==3) {
+            month="March";
+        }else if(d==4) {
+            month="April";
+        }else if(d==5) {
+            month="May";
+        }else if(d==6) {
+            month="June";
+        }else if(d==7) {
+            month="July";
+        }else if(d==8) {
+            month="August";
+        }else if(d==9) {
+            month="September";
+        }else if(d==10) {
+            month="October";
+        }else if(d==11) {
+            month="November";
+        }else if(d==12) {
+            month="December";
+        }
+        return month;
+    }
 
 }
