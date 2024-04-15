@@ -28,6 +28,11 @@ public class Transact {
         this.setBills(transact.getBills());
     }
 
+    public Transact(Date dateOfTrans, double bills) {
+        this.dateOfTrans = dateOfTrans;
+        this.bills = bills;
+    }
+
     public Transact(Date transactionDate, Customer customer, Date startDate, double amount) {
         this.dateOfTrans = transactionDate;
         this.customer = customer;

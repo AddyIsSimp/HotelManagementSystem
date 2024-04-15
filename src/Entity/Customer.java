@@ -40,7 +40,7 @@ public class Customer extends Person {
         return refunds;
     }
     public void sendRefunds() {
-        refunds = 0;
+        this.refunds = 0;
     }
 
     public void addTransHistory(Transact transact) {this.transHistory.add(transact);}

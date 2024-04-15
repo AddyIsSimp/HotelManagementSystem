@@ -89,7 +89,6 @@ public class Reservation extends Transact {
         return date;
     }
 
-
     public ArrayList<Date> getDuration(Date start, int duration) {
         ArrayList<Date> durationDate = new ArrayList<Date>();       //Store here the duration of reservation in consecutive dates
         Date temp = new Date(start);      //Temporary date diri mag modify

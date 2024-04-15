@@ -14,7 +14,7 @@ public class Amenity {
         this.amenityCode = amenity.getAmenityCode();
         this.amenityType = amenity.getAmenityType();
         this.reservationCost = amenity.getReservationCost();
-        this.isReserved = amenity.getReserved();
+        this.isReserved = amenity.getIsReserved();
     }
 
     public Amenity(String amenityCode){
@@ -30,7 +30,7 @@ public class Amenity {
     public void setAmenityCode(String code) {this.amenityCode = code;}
     public String getAmenityCode() {return amenityCode;}
 
-    public void setReserved(boolean reserve) {this.isReserved = reserve;}
-    public boolean getReserved() {return isReserved;}
+    public void setIsReserved(boolean reserve) {this.isReserved = reserve;}
+    public boolean getIsReserved() {return isReserved;}
 
 }

@@ -1373,7 +1373,7 @@ public class Admin {
         }
     }
 
-    //================================FOOD-SERVICE
+    //================================RESERVATIONS
     public void goReservations(ArrayList<Reservation> reservations) {
         boolean isReservation = true;
         while(isReservation==true) {
@@ -1596,6 +1596,7 @@ public class Admin {
                         System.out.println("[1] Pending reservation");
                         System.out.println("[2] Reservation history");
                         System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
                         choice = method.inputInt();
 
                         switch (choice) {
@@ -1628,10 +1629,11 @@ public class Admin {
                 case 4:     //SALES-REPORTS
                     boolean isSales = true;
                     while(isSales==true) {
-                        System.out.println("=====SALES=====");
+                        System.out.println("\n=====SALES=====");
                         System.out.println("[1] Sales per staff");
                         System.out.println("[2] Total sales");
                         System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
                         choice = method.inputInt();
 
                         switch (choice) {
@@ -1659,7 +1661,8 @@ public class Admin {
                                     }
 
                                     sales = staffFound.getSales();
-                                    if(sales.size()!=0) {
+                                    method.sortTransact(sales);
+                                    if(sales.size()==0) {
                                         System.out.println("\nThis staff have no sales recorded!");
                                         break;
                                     }
@@ -1675,11 +1678,7 @@ public class Admin {
 
                                     switch (choice) {
                                         case 1:     //DAILY
-                                            ArrayList<Transact> dailyTransacts = new ArrayList<>();
-
-                                            for(int i = 0; i<sales.size(); i++) {
-                                                //if()
-                                            }
+                                            method.displayDailyTransact(sales);
                                             break;
                                         case 2:     //WEEKLY
                                             break;

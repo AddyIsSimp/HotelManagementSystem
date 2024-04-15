@@ -46,7 +46,7 @@ public class CustomerPage {
         while(main) {
             System.out.println("\n=====REGISTER=====");   //Gather credentials
             System.out.print("Enter Name: ");
-            name = sc.nextLine();
+            name = method.inputString();
 
             boolean dupl = method.checkDupCustomer(customersList, name);
             if(dupl==true) {
@@ -61,9 +61,9 @@ public class CustomerPage {
             }
 
             System.out.print("Enter Password: ");
-            pw = sc.nextLine();
+            pw = method.inputString();
             System.out.print("Enter Email: ");
-            email = sc.nextLine();
+            email = method.inputString();
 
             newUser = new Customer(name, pw, email);
             isCreate = true;
@@ -84,9 +84,9 @@ public class CustomerPage {
         while(isLogin==false) {
             System.out.println("\n=====LOGIN=====");
             System.out.print("Username: ");
-            un = sc.nextLine();
+            un = method.inputString();
             System.out.print("Password: ");
-            pw = sc.nextLine();
+            pw = method.inputString();
 
             //Checks the list of Staff if there is same name and password
             for(int i = 0; i<customersList.size(); i++) {
@@ -193,10 +193,10 @@ public class CustomerPage {
                 case 3:
                     while(true) {
                         System.out.print("\nEnter current password: ");
-                        String pw = sc.nextLine();
+                        String pw = method.inputString();
                         if(customerAcct.getPassword().equals(pw)) {     //Right password
                             System.out.print("Enter new password: ");
-                            String newPw = sc.nextLine();
+                            String newPw = method.inputString();
                             boolean isCont = method.isContinue("Continue change the password?");
                             if(isCont==false) {
                                 System.out.println("\nChanging password is unsuccessful!");
@@ -286,6 +286,7 @@ public class CustomerPage {
                         Main.roomTransacts.add(transact);
                         customerAcct.addTransact(transact);
                         selectRoom.setCustomerOccupy(customerAcct);
+                        selectRoom.setIsOccupied(true);
                         System.out.println("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
                         break;
                     }
@@ -295,9 +296,7 @@ public class CustomerPage {
                         selectRoom = method.displaySelectRoomCategory(rooms);
 
                         if (selectRoom == null) {      //If do not found a room with the roomNum
-                            boolean isCont = method.stateError("Room is not found with the room number!");
-                            if (isCont == true) continue;
-                            else break;
+                            break;
                         }
 
                         while (true) {
@@ -326,6 +325,7 @@ public class CustomerPage {
                         Main.roomTransacts.add(transact);
                         customerAcct.addTransact(transact);
                         selectRoom.setCustomerOccupy(customerAcct);     //Set the customerOccupy in room to the customer account
+                        selectRoom.setIsOccupied(true);
                         System.out.println("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
                         break;
                     }
@@ -385,21 +385,30 @@ public class CustomerPage {
                                                 Room room = null;
                                                 int duration = 0;
 
-                                                method.displayAllRoomForCustomer(rooms);
-
                                                 while(true) {   //Select room loop
-                                                    System.out.println("\n===SELECT-ROOM===");
+                                                    System.out.print("\n===SELECT-ROOM===");
                                                     room = method.selectRoom(rooms);
                                                     if(room==null) {    //if there is no room selected/invalid
-                                                        boolean isCont = method.isContinue();
-                                                        if(isCont==false) { //if not continue
-                                                            displayAll=false;
-                                                        }
+                                                        displayAll=false;
                                                     }
                                                     break;
                                                 }
                                                 if(displayAll==false) break;    //If no room selected
                                                 start = method.inputDate();     //Set the date
+
+                                                if(method.compareDate(start, Main.globalDate)==0) {     //Cannot reserve in current date
+                                                    System.out.println("\nINVALID: You cannot reserve in current date");
+                                                    boolean isCont = method.isContinue();
+                                                    if(isCont==true) continue;
+                                                    else break;
+                                                }else if(method.compareDate(start, Main.globalDate)==-1) {  //Cannot reserve in previous date
+                                                    System.out.println("\nINVALID: You cannot reserve in previous date!");
+                                                    boolean isCont = method.isContinue();
+                                                    if(isCont==true) continue;
+                                                    else break;
+                                                }
+
+                                                if(start==null) break;          //Exit clause
 
                                                 while(true) {
                                                     System.out.println("\n===SET-DURATION===");
@@ -440,8 +449,8 @@ public class CustomerPage {
                                                 }
 
                                                 Transact transact = method.paymentProcess(reservation);
-                                                reservations.add(reservation);      //This is from customer account
-                                                customerAcct.addTransact(transact);
+                                                reservations.add(reservation);      //This is from customer account add reservation obj
+                                                customerAcct.addTransact(transact);     //This if from customer acct add reservationTransact
                                                 Main.reservations.add(reservation);     //Add in the main list of reservations
                                                 System.out.println("You have successfully reserved room " + room.getRoomType() + " #" + room.getRoomNum());
 
@@ -464,6 +473,19 @@ public class CustomerPage {
                                                 }
 
                                                 start = method.inputDate();     //Set the date
+                                                if(start==null) break;          //Exit clause
+
+                                                if(method.compareDate(start, Main.globalDate)==0) {     //Cannot reserve in current date
+                                                    System.out.println("\nINVALID: You cannot reserve in current date");
+                                                    boolean isCont = method.isContinue();
+                                                    if(isCont==true) continue;
+                                                    else break;
+                                                }else if(method.compareDate(start, Main.globalDate)==-1) {  //Cannot reserve in previous date
+                                                    System.out.println("\nINVALID: You cannot reserve in previous date!");
+                                                    boolean isCont = method.isContinue();
+                                                    if(isCont==true) continue;
+                                                    else break;
+                                                }
 
                                                 while(true) {
                                                     System.out.println("\n===SET-DURATION===");
@@ -526,12 +548,24 @@ public class CustomerPage {
                                     Date start = null;
                                     int duration = 0;
 
-                                    method.displayAmenities(amenities);
-
                                     System.out.println("\n===SELECT-AMENITY===");
                                     amenity = method.selectAmenity(amenities);
-                                    if(amenity==null) break;    //Exit
+                                    if(amenity==null) break;
                                     start = method.inputDate();     //Set the date
+                                    if(start==null) break;          //Exit clause
+
+                                    if(method.compareDate(start, Main.globalDate)==0) {     //Cannot reserve in current date
+                                        System.out.println("\nINVALID: You cannot reserve in current date");
+                                        boolean isCont = method.isContinue();
+                                        if(isCont==true) continue;
+                                        else break;
+                                    }else if(method.compareDate(start, Main.globalDate)==-1) {  //Cannot reserve in previous date
+                                        System.out.println("\nINVALID: You cannot reserve in previous date!");
+                                        boolean isCont = method.isContinue();
+                                        if(isCont==true) continue;
+                                        else break;
+                                    }
+
                                     while(true) {
                                         System.out.println("\n===SET-DURATION===");
                                         System.out.print("Enter duration of reservation(days) : ");
@@ -560,9 +594,8 @@ public class CustomerPage {
                                     else if(amenity.getClass()== ReceptionHall.class) amenity1 = new ReceptionHall(amenity);
 
                                     Reservation reservation = new Reservation(customerAcct, amenity1, start, duration);
-                                    ArrayList<Date> durationDay = reservation.getDuration(start, duration);
 
-                                    boolean isUnique = method.checkReservation(reservations, reservation);
+                                    boolean isUnique = method.checkReservation(Main.reservations, reservation);
                                     if(isUnique==false) {
                                         boolean isCont = method.stateError("The amenity " + amenity1.getAmenityCode()
                                                 + " is already reserved");
@@ -573,6 +606,7 @@ public class CustomerPage {
                                     Transact transact = method.paymentProcess(reservation);
                                     reservations.add(reservation);      //This is from customer acct
                                     customerAcct.addTransact(transact);
+                                    Main.reservations.add(reservation);     //Add in the main list of reservations
                                     System.out.println("You have successfully reserved amenity " + amenity.getAmenityType()
                                             + " #" + amenity.getAmenityCode());
 
@@ -591,9 +625,11 @@ public class CustomerPage {
                     break;
 
                 case 2:     //VIEW RESERVATION
-                    ArrayList<Reservation> reservations1 = customerAcct.getReservations();
-                    if(reservations1.size()!=0) {     //If there is reservation in main customer
-                        method.displayReservations(reservations1);
+                    ArrayList<ReserveTransact> reserveTransacts1 = method.getReserveTransact(customerAcct.getTransact());
+                    if(reserveTransacts1.size()!=0) {     //If there is reservation in main customer
+                        method.displayReservations2(reserveTransacts1);
+                        System.out.println("");
+                        method.isGoBack();
                     }else {     //Else no reservations1
                         System.out.println("\nNo reservations listed");
                     }
@@ -640,7 +676,7 @@ public class CustomerPage {
                         System.out.print("Select reservation number to delete: ");
                         reserveIndexToCancel = method.inputInt();
 
-                        if(reserveIndexToCancel>reserveTransacts.size() && reserveIndexToCancel<=0) {
+                        if(reserveIndexToCancel>reserveTransacts.size() || reserveIndexToCancel<=0) {
                             System.out.println("INVALID: Reservation with the reservation number is not found!");
                             break;
                         }
@@ -653,12 +689,24 @@ public class CustomerPage {
                         }
 
                         ReserveTransact reserveTransact = reserveTransacts.get(reserveIndexToCancel-1);
+                        Reservation reservation = reserveTransact.getReservation();
                         customerAcct.addRefund(reserveTransact.getBills()/2);
-                        reserveTransacts.remove(reserveTransact);
-                        System.out.println("Reservation is cancelled successfully!");
+                        Main.pastTransacts.add(reserveTransact);                                        //Add the transact in Main pastTransacts
+                        customerAcct.getTransact().remove(reserveTransact);                                       //Remove the reserveTransact in Customer account transaction
+                        Main.reserveTransacts.remove(reserveTransact);                                  //Remove the reserveTransact in reserveTransacts
+                        Main.reservations.remove(reservation);                                          //Remove the reservation in Main
+                        System.out.println("\nReservation is cancelled successfully!");
 
-                        System.out.println("You received a " + customerAcct.getRefunds() + " for the reservation refund!");
-                        customerAcct.sendRefunds();
+                        while(true) {   //Refund accept loop
+                            System.out.print("Press 1 to accept refund: " + customerAcct.getRefunds() + "\n-");
+                            choice = method.inputInt();
+                            if(choice==1) {
+                                System.out.println("You received a " + customerAcct.getRefunds() + " for the reservation refund!");
+                                customerAcct.sendRefunds();
+                                break;
+                            }
+                            System.out.println("INVALID: Press number 1 only to accept the refund!");
+                        }
                         break;
                     }
                     break;
@@ -688,7 +736,9 @@ public class CustomerPage {
 
             System.out.println("\n=====IN-HOTEL-ORDERS=====");
             if(inHotelOrder==null) {        //Not occupy room or amenity
-                System.out.println("Hotel orders is not available when not occupying a room/amenity");
+                System.out.print("Date: ");
+                Main.globalDate.displayDate3();
+                System.out.println("\nHotel orders is not available when not occupying a room/amenity");
                 method.isGoBack();
                 break;
             }
@@ -788,6 +838,16 @@ public class CustomerPage {
                         if(inHotelOrder.getBills()==0) {        //There are no bills
                             System.out.println("\n=====CHECK-OUT=====");
                             ArrayList<Transact> transactions = customerAcct.getTransact();
+
+                            //Set the room or amenity unoccupied
+                            if(inHotelOrder.getRoom()!=null) {
+                                Room room = inHotelOrder.getRoom();
+                                room.setIsOccupied(false);
+                            }else if(inHotelOrder.getAmenity()!=null) {
+                                Amenity amenity = inHotelOrder.getAmenity();
+                                amenity.setIsReserved(false);
+                            }
+
                             customerAcct.addTransHistory(inHotelOrder);                     //save the transact in transact history
                             transactions.remove(inHotelOrder);                              //remove the transact in customer account
                             Main.roomTransacts.remove(inHotelOrder);                        //remove the transact in Admin records
@@ -795,12 +855,23 @@ public class CustomerPage {
                             break;
                         }else if(inHotelOrder.getBills()!=0) {      //If there are bills
                             System.out.print("\n=====CHECK-OUT=====");
+                            inHotelOrder.setDateOfTrans(new Date(inHotelOrder.getDateOfTrans()));
                             boolean isPaid = method.paymentProcess(inHotelOrder);
 
                             if(isPaid==false) { //There is a wrong in paymentProcess
                                 System.out.println("INVALID: Payment is unsuccessful");
                             }else {
                                 ArrayList<Transact> transactions = customerAcct.getTransact();
+
+                                //Set the room or amenity unoccupied
+                                if(inHotelOrder.getRoom()!=null) {
+                                    Room room = inHotelOrder.getRoom();
+                                    room.setIsOccupied(false);
+                                }else if(inHotelOrder.getAmenity()!=null) {
+                                    Amenity amenity = inHotelOrder.getAmenity();
+                                    amenity.setIsReserved(false);
+                                }
+
                                 customerAcct.addTransHistory(inHotelOrder);                     //save the transact in transact history
                                 transacts.remove(inHotelOrder);
                                 Main.roomTransacts.remove(inHotelOrder);                        //remove the transact in Admin records
@@ -827,8 +898,8 @@ public class CustomerPage {
         Date globalDate = Main.globalDate;      //current date
 
         //CHECK HOTEL TRANSACTION OF CUSTOMER
-        if(inHotel!=null) {     //The customer is occupying
-            if(inHotel.getBills()!=0) {     //There is bill balance in customers
+        if(inHotel!=null && method.compareDate(inHotel.getEndDate(), globalDate)==-1) {     //The hotelOrder is overdue
+            if(inHotel.getBills()!=0) {                                                     //There is bill balance in customers
                 while(true) {
                     System.out.println("You have a balance in the past occupation in the hotel");
                     boolean isPaid = method.paymentProcess(inHotel);
@@ -845,13 +916,11 @@ public class CustomerPage {
                         break;
                     }
                 }
-            }else {                         //There is no balance
-                if(method.compareDate(inHotel.getEndDate(), globalDate)==-1) {  //Over due in inHotel transact
-                    customerTransacts.remove(inHotel);
-                    Main.roomTransacts.remove(inHotel);
-                    System.out.println(customerAcct.getName() + " your occupation has ended!");
-                    method.isGoContinue();
-                }//Overdue in inHotel
+            }else {                                                                 //There is no balance
+                customerTransacts.remove(inHotel);
+                Main.roomTransacts.remove(inHotel);
+                System.out.println(customerAcct.getName() + " your occupation has ended!");
+                method.isGoContinue();
             }
         }//End of checkHotelTransaction of Customer
 
@@ -870,7 +939,8 @@ public class CustomerPage {
                         || method.compareDate(reserve.getStartDate(), globalDate)==0) {    //The reservation have started
                     if(reservation.getRoom()!=null) {
                         Room room = reservation.getRoom();
-                        HotelTransact inHotelTransact = new HotelTransact(reserve.getDateOfTrans(),
+                        Date newDate = new Date(reserve.getDateOfTrans());
+                        HotelTransact inHotelTransact = new HotelTransact(newDate,
                                 customerAcct,
                                 room,
                                 reservation.getStartDate(),
@@ -887,7 +957,8 @@ public class CustomerPage {
                     }
                     if(reservation.getAmenity()!=null) {
                         Amenity amenity = reservation.getAmenity();
-                        HotelTransact inHotelTransact = new HotelTransact(reserve.getDateOfTrans(),
+                        Date newDate = new Date(reserve.getDateOfTrans());
+                        HotelTransact inHotelTransact = new HotelTransact(newDate,
                                 customerAcct,
                                 amenity,
                                 reservation.getStartDate(),
@@ -896,6 +967,7 @@ public class CustomerPage {
                                 amenity.getReservationCost());
 
                         customerAcct.addTransact(inHotelTransact);      //Add transact in customer
+                        amenity.setIsReserved(true);
                         Main.roomTransacts.add(inHotelTransact);        //Add transact in MainRoomTransact
                         customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
                         Main.pastTransacts.add(reserve);                //Add transact in pastTransaction

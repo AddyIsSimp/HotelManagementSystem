@@ -115,6 +115,10 @@ public class Main {
                 rooms.add(new CoupleRoom(8));
                 rooms.add(new CoupleRoom(10));
                 rooms.add(new CoupleRoom(9));
+                rooms.add(new FamilyRoom(14));
+                rooms.add(new FamilyRoom(13));
+                rooms.add(new VIPRoom(100));
+                rooms.add(new VIPRoom(101));
 
                 method.addAmenity(amenities, "Karaoke");
                 method.addAmenity(amenities, "Pool");

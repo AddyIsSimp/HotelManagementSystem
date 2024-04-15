@@ -401,10 +401,13 @@ public class Methods{
         sortRooms(rooms);
 
         for (int i = 0; i< rooms.size(); i++) {     // To separate each subclasses
-            if(rooms.get(i).getRoomType().equals("Single")==true) {snRooms.add((SingleRoom) rooms.get(i));}
-            else if(rooms.get(i).getRoomType().equals("Couple")==true) {cpRooms.add((CoupleRoom) rooms.get(i));}
-            else if(rooms.get(i).getRoomType().equals("Family")==true) fmRooms.add((FamilyRoom) rooms.get(i));
-            else if(rooms.get(i).getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) rooms.get(i));
+            Room room1 = rooms.get(i);
+            if(room1.getIsOccupied()==true) continue;
+            if(room1.getIsDisabled()==true) continue;
+            if(room1.getRoomType().equals("Single")==true) {snRooms.add((SingleRoom) room1);}
+            else if(room1.getRoomType().equals("Couple")==true) {cpRooms.add((CoupleRoom) room1);}
+            else if(room1.getRoomType().equals("Family")==true) fmRooms.add((FamilyRoom) room1);
+            else if(room1.getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) room1);
         }
 
         boolean isCategory = true;
@@ -1267,14 +1270,33 @@ public class Methods{
 
     public Room selectRoom(ArrayList<Room> rooms) {     //select Room and check if it is vacant
         Room room = null;
-        boolean isFound = false;
+        boolean isFound = false;                            //True if the room is found with same roomNum
+        ArrayList<Room> roomAvailable = new ArrayList<>();  //Store the not occupied and not disabled room
+
+        for(int i = 0; i<rooms.size(); i++) {                               //Add the available room in roomAvailable list
+            Room room2 = rooms.get(i);
+            if(room2.getIsOccupied()==true || room2.getIsDisabled()==true) {        //Skip the unavailable rooms
+                continue;
+            }
+            roomAvailable.add(room2);
+        }
+
+        if(roomAvailable.size()!=0) {       //If there is room existing
+            System.out.println("\n===ROOMS-LIST===");
+            for (int i = 0; i < roomAvailable.size(); i++) {
+                Room room1 = roomAvailable.get(i);
+                System.out.println((i + 1) + ". Room Number: " + room1.getRoomNum() + " || Room Type: " + room1.getRoomType()
+                            + " || Cost: " + room1.getRatePerDay());
+            }
+        }else System.out.println("\nThere is no room found\n");
+
         while(isFound==false) {
             int roomNum = 0;
             System.out.print("Enter room number: ");
             roomNum = inputInt();
 
-            for(int i = 0; i<rooms.size(); i++) {
-                Room temp = rooms.get(i);
+            for(int i = 0; i<roomAvailable.size(); i++) {
+                Room temp = roomAvailable.get(i);
                 if(temp.getRoomNum()==roomNum) {
                     room = temp;
                     isFound=true;
@@ -1284,22 +1306,55 @@ public class Methods{
 
             if(isFound==false) {
                 System.out.println("INVALID: Room not found with the specified room number");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
             }
-            break;
         }
         return room;
     }
 
-    public Amenity selectAmenity(ArrayList<Amenity> amenities) {     //select Room and check if it is vacant
+    public Amenity selectAmenity(ArrayList<Amenity> amenities) {     //select amenity and check if it is vacant
+        sortAmenity(amenities);
         Amenity amenity = null;
         boolean isFound = false;
+        ArrayList<Amenity> amenityAvailable = new ArrayList<>();
+
+        for(int i = 0; i<amenities.size(); i++) {
+            Amenity amenity1 = amenities.get(i);
+            if(amenity1.getIsReserved()==true) {        //Skip the unavailable amenity
+                continue;
+            }
+            amenityAvailable.add(amenity1);
+        }
+
+        //Display amenity available
+        System.out.println("\n=====AMENITIES-LIST=====");
+        for(int i = 0; i<amenityAvailable.size(); i++) {
+            Amenity amenity1 = amenityAvailable.get(i);
+            System.out.print(i+1 + " ");
+
+            if(amenity1.getClass()==Karaoke.class) {     //Display the type of amenity
+                System.out.print("Karaoke");
+            }else if(amenity1.getClass()==ReceptionHall.class) {
+                System.out.print("Reception Hall");
+            }else if(amenity1.getClass()==Pool.class) {
+                System.out.print("Pool");
+            }else if(amenity1.getClass()==GameRoom.class){
+                System.out.print("Game Room");
+            }
+
+            System.out.print(" || Amenity Code: " + amenity1.getAmenityCode());
+            System.out.println(" || Reservation cost: " + amenity1.getReservationCost());
+        }
+
         while(isFound==false) {
             String amenityCode = null;
             System.out.print("Enter amenity code:");
             amenityCode = sc.nextLine();
 
-            for(int i = 0; i<amenities.size(); i++) {
-                Amenity temp = amenities.get(i);
+            for(int i = 0; i<amenityAvailable.size(); i++) {
+                Amenity temp = amenityAvailable.get(i);
                 if(temp.getAmenityCode().equals(amenityCode)) {
                     amenity = temp;
                     isFound=true;
@@ -1336,13 +1391,16 @@ public class Methods{
 
                     Room roomList = reserveList.getRoom();  //Get the room reservation in list
                     Room room = reserve.getRoom();          //Get the room reservation in reserve
-                    if(roomList!=room) continue;
+                    if(roomList.getRoomNum()==room.getRoomNum()==false) continue;       //Dili same room
                     ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
                     for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
                         Date date = durationDays.get(j);                //Get the date in durationDays
                         ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
                         for(int k = 0; k<durationToRsrv.size(); k++) {
-                            if(durationToRsrv.get(k)==(date)) isGood = false;     //There is a conflict in Date;
+                            if(compareDate(durationToRsrv.get(k),date)==0) {
+                                isGood = false;     //There is a conflict in Date;
+                                return false;
+                            }
                         }
                     }
                 }else continue;
@@ -1353,16 +1411,15 @@ public class Methods{
                 if(reserveList.getAmenity()!=null) {   //Reservation is amenity
                     Amenity amenityList = reserveList.getAmenity();  //Get the amenity reservation in list
                     Amenity amenity = reserve.getAmenity();          //Get the amenity reservation in reserve
-                    if(amenityList.equals(amenity)==false) {
-                        continue;
-                    }
+
+                    if(amenityList.getAmenityCode().equalsIgnoreCase(amenity.getAmenityCode())==false) continue;       //Dili same amenity
 
                     ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
                     for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
                         Date date = durationDays.get(j);                //Get the date in durationDays
                         ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
                         for(int k = 0; k<durationToRsrv.size(); k++) {
-                            if(durationToRsrv.get(k).equals(date)) {
+                            if(compareDate(durationToRsrv.get(k), date)==0) {
                                 System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
                                 isGood = false;     //There is a conflict in Date;
                             }
@@ -1372,6 +1429,62 @@ public class Methods{
             }
         }
         return isGood;
+    }
+
+    public void displayReservations2(ArrayList<ReserveTransact> reserveTransacts) {
+        ArrayList<ReserveTransact> roomReservation = new ArrayList<>();
+        ArrayList<ReserveTransact> amenityReservation = new ArrayList<>();
+
+        System.out.println("\n=====RESERVATIONS=====");
+        if(reserveTransacts.size()!=0) {
+            for(int i = 0; i<reserveTransacts.size(); i++) {                //Filter the reserve transacts between room and amenity
+                ReserveTransact reserveTrans = reserveTransacts.get(i);
+                Reservation reservation = reserveTrans.getReservation();
+                if(reservation.getRoom()!=null) roomReservation.add(reserveTrans);
+                else if(reservation.getAmenity()!=null) amenityReservation.add(reserveTrans);
+            }
+        }else if(reserveTransacts.size()==0) {
+            System.out.println("There is no reservations");
+            return;
+        }
+
+        System.out.println("=====ROOM-RESERVED=====");
+        if(roomReservation.size()!=0) {
+            for(int i = 0; i<roomReservation.size(); i++) {
+                ReserveTransact transact = roomReservation.get(i);
+                Reservation reservation = transact.getReservation();
+                Room room = reservation.getRoom();
+                System.out.print("[" + (i + 1) + "] " + "Room " + room.getRoomNum() + " || Type: " +
+                        room.getRoomType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + transact.getBills());
+            }
+        }else {
+            System.out.println("There is no room reserved");
+        }
+
+        System.out.println("=====AMENITY-RESERVED=====");
+        if(amenityReservation.size()!=0) {
+            for(int i = 0; i<amenityReservation.size(); i++) {
+                ReserveTransact transact = amenityReservation.get(i);
+                Reservation reservation = transact.getReservation();
+                Amenity amenity = reservation.getAmenity();
+                System.out.print("[" + (i + 1) + "] " + "Amenity code " + amenity.getAmenityCode() + " || Type: " +
+                        amenity.getAmenityType());
+                System.out.print(" || Date: " );
+                reservation.getStartDate().displayDate2();
+                System.out.print(" || Duration: " + reservation.getDuration());
+                if (reservation.getDuration() == 1) System.out.print("day");
+                else System.out.print("days");
+                System.out.println(" || Cost: " + transact.getBills());
+            }
+        }else {
+            System.out.println("There is no amenity reserved");
+        }
     }
 
     public void displayReservations(ArrayList<Reservation> reservations) {
@@ -1399,9 +1512,8 @@ public class Methods{
                 System.out.print(" || Date: " );
                 reservation.getStartDate().displayDate2();
                 System.out.print(" || Duration: " + reservation.getDuration());
-                if (reservation.getDuration() == 1) System.out.print("day");
-                else System.out.print("days");
-                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+                if (reservation.getDuration() == 1) System.out.println("day");
+                else System.out.println("days");
             }
         }else {
             System.out.println("There is no room reserved");
@@ -1417,9 +1529,8 @@ public class Methods{
                 System.out.print(" || Date: " );
                 reservation.getStartDate().displayDate2();
                 System.out.print(" || Duration: " + reservation.getDuration());
-                if (reservation.getDuration() == 1) System.out.print("day");
-                else System.out.print("days");
-                System.out.println(" || Cost: " + reservation.computeReservationPrice());
+                if (reservation.getDuration() == 1) System.out.println("day");
+                else System.out.println("days");
             }
         }else {
             System.out.println("There is no amenity reserved");
@@ -1504,7 +1615,7 @@ public class Methods{
 
         while(isInput==true) {
             System.out.println("\n===SET-DATE===");
-            System.out.print("Date: ");
+            System.out.print("Day: ");
             int day = inputInt();
 
             if(day>31 || day<1) {     //Scans if date is proper
@@ -1591,7 +1702,6 @@ public class Methods{
                 reservations.add((ReserveTransact) transact);
             }
         }
-
         return reservations;
     }
 
@@ -1663,8 +1773,19 @@ public class Methods{
 
                 if(cash==bills) {
                     System.out.println("\nThank you for the exact amount");
-                }else if(cash>bills) {
-                    System.out.println("\nChange: " + (cash-bills));
+                }else if(cash>bills) {      //If there is a change
+                    double change = cash-bills;
+                    System.out.println("\nChange: " + change);
+                    while(true) {
+                        System.out.print("Press 1 to accept change: " + change + "\n-");
+                        pick = inputInt();
+                        if(pick==1) {
+                            System.out.println("You accepted your change: " + change);
+                            break;
+                        }else {
+                            System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                 }else {
                     System.out.println("\nInsufficicent amount of cash! ");
                     continue;
@@ -1712,13 +1833,25 @@ public class Methods{
                 if(cash==bills) {
                     System.out.println("\nThank you for the exact amount");
                 }else if(cash>bills) {
-                    System.out.println("\nChange: " + (cash-bills));
+                    double change = cash-bills;
+                    System.out.println("\nChange: " + change);
+                    while(true) {
+                        System.out.print("Press 1 to accept change: " + change + "\n-");
+                        pick = inputInt();
+                        if(pick==1) {
+                            System.out.println("You accepted your change: " + change);
+                            break;
+                        }else {
+                            System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
                 }else {
                     System.out.println("\nInsufficicent amount of cash! ");
                     continue;
                 }
                 inHotelOrder.setIsPaid(true);
                 isPaid = true;
+                inHotelOrder.setDateOfTrans(new Date(inHotelOrder.getDateOfTrans()));
                 HotelTransact inHotel = new HotelTransact(inHotelOrder, inHotelOrder.getDuration());
                 Main.sales.add(inHotel);
                 break;
@@ -1761,7 +1894,18 @@ public class Methods{
             if(cash==bills) {
                 System.out.println("\nThank you for the exact amount");
             }else if(cash>bills) {
-                System.out.println("\nChange: " + (cash-bills));
+                double change = cash-bills;
+                System.out.println("\nChange: " + change);
+                while(true) {
+                    System.out.print("Press 1 to accept change: " + change + "\n-");
+                    pick = inputInt();
+                    if(pick==1) {
+                        System.out.println("You accepted your change: " + change);
+                        break;
+                    }else {
+                        System.out.println("INVALID: Use indicated number only!");
+                    }
+                }
             }else {
                 System.out.println("\nInsufficicent amount of cash! ");
                 continue;
@@ -1773,7 +1917,7 @@ public class Methods{
         //Save the transaction info
         if(successTransact==true) {
             Date  dateTrans = new Date(Main.globalDate);
-            transact = new ReserveTransact(dateTrans, reservation.getCustomer(), reservation.getStartDate(), bills, reservation);
+            transact = new ReserveTransact(dateTrans, CustomerPage.customerAcct, reservation.getStartDate(), bills, reservation);
             transact.setIsPaid(true);
             Main.sales.add(transact);
         }
@@ -1786,7 +1930,7 @@ public class Methods{
         if(d>0 && d<=7) week = 1;
         else if(d>7 && d<=14) week = 2;
         else if(d>14 && d<=21) week = 3;
-        else if(d>21 && d<=30) week = 4;
+        else if(d>21 && d<=31) week = 4;
         else week = 0;
 
         return week;
@@ -1800,6 +1944,208 @@ public class Methods{
             sale+=transact.getBills();
         }
         return sale;
+    }
+
+    public ArrayList<Transact> sortTransact(ArrayList<Transact> transacts) {
+        ArrayList<Transact> sortTransact = transacts;
+        for(int i = 0; i<sortTransact.size(); i++) {
+            for(int k = i+1; k< sortTransact.size(); k++) {
+                Transact transact = sortTransact.get(i);
+                Transact transact2 = sortTransact.get(k);
+                if(compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans())==1) { //If date1 is greater than date2 then change
+                    Transact temp = new Transact(transact);
+                    transact = transact2;
+                    transact2 = temp;
+                }
+            }//End of inner for loop
+        }//End of outer for loop
+        return sortTransact;
+    }
+
+    public void displayDailyTransact(ArrayList<Transact> transacts) {
+        transacts = sortTransact(transacts);
+        ArrayList<Transact> dailyTransacts = new ArrayList<>();     //Store here the already displayed date
+
+        System.out.println("\n=====DAILY-SALES=====");
+
+        //Merging of transacts by daily
+        if(transacts.size() != 0) {     //there
+            Daily: for (int i = 0; i < transacts.size(); i++) {
+                Transact transact = transacts.get(i);                                  //Get the bill object
+                double bills = transact.getBills();                                    //Save first the bill
+                Date dateOfTrans = transact.getDateOfTrans();
+
+                if(dailyTransacts.size()!=0) {                              //If the date is already displayed
+                    for (int k = 0; k < dailyTransacts.size(); k++) {      //If the date is already displayed
+                        Transact dailyTrans = dailyTransacts.get(i);
+                        if (compareDate(dailyTrans.getDateOfTrans(), dateOfTrans) == 0) {
+                            continue Daily;
+                        }
+                    }
+                }
+
+                //Search for transact with same date
+                if (transacts.size() != 1)
+                    for (int j = i + 1; j < transacts.size(); j++) {         //Search for duplicate date and save its bill
+                        Transact transact2 = transacts.get(j);
+                        if (compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans()) == 0) {
+                            bills += transact2.getBills();
+                        }
+                    }
+
+                System.out.print((i + 1));
+                dateOfTrans.displayDate3();
+                System.out.println(" || Bills: " + bills);
+                dailyTransacts.add(new Transact(dateOfTrans, bills));
+            }
+        }
+    }
+
+    public Transact transactDuplicateDateCheck(ArrayList<Transact> transacts, Transact transact) {
+        Transact transactDup = null;
+
+        for(int i = 0; i<transacts.size(); i++) {
+            Transact transact1 = transacts.get(i);
+            if(compareDate(transact1.getDateOfTrans(), transact.getDateOfTrans())==0) { //Same date in
+                transactDup=transact1;
+                break;
+            }
+        }
+
+        return transactDup;
+    }
+
+    public void dailyServicesSales(ArrayList<Transact> transacts) {
+        ArrayList<Transact> convergeDaily = new ArrayList<>();
+
+        if(transacts.size()==0) {
+            System.out.println("\nThere is no transactions");
+            return;
+        }
+
+        //Merge the transacts with same date
+        for(int i = 0; i<transacts.size(); i++) {
+            Transact transact = transacts.get(i);
+            Transact transact2 = transactDuplicateDateCheck(convergeDaily, transact);
+            if(transact2!=null) {       //There is duplicate in transact on the convergeDaily list
+                transact2.setBills(transact2.getBills()+transact.getBills());       //Add the bills on the list
+            }else {
+                Transact transact1 = new Transact(transact.getDateOfTrans(), transact.getBills());
+            }
+        }//End of merge
+
+        //Display the daily sales in convergeDaily
+        for (int i = 0; i < transacts.size(); i++) {
+            Transact transact = transacts.get(i);
+            Date date = transact.getDateOfTrans();
+            System.out.print("Date: ");
+            date.displayDate2();
+            System.out.println("Bills: " + transact.getBills());
+        }
+    }
+
+
+    public void displayWeeklySales(ArrayList<Transact> transacts) {
+
+        transacts = sortTransact(transacts);
+        ArrayList<Transact> weeklyTransacts = new ArrayList<>();
+
+        //
+        //Merge the transacts with same date
+        for(int i = 0; i<transacts.size(); i++) {
+            Transact transact = transacts.get(i);
+            Date date = transact.getDateOfTrans();
+            int j = findWeek(date.getDate());
+
+            //Assign the date in assigned value date, week1 = 1, week2 = 8, week = 15, week = 22
+            if(j==1) date.setDate(1);
+            else if(j==2)  date.setDate(8);
+            else if(j==3) date.setDate(15);
+            else if(j==4) date.setDate(22);
+
+            //Check the transact if there is already an existing transact in the convergeWeekly
+            Transact transact2 = transactDuplicateDateCheck(weeklyTransacts, transact);
+            if(transact2!=null) {
+                transact2.setBills(transact2.getBills()+transact.getBills());       //Add the bills on the list
+            }else {
+                Transact transact1 = new Transact(date, transact.getBills());
+                weeklyTransacts.add(transact1);
+            }
+        }//End of merge
+
+        int month = 0;
+        int year = 0;
+        for(int i = 0; i<weeklyTransacts.size(); i++) {
+            Transact transact = weeklyTransacts.get(i);
+            Date date = transact.getDateOfTrans();
+
+            System.out.print(date.getMonth());
+            System.out.print("Week: ");
+            if(date.getDate()==1) System.out.print("1");
+            else if(date.getDate()==8) System.out.print("2");
+            else if(date.getDate()==15) System.out.print("3");
+            else if(date.getDate()==22) System.out.print("4");
+
+        }
+//
+//        while(day!=0) {
+//            int weekSale = 0;
+//            day = serviceTransact[pos][0];
+//            if(day==0) break;
+//            int month = findMonth(day);
+//            int year = findYear(day);
+//            int week = findWeek(findDate(day));
+//
+//            for(int i = 0; i<serviceTransact.length; i++) {
+//                if(serviceTransact[i][0]!=0 && serviceTransact[i][1]!=0) {
+//                    int mont = findMonth(serviceTransact[i][0]);
+//                    int yea = findYear(serviceTransact[i][0]);
+//                    int wee = findWeek(findDate(serviceTransact[i][0]));
+//
+//                    if(month==mont && year==yea && week==wee) {
+//                        weekSale += serviceTransact[i][1];
+//                        pos++;
+//                    }
+//                }
+//            }
+//
+//            System.out.println("Week " + count + ": " + weekSale);
+//            count++;
+    }
+
+    public void monthlyServicesSales(int[][] serviceTransact) {
+        int pos = 0; //index of date last
+        int count = 1;
+        int day = serviceTransact[pos][0];
+
+//        while(day!=0) {
+//            int monthSale = 0;
+//            day = serviceTransact[pos][0];
+//            if(day==0) break;
+//            int month = findMonth(day);
+//            int year = findYear(day);
+//            String monthName = monthValue(month);
+//
+//            for(int i = 0; i<serviceTransact.length; i++) {
+//                if(serviceTransact[i][0]!=0 && serviceTransact[i][1]!=0) {
+//                    int mont = findMonth(serviceTransact[i][0]);
+//                    int yea = findYear(serviceTransact[i][0]);
+//
+//                    if(month==mont && year==yea) {
+//                        monthSale += serviceTransact[i][1];
+//                        pos++;
+//                    }
+//                }
+//            }//end of loop
+//
+//            System.out.println(monthName + " 20" + year + ": " + monthSale);
+//            count++;
+//        }
+    }
+
+    public String inputString() {
+        String str = sc.nextLine();
+        return str;
     }
 
 }
