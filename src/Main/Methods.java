@@ -1662,7 +1662,7 @@ public class Methods{
             if(date.getMonth()==date2.getMonth()) {             //Same month
                 if(date.getDate()==date2.getDate()) {           //Same date
                     return 0;
-                }else if(date.getDate()==date2.getDate()) {     //date1 date is lesser than
+                }else if(date.getDate()<date2.getDate()) {     //date1 date is lesser than
                     return -1;
                 }else {
                     return 1;
@@ -1954,51 +1954,12 @@ public class Methods{
                 Transact transact2 = sortTransact.get(k);
                 if(compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans())==1) { //If date1 is greater than date2 then change
                     Transact temp = new Transact(transact);
-                    transact = transact2;
-                    transact2 = temp;
+                    sortTransact.set(i, transact2);
+                    sortTransact.set(k, temp);
                 }
             }//End of inner for loop
         }//End of outer for loop
         return sortTransact;
-    }
-
-    public void displayDailyTransact(ArrayList<Transact> transacts) {
-        transacts = sortTransact(transacts);
-        ArrayList<Transact> dailyTransacts = new ArrayList<>();     //Store here the already displayed date
-
-        System.out.println("\n=====DAILY-SALES=====");
-
-        //Merging of transacts by daily
-        if(transacts.size() != 0) {     //there
-            Daily: for (int i = 0; i < transacts.size(); i++) {
-                Transact transact = transacts.get(i);                                  //Get the bill object
-                double bills = transact.getBills();                                    //Save first the bill
-                Date dateOfTrans = transact.getDateOfTrans();
-
-                if(dailyTransacts.size()!=0) {                              //If the date is already displayed
-                    for (int k = 0; k < dailyTransacts.size(); k++) {      //If the date is already displayed
-                        Transact dailyTrans = dailyTransacts.get(i);
-                        if (compareDate(dailyTrans.getDateOfTrans(), dateOfTrans) == 0) {
-                            continue Daily;
-                        }
-                    }
-                }
-
-                //Search for transact with same date
-                if (transacts.size() != 1)
-                    for (int j = i + 1; j < transacts.size(); j++) {         //Search for duplicate date and save its bill
-                        Transact transact2 = transacts.get(j);
-                        if (compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans()) == 0) {
-                            bills += transact2.getBills();
-                        }
-                    }
-
-                System.out.print((i + 1));
-                dateOfTrans.displayDate3();
-                System.out.println(" || Bills: " + bills);
-                dailyTransacts.add(new Transact(dateOfTrans, bills));
-            }
-        }
     }
 
     public Transact transactDuplicateDateCheck(ArrayList<Transact> transacts, Transact transact) {
@@ -2015,132 +1976,207 @@ public class Methods{
         return transactDup;
     }
 
-    public void dailyServicesSales(ArrayList<Transact> transacts) {
-        ArrayList<Transact> convergeDaily = new ArrayList<>();
+    public int transactDuplicateDateCheckInt(ArrayList<Transact> transacts, Transact transact) {
+        int index = -1;
 
-        if(transacts.size()==0) {
-            System.out.println("\nThere is no transactions");
-            return;
-        }
-
-        //Merge the transacts with same date
         for(int i = 0; i<transacts.size(); i++) {
-            Transact transact = transacts.get(i);
-            Transact transact2 = transactDuplicateDateCheck(convergeDaily, transact);
-            if(transact2!=null) {       //There is duplicate in transact on the convergeDaily list
-                transact2.setBills(transact2.getBills()+transact.getBills());       //Add the bills on the list
-            }else {
-                Transact transact1 = new Transact(transact.getDateOfTrans(), transact.getBills());
+            Transact transact1 = transacts.get(i);
+            if(compareDate(transact1.getDateOfTrans(), transact.getDateOfTrans())==0) { //Same date in
+                index=i;
+                break;
             }
-        }//End of merge
-
-        //Display the daily sales in convergeDaily
-        for (int i = 0; i < transacts.size(); i++) {
-            Transact transact = transacts.get(i);
-            Date date = transact.getDateOfTrans();
-            System.out.print("Date: ");
-            date.displayDate2();
-            System.out.println("Bills: " + transact.getBills());
         }
+
+        return index;
     }
 
+    public void displayDailyTransact(ArrayList<Transact> transacts) {
+        transacts = sortTransact(transacts);
+        ArrayList<Transact> dailyTransacts = new ArrayList<>();     //Store here the already displayed date
+
+        System.out.println("\n=====DAILY-SALES=====");
+
+        //Merging of transacts by daily
+        if(transacts.size() != 0) {
+            for (int i = 0; i < transacts.size(); i++) {                //Iterate the transacts
+                Transact transact = new Transact(transacts.get(i));                                  //Get the bill object
+                double bills = transact.getBills();                                    //Save first the bill
+                Date dateOfTrans = transact.getDateOfTrans();                          //Date of transaction
+                boolean haveDup = false;                                               //If date have duplicate date in transacts
+                boolean haveDup2 = false;                                              //If have duplicate in dailyTransacts
+
+                Transact dailyTransact = null;
+                int dailyTransactIndex = -1;
+                //Check if already in dailyTransact
+                if(dailyTransacts.size()!=0) {
+                    for (int j = 0; j < dailyTransacts.size(); j++) {
+                        Transact transact1 = dailyTransacts.get(j);
+                        if(compareDate(transact.getDateOfTrans(), transact1.getDateOfTrans())==0) {     //Check dailyTransact(i) and transact(i) if there is same date
+                            haveDup = true;
+                            dailyTransact = new Transact(transact1);
+                            dailyTransactIndex = j;
+                            break;
+                        }
+                    }
+                }
+
+                //Search for transact with same date
+                if (transacts.size()>=2) {
+                    for (int j = i + 1; j < transacts.size(); j++) {         //Search for duplicate date and save its bill
+                        Transact transact2 = transacts.get(j);
+                        if (compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans()) == 0) {
+                            if(haveDup==true) {bills += transact2.getBills();
+                                haveDup2 = true;}
+                        }
+                    }
+                }
+
+                if(haveDup==true) {                         //If there is duplicate in
+                    bills+=dailyTransact.getBills();                            //Add the bills in dailyTransact to bills to create new transact
+                    Transact transactNew = new Transact(dateOfTrans, bills);
+                    dailyTransacts.set(dailyTransactIndex, transactNew);
+                }else dailyTransacts.add(new Transact(dateOfTrans, bills));
+            }
+
+            dailyTransacts = sortTransact(dailyTransacts);
+
+            //Display the dailyTransacts
+            for (Transact dailySales : dailyTransacts) {
+                System.out.print("Date: ");
+                dailySales.getDateOfTrans().displayDate2();
+                System.out.println(" || Bills: " + dailySales.getBills());
+            }
+
+        } else {
+            System.out.println("\nThere is no sales for this staff");
+        }
+    }
 
     public void displayWeeklySales(ArrayList<Transact> transacts) {
 
         transacts = sortTransact(transacts);
         ArrayList<Transact> weeklyTransacts = new ArrayList<>();
 
-        //
         //Merge the transacts with same date
         for(int i = 0; i<transacts.size(); i++) {
-            Transact transact = transacts.get(i);
-            Date date = transact.getDateOfTrans();
+            Transact transact = new Transact(transacts.get(i));
+            Date date = new Date(transact.getDateOfTrans());
             int j = findWeek(date.getDate());
 
             //Assign the date in assigned value date, week1 = 1, week2 = 8, week = 15, week = 22
-            if(j==1) date.setDate(1);
-            else if(j==2)  date.setDate(8);
-            else if(j==3) date.setDate(15);
-            else if(j==4) date.setDate(22);
+            Transact transactDup = null;
+            int indexDup = 0;
+            if (weeklyTransacts.size()>0) {
+                for (int k = 0; k < weeklyTransacts.size(); k++) {
+                    Transact transact1 = weeklyTransacts.get(k);
+                    Date date1  = transact1.getDateOfTrans();
+                    int week1 = findWeek(date.getDate());
+                    int week2 = findWeek(date1.getDate());
+                    if(week1==week2 && date.getMonth()==date1.getMonth() && date.getYear()==date.getYear()) {
+                        transactDup = transact1;
+                        indexDup = 0;
+                    }
+                }
+            }
 
-            //Check the transact if there is already an existing transact in the convergeWeekly
-            Transact transact2 = transactDuplicateDateCheck(weeklyTransacts, transact);
-            if(transact2!=null) {
-                transact2.setBills(transact2.getBills()+transact.getBills());       //Add the bills on the list
+            if(transactDup!=null) {
+                Transact transaction = new Transact(transactDup.getDateOfTrans(), (transactDup.getBills()+transact.getBills()));
+                weeklyTransacts.set(indexDup, transaction);
             }else {
                 Transact transact1 = new Transact(date, transact.getBills());
                 weeklyTransacts.add(transact1);
             }
         }//End of merge
 
+        weeklyTransacts = sortTransact(weeklyTransacts);
+
+        //Display weekly transacts
         int month = 0;
         int year = 0;
+        System.out.println("\n=====WEEKLY-SALES=====");
+        if(weeklyTransacts.size()==0) System.out.println("There is no sales");
+
         for(int i = 0; i<weeklyTransacts.size(); i++) {
             Transact transact = weeklyTransacts.get(i);
             Date date = transact.getDateOfTrans();
+            int month1 = date.getMonth();
+            int year1 = date.getYear();
 
-            System.out.print(date.getMonth());
+            if(month!=month1 || year!=year1) {
+                month = month1;
+                year = year1;
+                System.out.print(Date.monthValue(month1) + " ");
+                System.out.println(date.getYear());
+            }
+
             System.out.print("Week: ");
             if(date.getDate()==1) System.out.print("1");
             else if(date.getDate()==8) System.out.print("2");
             else if(date.getDate()==15) System.out.print("3");
             else if(date.getDate()==22) System.out.print("4");
 
+            System.out.println(" Sales: " + transact.getBills());
+
         }
-//
-//        while(day!=0) {
-//            int weekSale = 0;
-//            day = serviceTransact[pos][0];
-//            if(day==0) break;
-//            int month = findMonth(day);
-//            int year = findYear(day);
-//            int week = findWeek(findDate(day));
-//
-//            for(int i = 0; i<serviceTransact.length; i++) {
-//                if(serviceTransact[i][0]!=0 && serviceTransact[i][1]!=0) {
-//                    int mont = findMonth(serviceTransact[i][0]);
-//                    int yea = findYear(serviceTransact[i][0]);
-//                    int wee = findWeek(findDate(serviceTransact[i][0]));
-//
-//                    if(month==mont && year==yea && week==wee) {
-//                        weekSale += serviceTransact[i][1];
-//                        pos++;
-//                    }
-//                }
-//            }
-//
-//            System.out.println("Week " + count + ": " + weekSale);
-//            count++;
     }
 
-    public void monthlyServicesSales(int[][] serviceTransact) {
-        int pos = 0; //index of date last
-        int count = 1;
-        int day = serviceTransact[pos][0];
+    public void displayMonthlySales(ArrayList<Transact> transacts) {
 
-//        while(day!=0) {
-//            int monthSale = 0;
-//            day = serviceTransact[pos][0];
-//            if(day==0) break;
-//            int month = findMonth(day);
-//            int year = findYear(day);
-//            String monthName = monthValue(month);
-//
-//            for(int i = 0; i<serviceTransact.length; i++) {
-//                if(serviceTransact[i][0]!=0 && serviceTransact[i][1]!=0) {
-//                    int mont = findMonth(serviceTransact[i][0]);
-//                    int yea = findYear(serviceTransact[i][0]);
-//
-//                    if(month==mont && year==yea) {
-//                        monthSale += serviceTransact[i][1];
-//                        pos++;
-//                    }
-//                }
-//            }//end of loop
-//
-//            System.out.println(monthName + " 20" + year + ": " + monthSale);
-//            count++;
-//        }
+        transacts = sortTransact(transacts);
+        ArrayList<Transact> monthTransacts = new ArrayList<>();
+
+        //Merge the transacts with same month
+        for(int i = 0; i<transacts.size(); i++) {
+            Transact transact = new Transact(transacts.get(i));
+            Date date = transact.getDateOfTrans();
+
+            //Check the transact if there is already an existing transact in the convergeWeekly
+            Transact transactDup = null;
+            int indexDup = 0;
+            if (monthTransacts.size()>0) {
+                for (int k = 0; k < monthTransacts.size(); k++) {
+                    Transact transact1 = monthTransacts.get(k);
+                    Date date1  = transact1.getDateOfTrans();
+                    if(date.getMonth()==date1.getMonth() && date.getYear()==date.getYear()) {
+                        transactDup = transact1;
+                        indexDup = 0;
+                    }
+                }
+            }
+
+            if(transactDup!=null) {
+                Transact transaction = new Transact(transactDup.getDateOfTrans(), (transactDup.getBills()+transact.getBills()));
+                monthTransacts.set(indexDup, transaction);
+            }else {
+                Transact transact1 = new Transact(date, transact.getBills());
+                monthTransacts.add(transact1);
+            }
+        }//End of merge
+
+        monthTransacts = sortTransact(monthTransacts);
+
+        //Display weekly transacts
+        int month = 0;
+        int year = 0;
+        System.out.println("\n=====MONTHLY-SALES=====");
+        if(monthTransacts.size()==0) {      //If there is no sales
+            System.out.println("There is no sales");
+            return;
+        }
+        for(int i = 0; i<monthTransacts.size(); i++) {
+            Transact transact = monthTransacts.get(i);
+            Date date = transact.getDateOfTrans();
+            int year1 = date.getYear();
+
+            if(year!=year1) {
+                year = year1;
+                System.out.println("Year " + date.getYear() + " ");
+            }
+
+            System.out.print(Date.monthValue(date.getMonth()));
+            System.out.println("\tSales: " + transact.getBills());
+
+        }
     }
 
     public String inputString() {

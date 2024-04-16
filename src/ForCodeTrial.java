@@ -7,6 +7,7 @@ import Foods.Menu;
 import Rooms.*;
 import Rooms.Date;
 import Rooms.Reservation;
+import Transaction.Transact;
 
 import java.util.*;
 
@@ -31,6 +32,7 @@ public class ForCodeTrial {
         Methods method = new Methods();
 
         customersList.add(new Customer("Dano", "secret", "hello world"));
+        staffsList.add(new Staff("Robert", "Oso", "WlaOsoEmail"));
 
         rooms.add(new SingleRoom(5));
         rooms.add(new SingleRoom(2));
@@ -63,79 +65,70 @@ public class ForCodeTrial {
         Date date1 = new Date(12, 13, 2003);
         Date date2 = new Date(12, 13, 2003);
         Date date3 = new Date(11, 13, 2003);
-        Date date4 = new Date(12, 14, 2003);
+        Date dateThen = new Date(12, 14, 2003);
         Date date5 = new Date(12, 13, 2002);
 
-        boolean isTrue = checkReservation(reservations, reserve);
+        staffsList.get(0).addSales(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
+        staffsList.get(0).addSales(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen,200));
+        staffsList.get(0).addSales(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
+        staffsList.get(0).addSales(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
+        staffsList.get(0).addSales(new Transact(new Date(9, 4, 2024), customersList.get(0), dateThen, 1600));
+        staffsList.get(0).addSales(new Transact(new Date(5, 4, 2024), customersList.get(0), dateThen, 1300));
 
-        if(isTrue==true) System.out.println("No conflict in reservations");
-        else {
-            System.out.println("Naay conflict");
-            System.out.println("Pag debug diha tapulan");
+
+        //=======================START HERE==============================
+        ArrayList<Transact> transacts = staffsList.get(0).getSales();
+        transacts = sortTransact(transacts);
+        System.out.println("DISPLAY DATE=======");
+        for(Transact transact: transacts) {
+            Date date = transact.getDateOfTrans();
+            System.out.print("Date: ");
+            date.displayDate();
         }
+
     }
 
-    public static boolean checkReservation(ArrayList<Reservation> reservations, Reservation reserve) {
-        boolean isGood = true;      //Signs if there is a conflict or no conflict in date
-        boolean isRoom = false;
-        boolean isAmenity = false;
+    public static ArrayList<Transact> sortTransact(ArrayList<Transact> transacts) {
+        ArrayList<Transact> sortTransact = transacts;
+        for(int i = 0; i<sortTransact.size(); i++) {
+            for(int k = i+1; k< sortTransact.size(); k++) {
+                Transact transact = sortTransact.get(i);
+                Transact transact2 = sortTransact.get(k);
+                if(compareDate(transact.getDateOfTrans(), transact2.getDateOfTrans())==1) { //If date1 is greater than date2 then change
+                    Transact temp = new Transact(transact);
+                    sortTransact.set(i, transact2);
+                    sortTransact.set(k, temp);
+                    System.out.print("Date is changed at " + i + ": ");
+                    transact2.getDateOfTrans().displayDate2();
+                    System.out.print("Date is changed from " + k + ": ");
+                    transact.getDateOfTrans().displayDate2();
+                    System.out.println("");
+                }
+            }//End of inner for loop
+        }//End of outer for loop
+        return sortTransact;
+    }
 
-        //Checks whether reserve is amenity or room reserve
-        if(reserve.getRoom()!=null) {
-            System.out.println("room ang na reserve");
-            isRoom = true;
-        } else if(reserve.getAmenity()!=null) {
-            System.out.println("amenity ang na reserve");
-            isAmenity = true;
-        }
-
-        if(isRoom==true) {
-            for(int i = 0; i< reservations.size(); i++) {
-                System.out.println("Sulod dre 1");
-                Reservation reserveList = reservations.get(i);
-                if(reserveList.getRoom()!=null) {   //Reservation is room
-
-                    Room roomList = reserveList.getRoom();  //Get the room reservation in list
-                    Room room = reserve.getRoom();          //Get the room reservation in reserve
-                    if(roomList!=room) continue;
-                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
-                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
-                        Date date = durationDays.get(j);                //Get the date in durationDays
-                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
-                        for(int k = 0; k<durationToRsrv.size(); k++) {
-                            if(durationToRsrv.get(k)==(date)) isGood = false;     //There is a conflict in Date;
-                        }
-                    }
-                }else continue;
+    public static int compareDate(Date date, Date date2) {      //Date1 and date2  //0 if equal, -1 if date less than date2, 1 if date greater than date2
+        if(date.getYear()==date2.getYear()) {                   //Same year
+            if(date.getMonth()==date2.getMonth()) {             //Same month
+                if(date.getDate()==date2.getDate()) {           //Same date
+                    return 0;
+                }else if(date.getDate()<date2.getDate()) {     //date1 date is lesser than
+                    return -1;
+                }else {
+                    return 1;
+                }
+            }else if(date.getMonth()<date2.getMonth()) {        //date1 month lesser than date 2
+                return -1;
+            }else {                                             //date1 month lesser than date 2
+                return 1;
             }
-        }else if(isAmenity==true) {
-            for(int i = 0; i< reservations.size(); i++) {
-                Reservation reserveList = reservations.get(i);
-                if(reserveList.getAmenity()!=null) {   //Reservation is amenity
-                    System.out.println("Sulod dre 2");
-                    Amenity amenityList = reserveList.getAmenity();  //Get the amenity reservation in list
-                    Amenity amenity = reserve.getAmenity();          //Get the amenity reservation in reserve
-                    if(amenityList.equals(amenity)==false) {
-                        System.out.println("kapareha amenity sa index pero lahi obj sa " + i);
-                        continue;
-                    }
-
-                    System.out.println("Same cla ug amenityngaObj");
-                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
-                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
-                        Date date = durationDays.get(j);                //Get the date in durationDays
-                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
-                        for(int k = 0; k<durationToRsrv.size(); k++) {
-                            if(durationToRsrv.get(k).equals(date)) {
-                                System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
-                                isGood = false;     //There is a conflict in Date;
-                            }
-                        }
-                    }
-                }else continue;
-            }
+        }else if(date.getYear()<date2.getYear()) {              //date1 year lesser than date2
+            return -1;
+        }else {                                                 //date 1 year higher than date2
+            return 1;
         }
-        return isGood;
     }
 
 }

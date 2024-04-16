@@ -14,26 +14,11 @@ import java.util.ArrayList;
 
 public class Main {
 
+    //DEBUG checkDate() method sa Main, ug customerpage
+
     //View reservations in staffPage naay bug yata
     //Refund function kulang
     //Same ra ang transact na save sa sales
-
-    //SET-DATE CONFIGURATION- reservations, occupy rooms/amenity, bills
-
-    //BUGS
-    //  checkDate() method
-    //  When delete the amenity in the previous number then add a new one will result in wrong code.
-
-    //TO-DO
-    //  Create a method to check the stock supply of food in the menu if the food stock is 0;
-    //  The reservation is a fully paid reservation but when cancelling reserve it should return only 50
-    //Create a method to search for duplicate reservation in RoomsList and reservations
-
-    //NOTE;
-    //  The customer should have only 1 room transact and orders transact
-    //  HotelTransact - displays the room amenity occupied and menu selected, and bills
-
-    //INSTANCE VARIABLES
 
     private static Scanner sc = new Scanner(System.in);            //For string inputs
     private static Scanner in = new Scanner(System.in);            //For int inputs
@@ -119,6 +104,22 @@ public class Main {
                 rooms.add(new FamilyRoom(13));
                 rooms.add(new VIPRoom(100));
                 rooms.add(new VIPRoom(101));
+
+                staffsList.get(0).addSales(new Transact(dateNow, customersList.get(0), dateThen, 1500));
+                staffsList.get(0).addSales(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
+                staffsList.get(0).addSales(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen,200));
+                staffsList.get(0).addSales(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
+                staffsList.get(0).addSales(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
+                staffsList.get(0).addSales(new Transact(new Date(9, 4, 2024), customersList.get(0), dateThen, 1600));
+                staffsList.get(0).addSales(new Transact(new Date(5, 4, 2024), customersList.get(0), dateThen, 1300));
+
+                pastTransacts.add(new Transact(dateNow, customersList.get(0), dateThen, 1500));
+                pastTransacts.add(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
+                pastTransacts.add(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen,200));
+                pastTransacts.add(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
+                pastTransacts.add(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
+                pastTransacts.add(new Transact(new Date(9, 4, 2024), customersList.get(0), dateThen, 1600));
+                pastTransacts.add(new Transact(new Date(5, 4, 2024), customersList.get(0), dateThen, 1300));
 
                 method.addAmenity(amenities, "Karaoke");
                 method.addAmenity(amenities, "Pool");
@@ -425,6 +426,7 @@ public class Main {
                 System.out.println("\n======CUSTOMER======");
                 System.out.println("[1] Login");
                 System.out.println("[2] Register");
+                System.out.println("[0] Back");
                 choice = method.inputInt("Enter choice: ");
 
                 switch (choice) {
@@ -436,6 +438,8 @@ public class Main {
                         Customer newUser = customerP.register(customersList);
                         if (newUser != null) customersList.add(newUser);
                         break;
+                    case 0:
+                        break Customer;
                     default:
                         boolean isCont = method.isContinue();
                         if (isCont == true) continue;

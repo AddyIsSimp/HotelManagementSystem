@@ -57,7 +57,7 @@ public class Date {
     public int incrementMonth() {return getMonth()+1;}
     public int incrementYear() {return getYear()+1;}
 
-    static String monthValue(int d) {
+    public static String monthValue(int d) {
         String month = null;
         if(d==1) {
             month="January";

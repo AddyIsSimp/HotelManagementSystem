@@ -1667,31 +1667,100 @@ public class Admin {
                                         break;
                                     }
 
+                                    boolean inSales = true;
+                                    while(inSales==true) {
+                                        System.out.println("\n===SALES===");
+                                        System.out.println("Name: " + staffFound.getName());
+                                        System.out.println("[1] Daily");
+                                        System.out.println("[2] Weekly");
+                                        System.out.println("[3] Monthly");
+                                        System.out.println("[0] Back");
+                                        System.out.print("Enter choice: ");
+                                        choice = method.inputInt();
+
+                                        switch (choice) {
+                                            case 1:     //DAILY
+                                                method.displayDailyTransact(sales);
+                                                System.out.println("");
+                                                method.isGoBack();
+                                                break;
+                                            case 2:     //WEEKLY
+                                                method.displayWeeklySales(sales);
+                                                System.out.println("");
+                                                method.isGoBack();
+                                                break;
+                                            case 3:     //MONTHLY
+                                                method.displayMonthlySales(sales);
+                                                System.out.println("");
+                                                method.isGoBack();
+                                                break;
+                                            case 0:
+                                                inSales = false;
+                                                perStaff = false;
+                                                break;
+                                            default:
+                                                System.out.println("INVALID: Use indicated number only!");
+                                        }
+                                    }
+                                }
+                                break;
+                            case 2:
+                                ArrayList<Transact> transacts = Main.pastTransacts;
+                                method.sortTransact(transacts);
+                                if(transacts.size()==0) {
+                                    System.out.println("\nThis staff have no sales recorded!");
+                                    break;
+                                }
+
+                                boolean inSales = true;
+                                while(inSales==true) {
                                     System.out.println("\n===SALES===");
-                                    System.out.println("Name: " + staffFound.getName());
                                     System.out.println("[1] Daily");
                                     System.out.println("[2] Weekly");
                                     System.out.println("[3] Monthly");
+                                    System.out.println("[4] Total Sales");
                                     System.out.println("[0] Back");
                                     System.out.print("Enter choice: ");
                                     choice = method.inputInt();
 
                                     switch (choice) {
                                         case 1:     //DAILY
-                                            method.displayDailyTransact(sales);
+                                            method.displayDailyTransact(transacts);
+                                            System.out.println("");
+                                            method.isGoBack();
                                             break;
                                         case 2:     //WEEKLY
+                                            method.displayWeeklySales(transacts);
+                                            System.out.println("");
+                                            method.isGoBack();
                                             break;
                                         case 3:     //MONTHLY
+                                            method.displayMonthlySales(transacts);
+                                            System.out.println("");
+                                            method.isGoBack();
+                                            break;
+                                        case 4:
+                                            if(transacts.size()!=0) {       //There is a sale
+                                                double totalSales = 0;
+
+                                                for(int i = 0; i<transacts.size(); i++) {       //Add the transactSale in the sales
+                                                    Transact transact = transacts.get(i);
+                                                    totalSales += transact.getBills();
+                                                }
+                                                System.out.println("\n=====TOTAL-SALES=====");
+                                                System.out.println("Sales: " + totalSales);
+
+                                            }else {     //There is no sale
+                                                System.out.println("\nThere is no sales!");
+                                            }
                                             break;
                                         case 0:
-                                            perStaff=false;
+                                            inSales = false;
                                             break;
                                         default:
+                                            System.out.println("INVALID: Use indicated number only!");
                                     }
                                 }
-                                break;
-                            case 2:
                                 break;
                             case 0:
                                 isSales=false;
