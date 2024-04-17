@@ -14,11 +14,13 @@ import java.util.ArrayList;
 
 public class Main {
 
-    //DEBUG checkDate() method sa Main, ug customerpage
+    //The sales of reserveSales is temporary onhold and payment cannot be accepted by staff until the
+    //                  reservation end or starts for ease in cancel reservations for refund purposes
 
-    //View reservations in staffPage naay bug yata
-    //Refund function kulang
-    //Same ra ang transact na save sa sales
+    //DEBUG checkDate() method sa Main, ug customerpage
+    //      sales should be consistent if there are sales
+
+    //Customerpage - checkDate() method kay na extend ang duration ug 1 day unya if overdue ang hotelTransact kay dapat ma end ang transaction
 
     private static Scanner sc = new Scanner(System.in);            //For string inputs
     private static Scanner in = new Scanner(System.in);            //For int inputs
@@ -38,8 +40,9 @@ public class Main {
 
     public static ArrayList<Orders> orderedFood = new ArrayList<>();        //This is for staff acceptance of food orders
     public static ArrayList<Transact> sales = new ArrayList<>();
+    public static ArrayList<Transact> reserveSales = new ArrayList<>();      //Separate the sale of reserve transact for cancel reservation purposes
 
-    public static ArrayList<Reservation> reservations = new ArrayList<>();
+    public static ArrayList<Reservation> reservations = new ArrayList<>();          //Reservations that are created
 
     public static ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();              //reserveTransacts - nabayran nah
     public static ArrayList<HotelTransact> roomTransacts = new ArrayList<>();                   //InHotelTransacts - nabayran nah
@@ -52,9 +55,8 @@ public class Main {
     //MAIN METHOD
     public static void main(String[] args) {
 
-        try {
-
-            while (true) {
+        while (true) {
+            try {
 
                 Date dateNow = new Date(9, 4, 2024);
                 Date dateThen = new Date(14, 4, 2024);
@@ -107,7 +109,7 @@ public class Main {
 
                 staffsList.get(0).addSales(new Transact(dateNow, customersList.get(0), dateThen, 1500));
                 staffsList.get(0).addSales(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
-                staffsList.get(0).addSales(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen,200));
+                staffsList.get(0).addSales(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen, 200));
                 staffsList.get(0).addSales(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
                 staffsList.get(0).addSales(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
                 staffsList.get(0).addSales(new Transact(new Date(9, 4, 2024), customersList.get(0), dateThen, 1600));
@@ -115,7 +117,7 @@ public class Main {
 
                 pastTransacts.add(new Transact(dateNow, customersList.get(0), dateThen, 1500));
                 pastTransacts.add(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
-                pastTransacts.add(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen,200));
+                pastTransacts.add(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen, 200));
                 pastTransacts.add(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
                 pastTransacts.add(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
                 pastTransacts.add(new Transact(new Date(9, 4, 2024), customersList.get(0), dateThen, 1600));
@@ -134,7 +136,7 @@ public class Main {
                         customersList.get(0),
                         (new Date(12, 3, 2024)),
                         200,
-                        (new Reservation(rooms.get(2), (new Date(8,6,2024)), 3)));
+                        (new Reservation(rooms.get(2), (new Date(8, 6, 2024)), 3)));
                 customersList.get(0).addTransact(res1);
                 reserveTransacts.add(res1);
 
@@ -178,13 +180,17 @@ public class Main {
                             break;
                         case 4:
                             Date newDate = method.inputDate();
-                            if(method.compareDate(newDate, globalDate)==1) {        //New date is greater than previous date then save as globaldate
+                            if (newDate == null) {
+                                System.out.println("\nThe setting of date is unsuccessful!");
+                                break;
+                            }
+                            if (method.compareDate(newDate, globalDate) == 1) {        //New date is greater than previous date then save as globaldate
                                 globalDate = newDate;
                                 System.out.print("Date is successfully set to ");
                                 globalDate.displayDate();
-                            }else if(method.compareDate(newDate, globalDate)==0) {      //Same date, not save as global date
+                            } else if (method.compareDate(newDate, globalDate) == 0) {      //Same date, not save as global date
                                 System.out.println("The date is the same on the previous date");
-                            }else {
+                            } else {
                                 System.out.println("Cannot set date from previous day, Time travel is impossible!");
                             }
                             break;
@@ -192,12 +198,13 @@ public class Main {
                             System.out.println("INVALID: Use indicated number only");
                     }
                 }
+            } catch (Exception e) {
+                System.out.println("An error has occured!");
+                System.out.println(e);
+                e.printStackTrace();
             }
-        }catch(Exception e) {
-            System.out.println("An error has occured!");
-            System.out.println(e);
-            e.printStackTrace();
         }
+
 
     }
 
@@ -426,7 +433,6 @@ public class Main {
                 System.out.println("\n======CUSTOMER======");
                 System.out.println("[1] Login");
                 System.out.println("[2] Register");
-                System.out.println("[0] Back");
                 choice = method.inputInt("Enter choice: ");
 
                 switch (choice) {

@@ -10,6 +10,7 @@ import Rooms.Room;
 public class ReserveTransact extends Transact {
     private String transactType = "Reservation";        //Reservation, room, orders
     private Reservation reservation;
+    boolean rsrvEnded = false;                          //Determines if the reservation have ended
 
     public ReserveTransact() {
     }
@@ -19,6 +20,9 @@ public class ReserveTransact extends Transact {
         this.reservation = reservation;
         calculateEndDate(reservation);
     }
+
+    public void setRsrvEnded(boolean b) {this.rsrvEnded=b;}
+    public boolean getRsrvEnded() {return this.rsrvEnded;}
 
     public void setReservation(Reservation  reservation) {this.reservation = reservation;}
     public Reservation getReservation() {return reservation;}

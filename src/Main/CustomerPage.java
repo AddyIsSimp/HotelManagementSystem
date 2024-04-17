@@ -251,7 +251,6 @@ public class CustomerPage {
             switch (choice) {
                 case 1:     //SELECT ROOM ALL
                     while (isSelect == true) {
-                        method.displayAllRoom(rooms);
                         selectRoom = method.selectRoom(rooms);
 
                         if (selectRoom == null) {      //If do not found a room with the roomNum
@@ -284,7 +283,7 @@ public class CustomerPage {
 
                         HotelTransact transact = method.paymentProcess(selectRoom, duration);
                         Main.roomTransacts.add(transact);
-                        customerAcct.addTransact(transact);
+                        customerAcct.addTransact(new HotelTransact(transact, duration));
                         selectRoom.setCustomerOccupy(customerAcct);
                         selectRoom.setIsOccupied(true);
                         System.out.println("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
@@ -323,7 +322,7 @@ public class CustomerPage {
 
                         HotelTransact transact = method.paymentProcess(selectRoom, duration);
                         Main.roomTransacts.add(transact);
-                        customerAcct.addTransact(transact);
+                        customerAcct.addTransact(new HotelTransact(transact, duration));
                         selectRoom.setCustomerOccupy(customerAcct);     //Set the customerOccupy in room to the customer account
                         selectRoom.setIsOccupied(true);
                         System.out.println("\nYour room is " + selectRoom.getRoomType() + " room with room number " + selectRoom.getRoomNum());
@@ -691,7 +690,8 @@ public class CustomerPage {
                         ReserveTransact reserveTransact = reserveTransacts.get(reserveIndexToCancel-1);
                         Reservation reservation = reserveTransact.getReservation();
                         customerAcct.addRefund(reserveTransact.getBills()/2);
-                        Main.pastTransacts.add(reserveTransact);                                        //Add the transact in Main pastTransacts
+                        reserveTransact.setBills(reserveTransact.getBills()/2);                         //The sales is only halp of the paid bills
+                        reserveTransact.setRsrvEnded(true);                                             //For it can be accepted by the staff
                         customerAcct.getTransact().remove(reserveTransact);                                       //Remove the reserveTransact in Customer account transaction
                         Main.reserveTransacts.remove(reserveTransact);                                  //Remove the reserveTransact in reserveTransacts
                         Main.reservations.remove(reservation);                                          //Remove the reservation in Main
@@ -761,6 +761,7 @@ public class CustomerPage {
                         Amenity amenity = inHotelOrder.getAmenity();
                         System.out.println("Amenity: " + amenity.getAmenityType() + " #" + amenity.getAmenityCode());
                     }
+
                     System.out.print("End date: ");
                     inHotelOrder.getEndDate().displayDate();
                     method.isGoBack();
@@ -934,9 +935,9 @@ public class CustomerPage {
                 Reservation reservation = reserve.getReservation();        //Retrieve the reservation in transact
 
                 //IF GLOBALDATE IS WITHIN DATE DURATION OF RESERVATION
-                if((method.compareDate(reserve.getStartDate(), globalDate)==-1 &&
-                        method.compareDate(reservation.getEndDate(), globalDate)==1)
-                        || method.compareDate(reserve.getStartDate(), globalDate)==0) {    //The reservation have started
+                if(((method.compareDate(reservation.getStartDate(), globalDate)==-1) && method.compareDate(reservation.getEndDate(), globalDate)==1)
+                        || method.compareDate(reservation.getStartDate(), globalDate)==0
+                        || method.compareDate(reservation.getEndDate(), globalDate)==0) {    //The reservation have started
                     if(reservation.getRoom()!=null) {
                         Room room = reservation.getRoom();
                         Date newDate = new Date(reserve.getDateOfTrans());
@@ -947,12 +948,13 @@ public class CustomerPage {
                                 0,
                                 reservation.getDuration(),
                                 room.getReservationPrice());
+                        reserve.setRsrvEnded(true);                     //The reservation have ended
 
                         customerAcct.addTransact(inHotelTransact);      //Add transact in customer
                         Main.roomTransacts.add(inHotelTransact);        //Add transact in MainRoomTransact
                         customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
-                        Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
-                        Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                        customerTransacts.remove(reserve);              //Remove the reserve in customer Account
+                        Main.reserveTransacts.remove(reserve);          //Remove the transact in main;
                         Main.reservations.remove(reservation);          //Remove the reservation in reservations
                     }
                     if(reservation.getAmenity()!=null) {
@@ -965,12 +967,12 @@ public class CustomerPage {
                                 0,
                                 reservation.getDuration(),
                                 amenity.getReservationCost());
+                        reserve.setRsrvEnded(true);                     //The reservation have ended
 
                         customerAcct.addTransact(inHotelTransact);      //Add transact in customer
                         amenity.setIsReserved(true);
                         Main.roomTransacts.add(inHotelTransact);        //Add transact in MainRoomTransact
                         customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
-                        Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
                         Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
                         Main.reservations.remove(reservation);          //Remove the reservation in reservations
                     }
@@ -979,6 +981,7 @@ public class CustomerPage {
                 //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
                 }else if(method.compareDate(reservation.getEndDate(), globalDate)==-1) {
                     customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
+                    reserve.setRsrvEnded(true);                     //The reservation have ended
                     Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
                     Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
                     Main.reservations.remove(reservation);          //Remove the reservation in reservations

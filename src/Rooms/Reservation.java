@@ -68,24 +68,32 @@ public class Reservation extends Transact {
     public void setAmenity(Amenity amenity) {this.amenity = amenity;}
     public Amenity getAmenity() {return amenity;}
 
+    public ArrayList<Date> getDurationDay() {
+        ArrayList<Date> durationDay = getDuration(startDate, duration);
+        return durationDay;
+    }
+
     public Date getEndDate() {
-        Date date = startDate;
-        int duration = 0;
+        Date date = new Date(startDate);
+        int duration = this.duration;
 
         for(int i = 0; i<duration; i++) {
-            if(date.getDate()<=31 ) {   //Not lapse in 31 days
-                date.incrementDate();
+            if(i==0) continue;
+            if(date.getDate()<31 ) {   //Not lapse in 31 days
+                date.setDate(date.incrementDate());
             }else {     //if lapse in 31 days
-                if(date.getMonth()<=12) {   //Not lapse in 12 months
-                    date.incrementMonth();
+                if(date.getMonth()<12) {   //Not lapse in 12 months
+                    date.setMonth(date.incrementMonth());
                     date.setDate(1);
                 }else {   //lapse in 12 months
-                    date.incrementYear();
+                    date.setYear(date.incrementYear());
                     date.setMonth(1);
                     date.setDate(1);
                 }
             }
         }
+        System.out.print("End date: ");
+        date.displayDate();
         return date;
     }
 
@@ -94,9 +102,12 @@ public class Reservation extends Transact {
         Date temp = new Date(start);      //Temporary date diri mag modify
 
         for(int i = 0; i<duration; i++) {
-            if(i!=0) {
+            if(i!=0) {      //If there is already a date, increment the date
                 Date date2 = durationDate.get(i-1);
                 temp = new Date(date2);
+            }else {
+                durationDate.add(new Date(temp));
+                continue;
             }
 
             if(temp.getDate()<31) {

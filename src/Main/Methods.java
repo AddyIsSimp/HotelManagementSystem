@@ -185,8 +185,11 @@ public class Methods{
             System.out.println("\n===ROOMS-LIST===");
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
-                System.out.println((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType()
-                        + " || Occupied: " + room.getIsOccupied() + " || Disabled: " + room.getIsDisabled());
+                System.out.print((i + 1) + ". Room Number: " + room.getRoomNum() + " || Room Type: " + room.getRoomType());
+                System.out.print(" || ");
+                if(room.getIsOccupied()==true) System.out.print("Occupied ");
+                else System.out.print(" Unoccupied ");
+                System.out.println(" || Disabled: " + room.getIsDisabled());
             }
         }else System.out.println("\nThere is no room found\n");
     }
@@ -1919,7 +1922,7 @@ public class Methods{
             Date  dateTrans = new Date(Main.globalDate);
             transact = new ReserveTransact(dateTrans, CustomerPage.customerAcct, reservation.getStartDate(), bills, reservation);
             transact.setIsPaid(true);
-            Main.sales.add(transact);
+            Main.reserveSales.add(transact);
         }
 
         return transact;

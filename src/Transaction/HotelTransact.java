@@ -72,14 +72,16 @@ public class HotelTransact extends Transact{
     public void setStartDate(Date date) {this.startDate = date;}
     public Date getStartDate() {return startDate;}
 
+
     public Date calculateEndDate(Date dateOfTrans, int duration) {
-        Date date = dateOfTrans;
+        Date date = new Date(dateOfTrans);
 
         for(int i = 0; i<duration; i++) {
-            if(date.getDate()<=31 ) {   //Not lapse in 31 days
+            if(i==0 && duration>1) continue;
+            if(date.getDate()<31 ) {   //Not lapse in 31 days
                 date.setDate(date.incrementDate());
             }else {     //if lapse in 31 days
-                if(date.getMonth()<=12) {   //Not lapse in 12 months
+                if(date.getMonth()<12) {   //Not lapse in 12 months
                     date.setMonth(date.incrementMonth());
                     date.setDate(1);
                 }else {   //lapse in 12 months

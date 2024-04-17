@@ -326,6 +326,7 @@ public class Admin {
             System.out.println("\n=====MANAGE-ROOMS=====");
             System.out.println("[1] Rooms");
             System.out.println("[2] Amenities");
+            System.out.println("[3] Set duration limit");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
@@ -797,6 +798,34 @@ public class Admin {
                                 break;
                             default:
                                 System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
+                    break;
+                case 3:         //SET DURATION LIMIT
+                    boolean setLimit = true;
+                    while(setLimit==true) {
+                        System.out.println("\n=====DURATION-LIMIT=====");
+                        System.out.println("Current duration(day) limit: " + Main.durationLimit);
+                        System.out.println("[1] Change duration limit: ");
+                        System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
+                        choice = method.inputInt();
+                        switch (choice) {
+                            case 1:
+                                System.out.print("\nSet duration limit: ");
+                                int durationLimit = method.inputInt();
+                                if (durationLimit == -1) {
+                                    System.out.println("INVALID: Use real numbers only");
+                                } else {
+                                    Main.durationLimit = durationLimit;
+                                    System.out.println("The duration limit is successfully set to " + Main.durationLimit + "day");
+                                }
+                                break;
+                            case 0:
+                                setLimit=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated numbers only!");
                         }
                     }
                     break;

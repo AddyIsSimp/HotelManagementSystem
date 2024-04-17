@@ -2,16 +2,23 @@ import Amenity.Amenity;
 import Entity.Customer;
 import Entity.Staff;
 import Foods.Food;
+import Main.Main;
 import Main.Methods;
 import Foods.Menu;
 import Rooms.*;
 import Rooms.Date;
 import Rooms.Reservation;
+import Transaction.HotelTransact;
+import Transaction.ReserveTransact;
 import Transaction.Transact;
 
 import java.util.*;
 
 public class ForCodeTrial {
+
+    public static Customer customerAccount = new Customer("Adrian", "Santos", "Successor");
+
+    public static Methods method = new Methods();
 
     public static ArrayList<ArrayList> all = new ArrayList<>();
     public static ArrayList<Customer> customersList = new ArrayList<>();
@@ -86,7 +93,109 @@ public class ForCodeTrial {
             date.displayDate();
         }
 
+        checkAccountForDate();
+
     }
+
+    public static void checkAccountForDate() {
+        //Keep in mind remove the reservation obj in the customer account and in admin reservations
+        ArrayList<Transact> customerTransacts = customerAccount.getTransact();
+        HotelTransact inHotel = method.getHotelTransact(customerTransacts);
+        ArrayList<ReserveTransact> reserveTransact = method.getReservationTransact(customerTransacts);
+        Date globalDate = Main.globalDate;      //current date
+
+        //CHECK HOTEL TRANSACTION OF CUSTOMER
+        if(inHotel!=null && method.compareDate(inHotel.getEndDate(), globalDate)==-1) {     //The hotelOrder is overdue
+            if(inHotel.getBills()!=0) {                                                     //There is bill balance in customers
+                while(true) {
+                    System.out.println("You have a balance in the past occupation in the hotel");
+                    boolean isPaid = method.paymentProcess(inHotel);
+
+                    if (isPaid == false) { //There is a wrong in paymentProcess
+                        System.out.println("INVALID: Payment is unsuccessful");
+                    } else {
+                        ArrayList<Transact> transactions = customerAccount.getTransact();
+                        customerAccount.addTransHistory(inHotel);                     //save the transact in transact history
+                        Main.pastTransacts.add(inHotel);                            //Add transact in pastTransaction
+                        customerTransacts.remove(inHotel);
+                        Main.roomTransacts.remove(inHotel);                        //remove the transact in Admin records
+                        System.out.println("You have successfully paid your bills!");
+                        break;
+                    }
+                }
+            }else {                                                                 //There is no balance
+                customerTransacts.remove(inHotel);
+                Main.roomTransacts.remove(inHotel);
+                System.out.println(customerAccount.getName() + " your occupation has ended!");
+                method.isGoContinue();
+            }
+        }//End of checkHotelTransaction of Customer
+
+        //THERE IS A RESERVATION TRANSACTION OF CUSTOMER
+        if(reserveTransact.size()!=0) {
+            boolean noConflict = true;
+
+            //check if there is a reservation within this current date
+            for(int i = 0; i<reserveTransact.size(); i++) {//Get the reserve transact
+                ReserveTransact reserve = reserveTransact.get(i);
+                Reservation reservation = reserve.getReservation();        //Retrieve the reservation in transact
+
+                //IF GLOBALDATE IS WITHIN DATE DURATION OF RESERVATION
+                if((method.compareDate(reserve.getStartDate(), globalDate)==-1 &&
+                        method.compareDate(reservation.getEndDate(), globalDate)==1)
+                        || method.compareDate(reserve.getStartDate(), globalDate)==0) {    //The reservation have started
+                    if(reservation.getRoom()!=null) {
+                        Room room = reservation.getRoom();
+                        Date newDate = new Date(reserve.getDateOfTrans());
+                        HotelTransact inHotelTransact = new HotelTransact(newDate,
+                                customerAccount,
+                                room,
+                                reservation.getStartDate(),
+                                0,
+                                reservation.getDuration(),
+                                room.getReservationPrice());
+
+                        customerAccount.addTransact(inHotelTransact);      //Add transact in customer
+                        Main.roomTransacts.add(inHotelTransact);        //Add transact in MainRoomTransact
+                        customerAccount.addTransHistory(reserve);          //Add || in the customer's transact history
+                        Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
+                        Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                        Main.reservations.remove(reservation);          //Remove the reservation in reservations
+                    }
+                    if(reservation.getAmenity()!=null) {
+                        Amenity amenity = reservation.getAmenity();
+                        Date newDate = new Date(reserve.getDateOfTrans());
+                        HotelTransact inHotelTransact = new HotelTransact(newDate,
+                                customerAccount,
+                                amenity,
+                                reservation.getStartDate(),
+                                0,
+                                reservation.getDuration(),
+                                amenity.getReservationCost());
+
+                        customerAccount.addTransact(inHotelTransact);      //Add transact in customer
+                        amenity.setIsReserved(true);
+                        Main.roomTransacts.add(inHotelTransact);        //Add transact in MainRoomTransact
+                        customerAccount.addTransHistory(reserve);          //Add || in the customer's transact history
+                        Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
+                        Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                        Main.reservations.remove(reservation);          //Remove the reservation in reservations
+                    }
+                    System.out.println("Your reservation have started!");
+
+                    //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
+                }else if(method.compareDate(reservation.getEndDate(), globalDate)==-1) {
+                    customerAccount.addTransHistory(reserve);          //Add || in the customer's transact history
+                    Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
+                    Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                    Main.reservations.remove(reservation);          //Remove the reservation in reservations
+                    System.out.println("Your reservation have ended!");
+                }
+            }//End of Reservation forloop
+        }//End of check HotelReservationTransact
+
+    }//End of checkAccountDate
+
 
     public static ArrayList<Transact> sortTransact(ArrayList<Transact> transacts) {
         ArrayList<Transact> sortTransact = transacts;
