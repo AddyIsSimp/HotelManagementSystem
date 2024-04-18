@@ -494,7 +494,7 @@ public class Admin {
                             case 4:     //EDIT ROOM PRICE
                                 boolean isEditPrice = true;
                                 while(isEditPrice==true) {
-                                    ArrayList<Room> roomsType = null;
+                                    ArrayList<Room> roomsType = new ArrayList<>();
                                     double rate = 0;
                                     System.out.println("\n=====SET-ROOM-PRICE=====");
                                     System.out.println("[1] Single Room");
@@ -1737,7 +1737,7 @@ public class Admin {
                                 ArrayList<Transact> transacts = Main.pastTransacts;
                                 method.sortTransact(transacts);
                                 if(transacts.size()==0) {
-                                    System.out.println("\nThis staff have no sales recorded!");
+                                    System.out.println("\nThere is no sales recorded!");
                                     break;
                                 }
 

@@ -195,7 +195,7 @@ public class Methods{
     }
 
     public ArrayList<Room> getRoomsType(ArrayList<Room> rooms, String roomType) {       //Return an arraylist of Room filter with roomtype
-        ArrayList<Room> roomsType = null;
+        ArrayList<Room> roomsType = new ArrayList<>();
 
         for(int i = 0; i<rooms.size(); i++) {
             Room room = rooms.get(i);
@@ -436,8 +436,7 @@ public class Methods{
                         while(isFound==false) {
                             System.out.println("\n===SINGLE-ROOMS===");
                             for (SingleRoom snRoom : snRooms) {
-                                System.out.println("Room Number: " + snRoom.getRoomNum() + " || Occupied: " + snRoom.getIsOccupied() +
-                                        " || Disabled: " + snRoom.getIsDisabled());
+                                System.out.println("Room Number: " + snRoom.getRoomNum() + " || Room cost: " + snRoom.getRatePerDay());
                             }
                             System.out.print("Select room number: ");
                             pick = inputInt();
@@ -469,8 +468,7 @@ public class Methods{
                         while(isFound==false) {
                             System.out.println("\n===COUPLE-ROOMS===");
                             for (CoupleRoom cpRoom : cpRooms) {
-                                System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Occupied: " + cpRoom.getIsOccupied() +
-                                        " || Disabled: " + cpRoom.getIsDisabled());
+                                System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Room cost: " + cpRoom.getRatePerDay());
                             }
                             System.out.print("Select room number: ");
                             pick = inputInt();
@@ -502,8 +500,7 @@ public class Methods{
                         while(isFound==false) {
                             System.out.println("\n===FAMILY-ROOMS===");
                             for (FamilyRoom fmRoom : fmRooms) {
-                                System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Occupied: " + fmRoom.getIsOccupied() +
-                                        " || Disabled: " + fmRoom.getIsDisabled());
+                                System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Room cost: " + fmRoom.getRatePerDay());
                             }
                             System.out.print("Select room number: ");
                             pick = inputInt();
@@ -536,8 +533,7 @@ public class Methods{
                         while(isFound==false) {
                             System.out.println("\n===VIP-ROOMS===");
                             for (VIPRoom vpRoom : vpRooms) {
-                                System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
-                                        " || Disabled: " + vpRoom.getIsDisabled());
+                                System.out.println("Room Number: " + vpRoom.getRoomNum() +" || Room cost: " + vpRoom.getRatePerDay());
                             }
                             System.out.print("Select room number: ");
                             pick = inputInt();

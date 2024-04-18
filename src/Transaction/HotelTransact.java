@@ -18,7 +18,6 @@ public class HotelTransact extends Transact{
     private int duration;
 
     public HotelTransact() {
-
     }
 
     public HotelTransact(HotelTransact transact, int duration) {

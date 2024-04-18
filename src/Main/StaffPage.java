@@ -82,19 +82,21 @@ public class StaffPage {
 
             switch(choice) {
                 case 1:     //display occupied rooms
+                    System.out.println("\n=====OCCUPIED-ROOM=====");
                     if(occupiedRoom.size()==0) {
                         System.out.println("\nThere are no rooms occupied");
                     }else {
-                        System.out.println("=====OCCUPIED-ROOM=====");
+                        System.out.println("\n=====OCCUPIED-ROOM=====");
                         for(int i = 0; i<occupiedRoom.size(); i++) {
                             Room room = occupiedRoom.get(i);
                             System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
                                     room.getRoomNum() + " || Customer: ");
                         }
+                        method.isGoBack();
                     }
                     break;
                 case 2:     //display available roos
-                    System.out.println("=====Available-Rooms=====");
+                    System.out.println("\n=====AVAILABLE-ROOMS=====");
                     if(rooms.size()==0) {
                         System.out.println("\nThere are no available rooms");
                     }else {
@@ -103,22 +105,23 @@ public class StaffPage {
                             System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
                                     room.getRoomNum());
                         }
+                        method.isGoBack();
                     }
                     break;
                 case 3:
+                    System.out.println("\n=====DISABLED-ROOMS=====");
                     if(disableRoom.size()==0) {
                         System.out.println("\nThere are no disabled rooms");
                     }else {
-                        System.out.println("=====Disabled-Rooms=====");
                         for(int i = 0; i<disableRoom.size(); i++) {
                             Room room = disableRoom.get(i);
                             System.out.println((i+i) + "Room: " + room.getRoomType() + " " +
                                     room.getRoomNum() + "|| Customer: ");
                         }
+                        method.isGoBack();
                     }
                     break;
                 case 4:
-                    System.out.println("=====Room-Category=====");
                     method.displayRoomCategory(rooms);
                     break;
                 case 0:
@@ -184,7 +187,8 @@ public class StaffPage {
     public void goAcceptPayment(ArrayList<Transact> sales) {
         int pick = 0;
         boolean acceptMain = true;
-        ArrayList<String> listOfPayment = new ArrayList<>();
+        ArrayList<Transact> sales2 = sales;
+        ArrayList<String> listOfPayment = new ArrayList<>();            //Store the index of transact for pick one transact function
 
         //Add the sales of reservationTransact that have ended in the sales list
         for(int i = 0; i<Main.reserveSales.size(); i++) {
@@ -213,13 +217,14 @@ public class StaffPage {
                     System.out.print(" || Type: ReserveTransact");
                 }
 
-                if(transact.getClass()== HotelTransact.class) {                 //If it is a room transact
+                if(transact.getClass()==HotelTransact.class) {                 //If it is a room transact
                     HotelTransact transact1 = (HotelTransact) transact;
-                    if(transact1.getBills()==0 && transact1.getRoomCost()>0) {
+                    if (transact1.getBills() == 0 && transact1.getRoomCost() > 0) {
                         System.out.print(" || Bills: " + ((HotelTransact) transact).getRoomCost());
+                        transact.setBills(transact1.getRoomCost());
+                    } else {
+                        System.out.print(" || Bills: " + transact.getBills());
                     }
-                }else {
-                    System.out.print(" || Bills: " + transact.getBills());
                 }
 
                 System.out.print(" || Transaction date: ");
@@ -236,20 +241,14 @@ public class StaffPage {
             //ACCEPT ALL SALES
             if(choice.equalsIgnoreCase("a")) {
                 int saleTransactCount=0;
-                for(int i = 0; i<sales.size(); i++) {
-                    Transact transact = sales.get(i);
+                for(int i = 0; i<sales2.size(); i++) {
+                    Transact transact1 = sales2.get(i);
 
-                    if(transact.getClass()== HotelTransact.class) {             //If the sale is a roomTransact
-                        HotelTransact transact1 = (HotelTransact) transact;
-                        if (transact1.getBills() == 0 && transact1.getRoomCost() > 0) {
-                            transact.setBills(transact1.getRoomCost());
-                        }
-                    }
-
-                    transact.setStaff(staffAcct);       //Set the transaction owner to this staff
-                    staffAcct.addSales(transact);       //Add the transact in staff sale list
-                    Main.pastTransacts.add(transact);   //Save this transact in pastTransacts
-                    sales.remove(transact);
+                    transact1.setStaff(staffAcct);       //Set the transaction owner to this staff
+                    staffAcct.addSales(transact1);       //Add the transact in staff sale list
+                    Main.pastTransacts.add(transact1);   //Save this transact in pastTransacts
+                    sales.remove(transact1);
+                    System.out.println("Accepted index: " + i);
                     saleTransactCount++;
                 }
                 System.out.println("\nSuccessfully accepted " + saleTransactCount + " payment!");
@@ -293,6 +292,72 @@ public class StaffPage {
                 break;
             }
         }//end of AcceptMain loop
+    }
+
+    public void goSales() {
+        ArrayList<Transact> sales = staffAcct.getSales();
+        boolean goSales = true;
+
+        while (goSales == true) {
+
+            System.out.println("\n=======SALES=======");
+            method.sortTransact(sales);
+            if (sales.size() == 0) {
+                System.out.println("\nThis staff have no sales recorded!");
+                break;
+            }
+
+            boolean inSales = true;
+            while (inSales == true) {
+                System.out.println("Name: " + staffAcct.getName());
+                System.out.println("[1] Daily");
+                System.out.println("[2] Weekly");
+                System.out.println("[3] Monthly");
+                System.out.println("[4] Total sales");
+                System.out.println("[0] Back");
+                System.out.print("Enter choice: ");
+                int choice = method.inputInt();
+
+                switch (choice) {
+                    case 1:     //DAILY
+                        method.displayDailyTransact(sales);
+                        System.out.println("");
+                        method.isGoBack();
+                        break;
+                    case 2:     //WEEKLY
+                        method.displayWeeklySales(sales);
+                        System.out.println("");
+                        method.isGoBack();
+                        break;
+                    case 3:     //MONTHLY
+                        method.displayMonthlySales(sales);
+                        System.out.println("");
+                        method.isGoBack();
+                        break;
+                    case 4:
+                        if (sales.size() != 0) {       //There is a sale
+                            double totalSales = 0;
+
+                            for (int i = 0; i < sales.size(); i++) {       //Add the transactSale in the sales
+                                Transact transact = sales.get(i);
+                                totalSales += transact.getBills();
+                            }
+                            System.out.println("\n=====TOTAL-SALES=====");
+                            System.out.println("Sales: " + totalSales);
+
+                        } else {     //There is no sale
+                            System.out.println("\nThere is no sales!");
+                        }
+                    case 0:
+                        inSales = false;
+                        goSales = false;
+                        break;
+                    default:
+                        System.out.println("INVALID: Use indicated number only!");
+                }
+            }
+        }//End of loop goSales
+
     }
 
 }

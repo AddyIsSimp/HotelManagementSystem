@@ -793,6 +793,7 @@ public class CustomerPage {
                                         if (menu.getDessert() != null) System.out.print(" , " + menu.getDessert().getFoodName());
                                         System.out.println(" || Price: " + menu.getTotalPrice());
                                     }
+                                    method.isGoBack();
                                 }
                                 break;
                             case 2:
@@ -838,6 +839,14 @@ public class CustomerPage {
                     while(isOut==true) {    //Check out loop
                         if(inHotelOrder.getBills()==0) {        //There are no bills
                             System.out.println("\n=====CHECK-OUT=====");
+
+                            //Ask user if to continue check-out
+                            boolean isCont = method.isContinue("Do you really want to check-out?");
+                            if(isCont==false) {
+                                System.out.println("\nCheck-out in the hotel is unsuccessful!");
+                                break;
+                            }
+
                             ArrayList<Transact> transactions = customerAcct.getTransact();
 
                             //Set the room or amenity unoccupied
@@ -848,7 +857,6 @@ public class CustomerPage {
                                 Amenity amenity = inHotelOrder.getAmenity();
                                 amenity.setIsReserved(false);
                             }
-
                             customerAcct.addTransHistory(inHotelOrder);                     //save the transact in transact history
                             transactions.remove(inHotelOrder);                              //remove the transact in customer account
                             Main.roomTransacts.remove(inHotelOrder);                        //remove the transact in Admin records

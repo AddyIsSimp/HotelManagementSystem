@@ -17,6 +17,8 @@ public class Main {
     //The sales of reserveSales is temporary onhold and payment cannot be accepted by staff until the
     //                  reservation end or starts for ease in cancel reservations for refund purposes
 
+    //The accept-all in acceptPayment() in staffPage do not cater hotelTransact that have bills when check-out
+
     //DEBUG checkDate() method sa Main, ug customerpage
     //      sales should be consistent if there are sales
 
@@ -38,7 +40,6 @@ public class Main {
     public static ArrayList<Food> foods = new ArrayList<>();                //Save here is the quantity for food stocks
     public static ArrayList<Menu> menus = new ArrayList<>();                //Save here is the menu with foods
 
-    public static ArrayList<Orders> orderedFood = new ArrayList<>();        //This is for staff acceptance of food orders
     public static ArrayList<Transact> sales = new ArrayList<>();
     public static ArrayList<Transact> reserveSales = new ArrayList<>();      //Separate the sale of reserve transact for cancel reservation purposes
 
@@ -131,12 +132,13 @@ public class Main {
 
                 reservations.add(new Reservation(customersList.get(0), rooms.get(3), dateNow, 3));
                 reservations.add(new Reservation(customersList.get(0), rooms.get(5), dateThen, 3));
+                reservations.add(new Reservation(customersList.get(0), rooms.get(1), new Date(8, 6, 2024), 3));
 
                 ReserveTransact res1 = new ReserveTransact(globalDate,
                         customersList.get(0),
                         (new Date(12, 3, 2024)),
                         200,
-                        (new Reservation(rooms.get(2), (new Date(8, 6, 2024)), 3)));
+                        (reservations.get(2)));
                 customersList.get(0).addTransact(res1);
                 reserveTransacts.add(res1);
 
@@ -300,6 +302,7 @@ public class Main {
                     System.out.println("[2] Customer management");
                     System.out.println("[3] Reservations");
                     System.out.println("[4] Accept payment");
+                    System.out.println("[5] Sales");
                     System.out.println("[0] Logout");
                     System.out.print("Enter choice: ");
                     pick = method.inputInt();
@@ -316,6 +319,9 @@ public class Main {
                             break;
                         case 4:
                             staffP.goAcceptPayment(sales);      //Get the sales in customer to be accepted by staff
+                            break;
+                        case 5:
+                            staffP.goSales();
                             break;
                         case 0:
                             while (true) {

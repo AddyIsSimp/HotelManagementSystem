@@ -92,8 +92,6 @@ public class Reservation extends Transact {
                 }
             }
         }
-        System.out.print("End date: ");
-        date.displayDate();
         return date;
     }
 
