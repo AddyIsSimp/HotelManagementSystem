@@ -14,8 +14,7 @@ import java.util.ArrayList;
 
 public class Main {
 
-    //The sales of reserveSales is temporary onhold and payment cannot be accepted by staff until the
-    //                  reservation end or starts for ease in cancel reservations for refund purposes
+    //Wala pa nadebug ang accept all payments
 
     //The accept-all in acceptPayment() in staffPage do not cater hotelTransact that have bills when check-out
 
@@ -362,9 +361,20 @@ public class Main {
         while (customerMain == true) {
             try {
                 int pick = 0;
+                Customer customer = CustomerPage.customerAcct;
                 boolean isCustomerPage = true;
 
                 while (isCustomerPage == true) {
+                    if(customer.getRefunds()!=0) {
+                        System.out.println("\nYou have refunds from cancelled reservations: " + customer.getRefunds());
+                        System.out.println("Press 1 to accept refund: \n-" );
+                        choice = method.inputInt();
+                        if(choice==1) {
+                            System.out.println("\nYou have accepted the refund " + customer.getRefunds());
+                            customer.sendRefunds();
+                        }
+                    }
+
                     System.out.println("\n===============CUSTOMER===============");
                     HotelTransact inHotelOrder = method.getHotelTransact(CustomerPage.customerAcct.getTransact());
 
@@ -479,11 +489,19 @@ public class Main {
                 if (inHotelTransact.getBills() == 0) {          //Delete transaction with no balance and add it on pastTransactions
                     if (method.compareDate(inHotelTransact.getEndDate(), globalDate) == -1) {  //Over due in inHotel transact
                         Customer customer = inHotelTransact.getCustomer();
-                        ArrayList<Transact> customerTransact = customer.getTransact();
-                        pastTransacts.add(inHotelTransact);
-                        customerTransact.remove(inHotelTransact);
+                        ArrayList<Transact> customerTransact = customer.getTransact();          //Retrieve the list of transact of customer for easy delete
+                        if(inHotelTransact.getRoom()!=null) {               //Set the room unoccupied
+                            Room room = inHotelTransact.getRoom();
+                            room.setIsOccupied(false);
+                        }else if(inHotelTransact.getAmenity()!=null) {
+                            Amenity amenity = inHotelTransact.getAmenity();
+                            amenity.setIsReserved(false);
+                        }
+                        pastTransacts.add(inHotelTransact);                                     //Save the transact in Hotel
+                        customer.addTransHistory(inHotelTransact);                              //Save the transaction in customer transactHistory
+                        customerTransact.remove(inHotelTransact);                               //Remove the transact in customerTransact
                         Main.roomTransacts.remove(inHotelTransact);
-                        System.out.println(customer.getName() + " occupation has ended!");
+                        System.out.println("Customer: " + customer.getName() + " occupation has ended!");
                         method.isGoContinue();
                     }//Overdue in inHotel
                 }
@@ -495,20 +513,17 @@ public class Main {
             boolean noConflict = true;
             //check if there is a reservation within this current date
             for(int i = 0; i<reserveTransact.size(); i++) {//Get the reserve transact
-                System.out.println("Reservation: " + i);
                 ReserveTransact reserve = reserveTransact.get(i);
                 Reservation reservation = reserve.getReservation();        //Retrieve the reservation in transact
                 Customer customerAcct = reserve.getCustomer();
 
                 //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
                 if (method.compareDate(reservation.getEndDate(), globalDate) == -1) {
-                    customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
-                    pastTransacts.add(reserve);
                     Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
                     reserve.setRsrvEnded(true);
                     Main.reserveTransacts.remove(reserve);          //Remove the transact in main;
                     Main.reservations.remove(reservation);          //Remove the reservation in reservations
-                    System.out.print(reserve.getCustomer().getName() +" in " );
+                    System.out.print(reserve.getCustomer().getName() +" reservation in " );
                     if(reservation.getRoom()!=null) {
                         Room room = reservation.getRoom();
                         System.out.print(room.getRoomType() + " " + room.getRoomNum());

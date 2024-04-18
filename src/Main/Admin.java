@@ -85,7 +85,7 @@ public class Admin {
                 case 1:
                     boolean isCustomer = true;
                     while (isCustomer == true) {
-                        System.out.println("=====CUSTOMER-ACCOUNTS=====");
+                        System.out.println("\n=====CUSTOMER-ACCOUNTS=====");
                         System.out.println("Number of customer registered: " + customers.size());
                         System.out.println("[1] View customers");
                         System.out.println("[2] Edit account");
@@ -95,7 +95,7 @@ public class Admin {
 
                         switch (choice) {
                             case 1:     //CUSTOMER - VIEW ACCOUNTS
-                                System.out.println("=====VIEW-ACCOUNTS=====");
+                                System.out.println("\n=====VIEW-ACCOUNTS=====");
                                 method.displayCustomer(customers);
                                 method.isGoBack();
                                 break;
@@ -104,7 +104,7 @@ public class Admin {
                                 break;
                             case 3:     //CUSTOMER - DELETE ACCOUNT
                                 while(true) {
-                                    System.out.println("=====DELETE-ACCOUNT=====");
+                                    System.out.println("\n=====DELETE-ACCOUNT=====");
                                     System.out.print("Enter name to delete: ");
                                     String nameDel = sc.nextLine();
 
@@ -133,7 +133,7 @@ public class Admin {
                 case 2:     //MANAGE ACCOUNTS - STAFF
                     boolean isStaff = true;
                     while (isStaff == true) {
-                        System.out.println("===STAFF-ACCOUNTS===");
+                        System.out.println("\n=====STAFF-ACCOUNTS=====");
                         System.out.println("Number of staff registered: " + staffs.size());
                         System.out.println("[1] Add staff");
                         System.out.println("[2] View staffs");
@@ -147,7 +147,7 @@ public class Admin {
                                 String name = null, password = null, email = null;
                                 boolean isCreate = true;
                                 while(isCreate==true) {
-                                    System.out.println("===CREATE-STAFF-ACCOUNT===");
+                                    System.out.println("\n===CREATE-STAFF-ACCOUNT===");
                                     System.out.print("Enter name: ");
                                     name = sc.nextLine();
 
@@ -175,7 +175,7 @@ public class Admin {
 
                                 break;
                             case 2:     //VIEW STAFF ACCOUNT
-                                System.out.println("=====STAFF-ACCOUNT=====");
+                                System.out.println("\n=====STAFF-ACCOUNT=====");
                                 for (int i = 0; i < staffs.size(); i++) {
                                     Staff staff = staffs.get(i);
                                     System.out.print((i + 1) + "Name: " + staff.getName());
@@ -188,7 +188,7 @@ public class Admin {
                                 boolean editStaff = true;
                                 Staff staff = null;
                                 while(editStaff==true) {
-                                    System.out.println("=====EDIT-ACCOUNT=====");
+                                    System.out.println("\n=====EDIT-ACCOUNT=====");
                                     System.out.print("Search name: ");
                                     name = sc.nextLine();
 
@@ -207,7 +207,7 @@ public class Admin {
                                     }
 
                                     if(staff!=null) {
-                                        System.out.println("===ACCOUNT-INFO===");
+                                        System.out.println("\n===ACCOUNT-INFO===");
                                         System.out.println("[1] Name: " + staff.getName());
                                         System.out.println("[2] Password: " + staff.getPassword());
                                         if(staff.getEmail()!=null) System.out.println("[3] Email: " + staff.getEmail());
@@ -217,6 +217,19 @@ public class Admin {
                                             case 1:
                                                 System.out.print("Enter new name: ");
                                                 String newName = sc.nextLine();
+
+                                                //Checks if there is already name existed
+                                                boolean isDupl = method.checkDupStaff(staffs, name);
+                                                if (isDupl == true) {      //If isDupl is true
+                                                    System.out.println("INVALID: Duplicate name is prohibited");
+                                                    boolean isCont = method.isContinue();
+                                                    if (isCont == true) {continue;}
+                                                    else {
+                                                        isCreate = false;
+                                                        break;
+                                                    }
+                                                }
+
                                                 staff.setName(newName);
                                                 System.out.println("Modified name successfully!");
                                                 break;
@@ -244,7 +257,7 @@ public class Admin {
                                 break;
                             case 4:     //DELETE ACCOUNT
                                 while(true) {
-                                    System.out.println("=====DELETE-ACCOUNT=====");
+                                    System.out.println("\n=====DELETE-ACCOUNT=====");
                                     System.out.print("Enter name to delete: ");
                                     String nameDel = sc.nextLine();
 
@@ -273,7 +286,7 @@ public class Admin {
                     String password = null;
                     boolean Admin = true;
                     while(Admin==true) {
-                        System.out.println("=====ADMINISTRATOR=====");
+                        System.out.println("\n=====ADMINISTRATOR=====");
                         System.out.println("[1] Set username");
                         System.out.println("[2] Set password");
                         System.out.println("[0] Back");
@@ -281,7 +294,7 @@ public class Admin {
 
                         switch (choice) {
                             case 1:
-                                System.out.print("Enter password to continue: ");
+                                System.out.print("\nEnter password to continue: ");
                                 password = sc.nextLine();
                                 if (password.equals(admin.getPassword()) == false) {
                                     System.out.println("INVALID: Wrong password");
@@ -292,7 +305,7 @@ public class Admin {
                                 System.out.println("Username is modified successfully!");
                                 break Account;
                             case 2:
-                                System.out.print("Enter current password to continue: ");
+                                System.out.print("\nEnter current password to continue: ");
                                 password = sc.nextLine();
                                 if (password.equals(admin.getPassword()) == false) {
                                     System.out.println("INVALID: Wrong password");
@@ -868,7 +881,7 @@ public class Admin {
                         Food dessert;
                         int index = 0;
 
-                        System.out.println("=====CREATE-MENU=====");
+                        System.out.println("\n=====CREATE-MENU=====");
                         System.out.print("Set menu name: ");
                         String newMenuName = sc.nextLine();
 
@@ -969,7 +982,7 @@ public class Admin {
                     }   //End of Add menu
                     break;
                 case 3:         //MODIFY MENU
-                    System.out.println("=====EDIT-MENU=====");
+                    System.out.println("\n=====EDIT-MENU=====");
                     Menu menuSelect = null;
                     int menuIndex = method.selectMenuIndex(menus);
                     if(menuIndex==-1) {
@@ -1103,7 +1116,7 @@ public class Admin {
                 case 4:         //DELETE MENU
                     boolean delMenu = true;
 
-                    System.out.println("=====DELETE-MENU=====");
+                    System.out.println("\n=====DELETE-MENU=====");
                     while(delMenu==true) {
                         System.out.println("=====MENU-LIST=====");
                         if (menus.size() == 0) System.out.println("There is no menu created");
@@ -1177,7 +1190,7 @@ public class Admin {
 
             switch(choice) {
                 case 1:     //VIEW FOOD STOCKS
-                    System.out.println("=====FOOD-LIST=====");
+                    System.out.println("\n=====FOOD-LIST=====");
 
                     for(int i = 0; i<mainDishes.size(); i++) {
                         Food food = mainDishes.get(i);
@@ -1207,7 +1220,7 @@ public class Admin {
                     int stock = 0;
 
                     while(addFood==true) {
-                        System.out.println("===ADD-FOOD===");
+                        System.out.println("\n=====ADD-FOOD=====");
                         System.out.println("[1] Maindish");
                         System.out.println("[2] Sidedish");
                         System.out.println("[3] Drinks");
@@ -1221,12 +1234,25 @@ public class Admin {
                             continue;
                         }
 
+                        boolean isExistName = false;
                         System.out.print("Set food name: ");
                         foodName = sc.nextLine();
 
-                        if(foods.contains(foodName)) {
-                            System.out.println("Food is already exist!");
-                            continue;
+                        for(int i = 0; i<foods.size(); i++) {           //Check for duplicate type of foods
+                            Food food = foods.get(i);
+                            if(food.getFoodName().equalsIgnoreCase(foodName)) {
+                                System.out.println("INVALID: Food is already exist");
+                                isExistName=true;
+                            }
+                        }
+
+                        if(isExistName==true) {                        //Ask if continue
+                            boolean isCont = method.isContinue();
+                            if(isCont==true) continue;
+                            else {
+                                System.out.println("\nCreating of food is unsuccessful");
+                                break;
+                            }
                         }
 
                         System.out.print("Set price: ");
@@ -1278,7 +1304,7 @@ public class Admin {
                     int stockInc = 0;
 
                     while(true) {
-                        System.out.println("===ADD-STOCKS===");
+                        System.out.println("\n=====ADD-STOCKS=====");
                         System.out.print("Enter food name to add: ");
                         foodAdd = sc.nextLine();
 
@@ -1317,7 +1343,7 @@ public class Admin {
                     int newStock = 0;
 
                     while(true) {
-                        System.out.println("===MODIFY-STOCKS===");
+                        System.out.println("\n=====MODIFY-STOCKS=====");
                         System.out.print("Enter food name to modify: ");
                         foodAdd = sc.nextLine();
 
@@ -1359,7 +1385,7 @@ public class Admin {
                     newStock = 0;
 
                     while(true) {
-                        System.out.println("===DELETE-STOCKS===");
+                        System.out.println("\n=====DELETE-STOCKS=====");
                         System.out.print("Enter food name to delete: ");
                         foodAdd = sc.nextLine();
 
@@ -1532,7 +1558,7 @@ public class Admin {
                         if(isExistAmenity==true) reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
                         while (isExistAmenity == true) {
                             reserveToEdit = reservation;
-                            isGood = true;      //use to determine if reservation date or duration do not conflict
+                            isGood = true;      //use to determine if reservation date or duration do not conflicts
 
                             System.out.println("\n===RESERVATION-DETAILS===");
                             System.out.println("[1] Amenity : " + reserveToEdit.getAmenity().getAmenityType() + " " +reserveToEdit.getAmenity().getAmenityCode());
@@ -1626,29 +1652,74 @@ public class Admin {
                     while(isCancel==true) {
                         Reservation reservation = null;
                         int roomNum = 0;
+                        boolean isRoom = true;
+                        boolean isAmenity = true;
 
                         System.out.println("\n=====CANCEL-RESERVATIONS=====");
                         method.displayReservations(reservations);
-                        System.out.print("Enter reservation room number to cancel: ");
-                        roomNum = method.inputInt();
+                        System.out.print("Enter reservation room number/amenity code to cancel: ");
+                        String code = method.inputString();
 
-                        //Checks if roomNum exist
-                        boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
-                        if(isExist==false) {
-                            System.out.println("INVALID: Room number do not have a reservation");
-                            break;
+                        if(method.digitChecker(code)==true) {       //Check if it is a room
+                            boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
+                            if(isExist==false) {
+                                System.out.println("\nINVALID: Room number do not have a reservation");
+                                break;
+                            }else {
+                                roomNum = method.StrToInt(code);
+                                isRoom = true;
+                            }
+                        }else {
+                            boolean isExist = method.isReservationAmenityCodeExist(reservations, code);
+                            if(isExist==false) {
+                                System.out.println("\nINVALID: Amenity code do not have a reservation");
+                                break;
+                            }else {
+                                isAmenity = true;
+                            }
                         }
 
-                        reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
-
-                        boolean isCont = method.isContinue("Do you want to cancel reservation?");
-                        if(isCont==true) {
-                            reservations.remove(reservation);
-                            System.out.println("Cancel of reservation is successful");
-                            break;
-                        }else {
-                            System.out.println("Cancel of reservation is unsuccessful");
-                            break;
+                        while(isRoom==true) {
+                            reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
+                            if(reservation==null) {     //No reservation is found with the roomNum
+                                System.out.println("\nINVALID: No reservation found with the room number");
+                                isRoom = false;
+                                isCancel = false;
+                            }
+                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
+                            if (isCont == true) {
+                                Customer customer = reservation.getCustomer();
+                                customer.addRefund(reservation.getBills()/2);
+                                reservations.remove(reservation);
+                                System.out.println("Cancel of reservation is successful");
+                                isCancel=false;
+                                isRoom = false;
+                            } else {
+                                System.out.println("Cancel of reservation is unsuccessful");
+                                isCancel=false;
+                                isRoom = false;
+                            }
+                        }
+                        while(isAmenity==true) {
+                            reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
+                            if(reservation==null) {     //No reservation is found with the roomNum
+                                System.out.println("\nINVALID: No reservation found with the amenity code");
+                                isRoom = false;
+                                isCancel = false;
+                            }
+                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
+                            if (isCont == true) {
+                                Customer customer = reservation.getCustomer();
+                                customer.addRefund(reservation.getBills()/2);
+                                reservations.remove(reservation);
+                                System.out.println("Cancel of reservation is successful");
+                                isCancel=false;
+                                isRoom = false;
+                            } else {
+                                System.out.println("Cancel of reservation is unsuccessful");
+                                isCancel=false;
+                                isRoom = false;
+                            }
                         }
                     }//End of isCancel loop
                     break;

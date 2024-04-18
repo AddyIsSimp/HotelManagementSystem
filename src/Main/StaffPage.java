@@ -225,6 +225,8 @@ public class StaffPage {
                     } else {
                         System.out.print(" || Bills: " + transact.getBills());
                     }
+                }else if(transact.getClass()==ReserveTransact.class) {
+                    System.out.println(" || Bills: " + transact.getBills());
                 }
 
                 System.out.print(" || Transaction date: ");
@@ -300,7 +302,6 @@ public class StaffPage {
 
         while (goSales == true) {
 
-            System.out.println("\n=======SALES=======");
             method.sortTransact(sales);
             if (sales.size() == 0) {
                 System.out.println("\nThis staff have no sales recorded!");
@@ -309,6 +310,7 @@ public class StaffPage {
 
             boolean inSales = true;
             while (inSales == true) {
+                System.out.println("\n=======SALES=======");
                 System.out.println("Name: " + staffAcct.getName());
                 System.out.println("[1] Daily");
                 System.out.println("[2] Weekly");

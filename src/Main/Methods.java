@@ -622,7 +622,7 @@ public class Methods{
         boolean isFound = false;
         Customer customer = null;
         while(true) {
-            System.out.println("=====EDIT-ACCOUNT=====");
+            System.out.println("\n=====EDIT-ACCOUNT=====");
             System.out.print("Search name: ");
             name = sc.nextLine();
 
@@ -649,19 +649,41 @@ public class Methods{
                 int choice = inputInt("Select to modify: ");
                 switch (choice) {
                     case 1:
-                        System.out.print("Enter new name: ");
-                        String newName = sc.nextLine();
-                        customer.setName(newName);
-                        System.out.println("Modified name successfully!");
+                        while(true) {
+                            boolean isDup = false;
+                            System.out.print("\nEnter new name: ");
+                            String newName = sc.nextLine();
+
+                            for (int i = 0; i < customers.size(); i++) {           //Check for duplicate name of customers
+                                Customer customer1 = customers.get(i);
+                                if (customer1.getName().equalsIgnoreCase(newName)) {
+                                    System.out.println("INVALID: Name already exist");
+                                    isDup=true;
+                                }
+                            }
+
+                            if(isDup==true){
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else {
+                                    System.out.println("\nModified name is unsuccessful");
+                                    break;
+                                }
+                            }
+
+                            customer.setName(newName);
+                            System.out.println("Modified name successfully!");
+                            break;
+                        }
                         break;
                     case 2:
-                        System.out.print("Enter new password: ");
+                        System.out.print("\nEnter new password: ");
                         String newPw = sc.nextLine();
                         customer.setPassword(newPw);
                         System.out.println("Modified password successfully!");
                         break;
                     case 3:
-                        System.out.print("Enter new email: ");
+                        System.out.print("\nEnter new email: ");
                         String newEmail = sc.nextLine();
                         customer.setEmail(newEmail);
                         System.out.println("Modified email successfully!");
@@ -681,7 +703,7 @@ public class Methods{
         boolean isFound = false;
         Staff staff = null;
         while(true) {
-            System.out.println("=====EDIT-ACCOUNT=====");
+            System.out.println("\n=====EDIT-ACCOUNT=====");
             System.out.println("Search name: ");
             name = sc.nextLine();
 
@@ -1923,6 +1945,7 @@ public class Methods{
     public boolean paymentProcess(HotelTransact inHotelOrder) {
         boolean isPaid = false;
         double bills = inHotelOrder.getBills();
+        System.out.print("Current bills: " + bills);
         double cash = 0;
         boolean successTransact = false;
 

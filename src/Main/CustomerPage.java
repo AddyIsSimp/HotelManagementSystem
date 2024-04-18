@@ -154,7 +154,7 @@ public class CustomerPage {
                     ArrayList<Transact> transactHistory = customerAcct.getTransHistory();
                     if(transactHistory.size()!=0) {
                         System.out.println("\n=====TRANSACTION-HISTORY=====");
-                        System.out.println("\tDate\t\tType\t\t\tRoom/Amenity\t\tBills");
+                        System.out.println("\tDate\t\t\tType\t\t\t\tRoom/Amenity\t\tBills");
                         for(int i = 0; i<transactHistory.size(); i++) {
                             Transact transact = transactHistory.get(i);
                             System.out.print((i+1) + ". ");
@@ -164,12 +164,12 @@ public class CustomerPage {
                                 HotelTransact inHotel = (HotelTransact) transact;
                                 if(inHotel.getRoom()!=null) {       //If the occupied is room
                                     Room room = inHotel.getRoom();
-                                    System.out.print("\t\tRoom: " + room.getRoomType() + room.getRoomNum());
+                                    System.out.print("\t\t\tRoom: " + room.getRoomType() + room.getRoomNum());
                                     System.out.println("\t\t" + (transact.getBills()+inHotel.getRoomCost()));
                                 }
                                 else {                             //if the occupied is amenity
                                     Amenity amenity = inHotel.getAmenity();
-                                    System.out.print("\t\tAmenity: " + amenity.getAmenityCode());
+                                    System.out.print("\t\t\tAmenity: " + amenity.getAmenityCode());
                                     System.out.println("\t\t" + (transact.getBills()+inHotel.getRoomCost()));
                                 }
                             }else {     //IF RESERVATION TRANSACT
@@ -917,10 +917,9 @@ public class CustomerPage {
                     if (isPaid == false) { //There is a wrong in paymentProcess
                         System.out.println("INVALID: Payment is unsuccessful");
                     } else {
-                        ArrayList<Transact> transactions = customerAcct.getTransact();
                         customerAcct.addTransHistory(inHotel);                     //save the transact in transact history
                         Main.pastTransacts.add(inHotel);                            //Add transact in pastTransaction
-                        customerTransacts.remove(inHotel);
+                        customerTransacts.remove(inHotel);                          //Remove the transact in customer account
                         Main.roomTransacts.remove(inHotel);                        //remove the transact in Admin records
                         System.out.println("You have successfully paid your bills!");
                         break;
@@ -990,6 +989,7 @@ public class CustomerPage {
                 //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
                 }else if(method.compareDate(reservation.getEndDate(), globalDate)==-1) {
                     customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
+                    customerTransacts.remove(reserve);
                     reserve.setRsrvEnded(true);                     //The reservation have ended
                     Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
                     Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
