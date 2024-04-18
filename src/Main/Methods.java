@@ -189,7 +189,9 @@ public class Methods{
                 System.out.print(" || ");
                 if(room.getIsOccupied()==true) System.out.print("Occupied ");
                 else System.out.print(" Unoccupied ");
-                System.out.println(" || Disabled: " + room.getIsDisabled());
+                System.out.print(" || ");
+                if(room.getIsDisabled()==true) System.out.println("Disabled");
+                else System.out.println(" Enabled");
             }
         }else System.out.println("\nThere is no room found\n");
     }
@@ -336,8 +338,13 @@ public class Methods{
                     if (snRooms.size() != 0) {
                         System.out.println("\n===SINGLE-ROOMS===");
                         for (SingleRoom snRoom : snRooms) {
-                            System.out.println("Room Number: " + snRoom.getRoomNum() + " || Occupied: " + snRoom.getIsOccupied() +
-                                    " || Disabled: " + snRoom.getIsDisabled());
+                            System.out.print("Room Number: " + snRoom.getRoomNum());
+                            System.out.print(" || ");
+                            if(snRoom.getIsOccupied()==true) System.out.print("Occupied ");
+                            else System.out.print(" Unoccupied ");
+                            System.out.print(" || ");
+                            if(snRoom.getIsDisabled()==true) System.out.println("Disabled");
+                            else System.out.println(" Enabled");
                         }
                         isGoBack();
                     } else {
@@ -349,8 +356,13 @@ public class Methods{
                     if (cpRooms.size() != 0) {
                         System.out.println("\n===COUPLE-ROOMS===");
                         for (CoupleRoom cpRoom : cpRooms) {
-                            System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Occupied: " + cpRoom.getIsOccupied() +
-                                    " || Disabled: " + cpRoom.getIsDisabled());
+                            System.out.print("Room Number: " + cpRoom.getRoomNum());
+                            System.out.print(" || ");
+                            if(cpRoom.getIsOccupied()==true) System.out.print("Occupied ");
+                            else System.out.print(" Unoccupied ");
+                            System.out.print(" || ");
+                            if(cpRoom.getIsDisabled()==true) System.out.println("Disabled");
+                            else System.out.println(" Enabled");
                         }
                         isGoBack();
                     }else {
@@ -362,8 +374,13 @@ public class Methods{
                     if (fmRooms.size() != 0) {
                         System.out.println("\n===FAMILY-ROOMS===");
                         for (FamilyRoom fmRoom : fmRooms) {
-                            System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Occupied: " + fmRoom.getIsOccupied() +
-                                    " || Disabled: " + fmRoom.getIsDisabled());
+                            System.out.print("Room Number: " + fmRoom.getRoomNum());
+                            System.out.print(" || ");
+                            if(fmRoom.getIsOccupied()==true) System.out.print("Occupied ");
+                            else System.out.print(" Unoccupied ");
+                            System.out.print(" || ");
+                            if(fmRoom.getIsDisabled()==true) System.out.println("Disabled");
+                            else System.out.println(" Enabled");
                         }
                         isGoBack();
                     }else {
@@ -376,8 +393,13 @@ public class Methods{
                     if (vpRooms.size() != 0) {
                         System.out.println("\n===VIP-ROOMS===");
                         for (VIPRoom vpRoom : vpRooms) {
-                            System.out.println("Room Number: " + vpRoom.getRoomNum() + " || Occupied: " + vpRoom.getIsOccupied() +
-                                    " || Disabled: " + vpRoom.getIsDisabled());
+                            System.out.print("Room Number: " + vpRoom.getRoomNum());
+                            System.out.print(" || ");
+                            if(vpRoom.getIsOccupied()==true) System.out.print("Occupied ");
+                            else System.out.print(" Unoccupied ");
+                            System.out.print(" || ");
+                            if(vpRoom.getIsDisabled()==true) System.out.println("Disabled");
+                            else System.out.println(" Enabled");
                         }
                         isGoBack();
                     }else {
@@ -1090,13 +1112,6 @@ public class Methods{
         for(Room room: fmRooms) {rooms.add(room);}
         for(Room room: vpRooms) {rooms.add(room);}
 
-
-//        if(rooms!=null) {
-//            for (Room room : rooms) {
-//                System.out.println("Room Num: " + room.getRoomNum() + " || Room Type: " + room.getRoomType());
-//            }
-//        }
-
     }
 
     public void sortRoomByNum(ArrayList<Room> rooms) {
@@ -1354,8 +1369,8 @@ public class Methods{
 
             for(int i = 0; i<amenityAvailable.size(); i++) {
                 Amenity temp = amenityAvailable.get(i);
-                if(temp.getAmenityCode().equals(amenityCode)) {
-                    amenity = temp;
+                if(temp.getAmenityCode().equalsIgnoreCase(amenityCode)) {
+                    amenity=temp;
                     isFound=true;
                     break;
                 }
@@ -1419,7 +1434,75 @@ public class Methods{
                         ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
                         for(int k = 0; k<durationToRsrv.size(); k++) {
                             if(compareDate(durationToRsrv.get(k), date)==0) {
-                                System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
+                                //System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
+                                isGood = false;     //There is a conflict in Date;
+                            }
+                        }
+                    }
+                }else continue;
+            }
+        }
+        return isGood;
+    }
+
+    public boolean checkReservation(ArrayList<Reservation> reservationsMain, Reservation reserve, Reservation exempted) {       //Use for exempted reservation
+        boolean isGood = true;      //Signs if there is a conflict or no conflict in date
+        boolean isRoom = false;
+        boolean isAmenity = false;
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+        //Transferring the reservationsMain obj to reservations
+        for(int i = 0; i<reservationsMain.size(); i++) {
+            reservations.add(new Reservation(reservationsMain.get(i)));
+        }
+
+        //Remove the exempted on the list
+        reservations.remove(exempted);
+
+        //Checks whether reserve is amenity or room reserve
+        if(reserve.getRoom()!=null) {
+            isRoom = true;
+        } else if(reserve.getAmenity()!=null) {
+            isAmenity = true;
+        }
+
+        if(isRoom==true) {
+            for(int i = 0; i< reservations.size(); i++) {
+                Reservation reserveList = reservations.get(i);
+                if(reserveList.getRoom()!=null) {   //Reservation is room
+
+                    Room roomList = reserveList.getRoom();  //Get the room reservation in list
+                    Room room = reserve.getRoom();          //Get the room reservation in reserve
+                    if(roomList.getRoomNum()==room.getRoomNum()==false) continue;       //Dili same room
+                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
+                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
+                        Date date = durationDays.get(j);                //Get the date in durationDays
+                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
+                        for(int k = 0; k<durationToRsrv.size(); k++) {
+                            if(compareDate(durationToRsrv.get(k),date)==0) {
+                                isGood = false;     //There is a conflict in Date;
+                                return false;
+                            }
+                        }
+                    }
+                }else continue;
+            }
+        }else if(isAmenity==true) {
+            for(int i = 0; i< reservations.size(); i++) {
+                Reservation reserveList = reservations.get(i);
+                if(reserveList.getAmenity()!=null) {   //Reservation is amenity
+                    Amenity amenityList = reserveList.getAmenity();  //Get the amenity reservation in list
+                    Amenity amenity = reserve.getAmenity();          //Get the amenity reservation in reserve
+
+                    if(amenityList.getAmenityCode().equalsIgnoreCase(amenity.getAmenityCode())==false) continue;       //Dili same amenity
+
+                    ArrayList<Date> durationDays = reserveList.getDuration(reserveList.getStartDate(), reserveList.getDuration());
+                    for(int j = 0; j<durationDays.size(); j++) {        //Iterate for Date in durationDays compareTo rsrvation obj
+                        Date date = durationDays.get(j);                //Get the date in durationDays
+                        ArrayList<Date> durationToRsrv = reserve.getDuration(reserve.getStartDate(), reserve.getDuration());
+                        for(int k = 0; k<durationToRsrv.size(); k++) {
+                            if(compareDate(durationToRsrv.get(k), date)==0) {
+                                //System.out.println("Conflict in i: " + (i) + " || j: " + (j) + " || k: " + (k));
                                 isGood = false;     //There is a conflict in Date;
                             }
                         }
@@ -1683,9 +1766,27 @@ public class Methods{
 
         for(int i = 0; i< reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
-            if(reservation.getRoom().getRoomNum()==roomNum) {
-                index = i;
-                break;
+            if(reservation.getRoom()!=null) {
+                if (reservation.getRoom().getRoomNum() == roomNum) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        return index;
+    }
+
+    public int getReservationAmenityIndex(ArrayList<Reservation> reservations, String amenity) {
+        int index = -1;
+
+        for(int i = 0; i< reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if(reservation.getAmenity()!=null) {
+                if (reservation.getAmenity().getAmenityCode().equalsIgnoreCase(amenity)) {
+                    index = i;
+                    break;
+                }
             }
         }
 
@@ -1723,12 +1824,29 @@ public class Methods{
 
         for(int i = 0; i< reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
-            if(reservation.getRoom().getRoomNum()==roomNum) {
-                isExist = true;
-                break;
+            if(reservation.getRoom()!=null) {
+                if (reservation.getRoom().getRoomNum() == roomNum) {
+                    isExist = true;
+                    break;
+                }
             }
         }
 
+        return isExist;
+    }
+
+    public boolean isReservationAmenityCodeExist(ArrayList<Reservation> reservations, String amenityCode) {
+        boolean isExist = false;
+
+        for(int i = 0; i< reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if(reservation.getAmenity()!=null) {
+                if (reservation.getAmenity().getAmenityCode().equalsIgnoreCase(amenityCode)) {
+                    isExist = true;
+                    break;
+                }
+            }
+        }
         return isExist;
     }
 

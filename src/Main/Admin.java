@@ -521,7 +521,7 @@ public class Admin {
                                             isEditPrice=false;
                                             break;
                                         case 2:
-                                            System.out.print("\nSet coupe room price: ");
+                                            System.out.print("\nSet couple room price: ");
                                             rate = method.inputDouble();
                                             if(rate<0) {
                                                 System.out.println("INVALID: Price should be real number");
@@ -553,7 +553,7 @@ public class Admin {
                                             }
                                             roomsType = method.getRoomsType(rooms, "VIP");
                                             method.setPriceRooms(roomsType, rate);
-                                            System.out.println("Price of family rooms are set to " + rate);
+                                            System.out.println("Price of VIP rooms are set to " + rate);
                                             isEditPrice=false;
                                             break;
                                         default:
@@ -895,7 +895,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) break;     //Exit clause
                         mainDish = mainDishes.get(index-1);
-                        System.out.println("You select " + mainDish.getFoodName() + " as main dish");
+                        System.out.println("You selected " + mainDish.getFoodName() + " as main dish");
 
                         //SIDE DISH SELECTION
                         System.out.println("=====SIDE-DISH=====");
@@ -912,7 +912,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) sideDish = null;     //No sidedish selected means if 0
                         sideDish = sideDishes.get(index-1);
-                        System.out.println("You select " + sideDish.getFoodName() + " as side dish");
+                        System.out.println("You selected " + sideDish.getFoodName() + " as side dish");
 
                         //DRINKS SELECTION
                         while(true) {
@@ -933,7 +933,7 @@ public class Admin {
                                 continue;
                             }
                             drinks = drinksList.get(index-1);
-                            System.out.println("You select " + drinks.getFoodName() + " as your drinks");
+                            System.out.println("You selected " + drinks.getFoodName() + " as your drinks");
                             break;
                         }
 
@@ -952,7 +952,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) dessert = null;     //No sidedish selected means if 0
                         dessert = desserts.get(index-1);
-                        System.out.println("You select " + dessert.getFoodName() + " as dessert");
+                        System.out.println("You selected " + dessert.getFoodName() + " as dessert");
 
                         if(desserts==null && sideDish==null) {
                             menus.add(new Menu(newMenuName, mainDish, drinks));
@@ -1025,7 +1025,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) break;     //Exit clause
                         mainDish = mainDishes.get(index-1);
-                        System.out.println("You select " + mainDish.getFoodName() + " as main dish");
+                        System.out.println("You selected " + mainDish.getFoodName() + " as main dish");
 
                         //SIDE DISH SELECTION
                         System.out.println("=====SIDE-DISH=====");
@@ -1042,7 +1042,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) sideDish = null;     //No sidedish selected means if 0
                         sideDish = sideDishes.get(index-1);
-                        System.out.println("You select " + sideDish.getFoodName() + " as side dish");
+                        System.out.println("You selected " + sideDish.getFoodName() + " as side dish");
 
                         //DRINKS SELECTION
                         while(true) {
@@ -1063,7 +1063,7 @@ public class Admin {
                                 continue;
                             }
                             drinks = drinksList.get(index-1);
-                            System.out.println("You select " + drinks.getFoodName() + " as your drinks");
+                            System.out.println("You selected " + drinks.getFoodName() + " as your drinks");
                             break;
                         }
 
@@ -1082,7 +1082,7 @@ public class Admin {
                         index = method.inputInt();
                         if(index==0) dessert = null;     //No sidedish selected means if 0
                         dessert = desserts.get(index-1);
-                        System.out.println("You select " + dessert.getFoodName() + " as dessert");
+                        System.out.println("You selected " + dessert.getFoodName() + " as dessert");
 
                         if(desserts==null && sideDish==null) {
                             menuSelect = new Menu(newMenuName, mainDish, drinks);
@@ -1223,6 +1223,12 @@ public class Admin {
 
                         System.out.print("Set food name: ");
                         foodName = sc.nextLine();
+
+                        if(foods.contains(foodName)) {
+                            System.out.println("Food is already exist!");
+                            continue;
+                        }
+
                         System.out.print("Set price: ");
                         price = method.inputDouble();
                         if(price==-1) {
@@ -1420,98 +1426,199 @@ public class Admin {
                     break;
                 case 2:     //EDIT RESERVATION
                     boolean isEdit = true;
-                    isEdit : while(isEdit==true) {
+                    isEdit:
+                    while (isEdit == true) {
                         Reservation reservation = null;
                         Reservation reserveToEdit = null;
                         int roomNum = 0;
 
                         System.out.println("\n=====EDIT-RESERVATIONS=====");
                         method.displayReservations(reservations);
-                        System.out.print("Enter reservation room number to modify: ");
-                        roomNum = method.inputInt();
+                        System.out.print("Enter reservation room number/amenity code to modify: ");
+                        String code = method.inputString();
 
-                        if(roomNum==0) break;   //Exit clause
+                        if (method.digitChecker(code)==true) {
+                            roomNum = method.StrToInt(code);
+                        }
 
                         //Checks if roomNum exist
-                        boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
-                        if(isExist==false) {
-                            System.out.println("INVALID: Room number do not have a reservation");
-                            break;
+                        boolean isExistRoom = false;
+                        boolean isExistAmenity = false;
+                        if (roomNum != 0) {
+                            isExistRoom = method.isReservationRoomNumExist(reservations, roomNum);
+                            if (isExistRoom == false) {
+                                System.out.println("INVALID: Room number do not have a reservation");
+                                break;
+                            }else isExistRoom = true;
+                        }else {
+                            isExistAmenity = method.isReservationAmenityCodeExist(reservations, code);
+                            if (isExistAmenity == false) {
+                                System.out.println("INVALID: Amenity code do not have a reservation");
+                                break;
+                            }else isExistAmenity = true;
                         }
-                        reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
-                        reserveToEdit = new Reservation(reservation);
 
-                        System.out.println("\n===RESERVATION-DETAILS===");
-                        System.out.println("[1] Room Number: " + reserveToEdit.getRoom().getRoomNum());
-                        System.out.print("[2] Start Date: ");
-                        reserveToEdit.getStartDate().displayDate();
-                        System.out.print("[3] Duration: " + reserveToEdit.getDuration());
-                        if(reserveToEdit.getDuration()==1) System.out.println("day");
-                        else System.out.println("days");
-                        System.out.print("Select to modify: ");
-                        choice = method.inputInt();
+                        boolean isGood = true;
+                        if(isExistRoom==true) reservation = Main.reservations.get(method.getReservationRoomIndex(Main.reservations, roomNum));
+                        while (isExistRoom == true) {
+                            reserveToEdit = reservation;
+                            isGood = true;      //use to determine if reservation date or duration do not conflict
 
-                        switch(choice) {
-                            case 1:     //Modify room number
-                                boolean modifyRoomNum = true;
-                                int roomToMove = 0;
-                                int duration = 0;
-                                Date startDate = null;
+                            System.out.println("\n===RESERVATION-DETAILS===");
+                            System.out.println("[1] Room Number: " + reserveToEdit.getRoom().getRoomNum());
+                            System.out.print("[2] Start Date: ");
+                            reserveToEdit.getStartDate().displayDate();
+                            System.out.print("[3] Duration: " + reserveToEdit.getDuration());
+                            if (reserveToEdit.getDuration() == 1) System.out.println("day");
+                            else System.out.println("days");
+                            System.out.println("[4] Continue");
+                            System.out.print("Select to modify: ");
+                            choice = method.inputInt();
 
-                                while(modifyRoomNum==true) {
-                                    boolean isFound = false;
+                            switch (choice) {
+                                case 1:     //Modify room number
+                                    boolean modifyRoomNum = true;
+                                    Room roomToMove = null;
+                                    int duration = 0;
+                                    Date startDate = null;
 
-                                    ArrayList<Integer> rooms = method.getAvailRoomNum(Main.rooms);
-                                    method.displayAvailRoomNum(Main.rooms);
-                                    System.out.print("Move to room number: ");
-                                    roomToMove = method.inputInt();
+                                    while (modifyRoomNum == true) {
+                                        boolean isFound = false;
+                                        roomToMove = method.selectRoom(Main.rooms);
+                                        if(roomToMove!=null) {
+                                            System.out.println("INVALID: Room do not exist!");
+                                        }
 
-                                    for(int roomNumber : rooms) {       //Check if room number exist
-                                        if(roomNumber==roomToMove) isFound = true;
+                                        reserveToEdit.setRoom(roomToMove);
+                                        method.checkReservation(reservations, reserveToEdit, reservation);
+                                        break;
                                     }
-
-                                    if(isFound==false) {    //If room number not exist
-                                        boolean isCont = method.stateError("Room number do not exist");
-                                        if(isCont==false) break isEdit;
-                                    }
-
-                                    reserveToEdit.setRoom(method.getRoomWithRoomNumber(Main.rooms, roomToMove));
                                     break;
-                                }
-                                break;
-                            case 2:     //Modify start date
-                                startDate = method.inputDate();
-                                reserveToEdit.setStartDate(startDate);
-                                break;
-                            case 3:     //Modify duration
-                                System.out.print("Set the duration(day): ");
-                                duration = method.inputInt();
-                                if(duration<1) {
-                                    System.out.println("INVALID: Duration of days should be real number");
-                                }else if(duration>Main.durationLimit) {
-                                    System.out.println("INVALID: Duration limit is only " + Main.durationLimit + "days");
-                                }else {
-                                    reserveToEdit.setDuration(duration);
-                                }
-                                break;
-                            case 0:
-                                isEdit=false;
-                                break;
-                            default:
-                                System.out.println("INVALID: Use indicated number only!");
+                                case 2:     //Modify start date
+                                    while (true) {
+                                        startDate = method.inputDate();
+                                        if (startDate == null) {        //If wrong date input
+                                            boolean isCont = method.isContinue();
+                                            if (isCont == false) continue;
+                                            else break;
+                                        }
+                                        reserveToEdit.setStartDate(startDate);
+                                        break;
+                                    }
+                                    isGood = method.checkReservation(reservations, reserveToEdit, reservation);
+
+                                    break;
+                                case 3:     //Modify duration
+                                    System.out.print("Set the duration(day): ");
+                                    duration = method.inputInt();
+                                    if (duration < 1) {
+                                        System.out.println("INVALID: Duration of days should be real number");
+                                    } else if (duration > Main.durationLimit) {
+                                        System.out.println("INVALID: Duration limit is only " + Main.durationLimit + "days");
+                                    } else {
+                                        reserveToEdit.setDuration(duration);
+                                    }
+                                    isGood = method.checkReservation(reservations, reserveToEdit, reservation);
+                                    break;
+                                case 4:
+                                    isExistRoom = false;
+                                    isEdit = false;
+                                    break;
+                                default:
+                                    System.out.println("INVALID: Use indicated number only!");
+                            }
                         }
 
-                        System.out.println();
+                        if(isExistAmenity==true) reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
+                        while (isExistAmenity == true) {
+                            reserveToEdit = reservation;
+                            isGood = true;      //use to determine if reservation date or duration do not conflict
 
-                        boolean isGood = method.checkReservation(reservations, reserveToEdit);
-                        if(isGood==true) {
+                            System.out.println("\n===RESERVATION-DETAILS===");
+                            System.out.println("[1] Amenity : " + reserveToEdit.getAmenity().getAmenityType() + " " +reserveToEdit.getAmenity().getAmenityCode());
+                            System.out.print("[2] Start Date: ");
+                            reserveToEdit.getStartDate().displayDate();
+                            System.out.print("[3] Duration: " + reserveToEdit.getDuration());
+                            if (reserveToEdit.getDuration() == 1) System.out.println("day");
+                            else System.out.println("days");
+                            System.out.println("[4] Continue");
+                            System.out.print("Select to modify: ");
+                            choice = method.inputInt();
+
+                            switch (choice) {
+                                case 1:     //Modify room number
+                                    boolean modifyAmenity = true;
+                                    int duration = 0;
+                                    Date startDate = null;
+
+                                    while (modifyAmenity == true) {
+                                        boolean isFound = false;
+
+                                        Amenity amenity = method.selectAmenity(Main.amenities);
+                                        if (amenity != null) {
+                                            isFound = true;
+                                        }
+
+                                        if (isFound == false) {    //If room number not exist
+                                            boolean isCont = method.stateError("Amenity code do not exist");
+                                            if (isCont == false) {
+                                                modifyAmenity = false;
+                                                break isEdit;
+                                            }
+                                        }
+
+                                        reserveToEdit.setAmenity(amenity);
+                                        method.checkReservation(reservations, reserveToEdit, reservation);
+                                        break;
+                                    }
+                                    break;
+                                case 2:     //Modify start date
+                                    while (true) {
+                                        startDate = method.inputDate();
+                                        if (startDate == null) {        //If wrong date input
+                                            boolean isCont = method.isContinue();
+                                            if (isCont == false) continue;
+                                            else break;
+                                        }
+                                        reserveToEdit.setStartDate(startDate);
+                                        break;
+                                    }
+                                    isGood = method.checkReservation(reservations, reserveToEdit, reservation);
+                                    break;
+                                case 3:     //Modify duration
+                                    System.out.print("Set the duration(day): ");
+                                    duration = method.inputInt();
+                                    if (duration < 1) {
+                                        System.out.println("INVALID: Duration of days should be real number");
+                                    } else if (duration > Main.durationLimit) {
+                                        System.out.println("INVALID: Duration limit is only " + Main.durationLimit + "days");
+                                    } else {
+                                        reserveToEdit.setDuration(duration);
+                                    }
+                                    isGood = method.checkReservation(reservations, reserveToEdit, reservation);
+                                    break;
+                                case 4:
+                                    isExistAmenity = false;
+                                    isEdit = false;
+                                    break;
+                                default:
+                                    System.out.println("INVALID: Use indicated number only!");
+                            }
+                            System.out.println();
+                        }
+
+                        if (isGood == true) {
                             reservation = reserveToEdit;
                             System.out.println("Reservation is modified successfully!");
+                            isEdit = false;
                             break;
                         } else {
-                            System.out.println("ERROR: Modification of reservation is unsuccessful!");
+                            System.out.println("\nINVALID: Reservation date have conflict in other reservations");
+                            System.out.println("Modification of reservation is unsuccessful!");
+                            isEdit = false;
                             break;
                         }
+
                     }//End of Modify reservation
                     break;
                 case 3:     //Cancel reservation

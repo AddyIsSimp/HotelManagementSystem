@@ -37,7 +37,8 @@ public class Reservation extends Transact {
 
     public Reservation(Reservation reservation) {
         this.customer = reservation.getCustomer();
-        this.room = reservation.getRoom();
+        if(reservation.getRoom()!=null) this.room = reservation.getRoom();
+        else if(reservation.getAmenity()!=null) this.amenity = reservation.getAmenity();
         this.startDate = reservation.getStartDate();
         this.duration = reservation.getDuration();
         if(reservation.getRoom()!=null) {

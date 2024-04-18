@@ -51,7 +51,7 @@ public class Main {
 
     public static int durationLimit = 10;               //Maximum days to reserve or occupy in a single transact
 
-    public static Date globalDate = new Date(8, 4, 2024);
+    public static Date globalDate = new Date(19, 4, 2024);
 
     //MAIN METHOD
     public static void main(String[] args) {
@@ -59,8 +59,8 @@ public class Main {
         while (true) {
             try {
 
-                Date dateNow = new Date(9, 4, 2024);
-                Date dateThen = new Date(14, 4, 2024);
+                Date dateNow = new Date(9, 5, 2024);
+                Date dateThen = new Date(14, 5, 2024);
 
                 Scanner sc = new Scanner(System.in);    //Use for string inputs
                 Scanner in = new Scanner(System.in);    //Use for int /double inputs
@@ -133,6 +133,7 @@ public class Main {
                 reservations.add(new Reservation(customersList.get(0), rooms.get(3), dateNow, 3));
                 reservations.add(new Reservation(customersList.get(0), rooms.get(5), dateThen, 3));
                 reservations.add(new Reservation(customersList.get(0), rooms.get(1), new Date(8, 6, 2024), 3));
+                reservations.add(new Reservation(customersList.get(0), amenities.get(2), new Date(14, 7, 2024), 5));
 
                 ReserveTransact res1 = new ReserveTransact(globalDate,
                         customersList.get(0),
@@ -190,6 +191,7 @@ public class Main {
                                 globalDate = newDate;
                                 System.out.print("Date is successfully set to ");
                                 globalDate.displayDate();
+                                checkAccountForDate();
                             } else if (method.compareDate(newDate, globalDate) == 0) {      //Same date, not save as global date
                                 System.out.println("The date is the same on the previous date");
                             } else {
@@ -213,7 +215,6 @@ public class Main {
     //=====================================METHODS================================================
     static void AdminPage() {
         boolean adminMain = true;
-        checkAccountForDate();
         Admin:
         while (adminMain == true) {
 
@@ -465,13 +466,11 @@ public class Main {
         return isCustomer;
     }//End of Enter Customer
 
-    static void checkAccountForDate() {
+    static void checkAccountForDate() {     //Use for overdue in hotelTransact duration and reservation duration
         ArrayList<HotelTransact> inHotel = roomTransacts;
         ArrayList<ReserveTransact> reserveTransact = reserveTransacts;
         ArrayList<Reservation> reservations1 = reservations;
         Date globalDate = Main.globalDate;      //current date
-
-        System.out.println("Nisulod dre first");
 
         //CHECK HOTEL TRANSACTION OF CUSTOMER
         if(inHotel!=null) {     //Remove the customer hotel transaction if past global date and no bills
@@ -493,7 +492,6 @@ public class Main {
 
         //THERE IS A RESERVATION TRANSACTION OF CUSTOMER
         if(reserveTransact.size()!=0) {
-            System.out.println("Nisodlud dre sa reservationn");
             boolean noConflict = true;
             //check if there is a reservation within this current date
             for(int i = 0; i<reserveTransact.size(); i++) {//Get the reserve transact
@@ -504,13 +502,21 @@ public class Main {
 
                 //IF DURATION OF RESERVATION IS OVERDUE BY GLOBALDATE
                 if (method.compareDate(reservation.getEndDate(), globalDate) == -1) {
-                    System.out.println("Greater than");
                     customerAcct.addTransHistory(reserve);          //Add || in the customer's transact history
                     pastTransacts.add(reserve);
                     Main.pastTransacts.add(reserve);                //Add transact in pastTransaction
-                    Main.reserveTransacts.remove(reserve);  //Remove the transact in main;
+                    reserve.setRsrvEnded(true);
+                    Main.reserveTransacts.remove(reserve);          //Remove the transact in main;
                     Main.reservations.remove(reservation);          //Remove the reservation in reservations
-                    System.out.println("Your reservation have ended!");
+                    System.out.print(reserve.getCustomer().getName() +" in " );
+                    if(reservation.getRoom()!=null) {
+                        Room room = reservation.getRoom();
+                        System.out.print(room.getRoomType() + " " + room.getRoomNum());
+                    }else if(reservation.getAmenity()!=null) {
+                        Amenity amenity = reservation.getAmenity();
+                        System.out.print(amenity.getAmenityType() + " " + amenity.getAmenityCode());
+                    }
+                    System.out.println(" have ended!");
                 }
             }//End of Reservation forloop
         }//End of check HotelReservationTransact

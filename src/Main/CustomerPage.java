@@ -394,6 +394,7 @@ public class CustomerPage {
                                                 }
                                                 if(displayAll==false) break;    //If no room selected
                                                 start = method.inputDate();     //Set the date
+                                                if(start==null) break;
 
                                                 if(method.compareDate(start, Main.globalDate)==0) {     //Cannot reserve in current date
                                                     System.out.println("\nINVALID: You cannot reserve in current date");
@@ -777,7 +778,7 @@ public class CustomerPage {
                         choice = method.inputInt();
 
                         switch(choice) {
-                            case 1:
+                            case 1:     //SHOW FOOD ORDER
                                 ArrayList<Menu> menuOrdered = inHotelOrder.getMenuOrdered();
                                 if(menuOrdered.size()==0) {
                                     System.out.println("\nYou do not have ordered a food!");
@@ -796,8 +797,8 @@ public class CustomerPage {
                                     method.isGoBack();
                                 }
                                 break;
-                            case 2:
-                                while(true) {
+                            case 2:     //CREATE AN ORDER
+                                while( true) {
                                     Menu menu = method.selectMenu(Main.menus);
                                     Menu menuSelect = new Menu(menu);
 
@@ -808,7 +809,7 @@ public class CustomerPage {
                                     double bill = menuSelect.getTotalPrice();   //Get the bill
                                     Food foodConflict = method.createMenuOrder(foodInventory, menuSelect);
                                     if(foodConflict!=null) {
-                                        System.out.println("INVALID: The food '"+ foodConflict + "' stock is depleted");
+                                        System.out.println("INVALID: The food '"+ foodConflict.getFoodName() + "' stock is depleted");
                                         boolean isCont = method.isContinue();
                                         if(isCont==true){
                                             break;
