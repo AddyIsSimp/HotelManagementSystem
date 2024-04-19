@@ -1,6 +1,7 @@
 package Rooms;
 import Entity.Customer;
 import Amenity.*;
+import Transaction.ReserveTransact;
 import Transaction.Transact;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Reservation extends Transact {
     private int duration;       //Duration of reservation
     private ArrayList<Date> durationDay = new ArrayList<>();
     private double reservationPrice = 0;
+    private ReserveTransact reserve;
 
     public Reservation() {
         room.setRoomNum(-1);

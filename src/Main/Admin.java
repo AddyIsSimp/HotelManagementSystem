@@ -178,7 +178,7 @@ public class Admin {
                                 System.out.println("\n=====STAFF-ACCOUNT=====");
                                 for (int i = 0; i < staffs.size(); i++) {
                                     Staff staff = staffs.get(i);
-                                    System.out.print((i + 1) + "Name: " + staff.getName());
+                                    System.out.print((i + 1) + " Name: " + staff.getName());
                                     System.out.println(" Email: " + staff.getEmail());
                                 }
                                 method.isGoBack();
@@ -1511,7 +1511,7 @@ public class Admin {
                                     while (modifyRoomNum == true) {
                                         boolean isFound = false;
                                         roomToMove = method.selectRoom(Main.rooms);
-                                        if(roomToMove!=null) {
+                                        if(roomToMove==null) {
                                             System.out.println("INVALID: Room do not exist!");
                                         }
 
@@ -1650,23 +1650,35 @@ public class Admin {
                 case 3:     //Cancel reservation
                     boolean isCancel = true;
                     while(isCancel==true) {
+
+                        ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();
+                        for(int i = 0; i<Main.reserveSales.size(); i++) {
+                            ReserveTransact reserveTransact = (ReserveTransact) Main.reserveSales.get(i);
+                            reserveTransacts.add(reserveTransact);
+                        }
+                        ArrayList<Reservation> allReservations = method.getReservations(reserveTransacts);
                         Reservation reservation = null;
+
                         int roomNum = 0;
-                        boolean isRoom = true;
-                        boolean isAmenity = true;
+                        boolean isRoom = false;
+                        boolean isAmenity = false;
 
                         System.out.println("\n=====CANCEL-RESERVATIONS=====");
                         method.displayReservations(reservations);
                         System.out.print("Enter reservation room number/amenity code to cancel: ");
                         String code = method.inputString();
 
+                        if(code.equals("")) {
+                            System.out.println("\nINVALID: Use room number/amenity code only!");
+                            continue;
+                        }
                         if(method.digitChecker(code)==true) {       //Check if it is a room
+                            roomNum = method.StrToInt(code);
                             boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
                             if(isExist==false) {
                                 System.out.println("\nINVALID: Room number do not have a reservation");
                                 break;
                             }else {
-                                roomNum = method.StrToInt(code);
                                 isRoom = true;
                             }
                         }else {
@@ -1680,7 +1692,9 @@ public class Admin {
                         }
 
                         while(isRoom==true) {
-                            reservation = Main.reservations.get(method.getReservationRoomIndex(reservations, roomNum));
+                            int roomIndex = method.getReservationRoomIndex(reservations, roomNum);
+
+                            reservation = Main.reservations.get(roomIndex);
                             if(reservation==null) {     //No reservation is found with the roomNum
                                 System.out.println("\nINVALID: No reservation found with the room number");
                                 isRoom = false;
@@ -1689,22 +1703,27 @@ public class Admin {
                             boolean isCont = method.isContinue("Do you want to cancel reservation?");
                             if (isCont == true) {
                                 Customer customer = reservation.getCustomer();
+                                System.out.println("Bills: " + reservation.getBills());
+                                System.out.println("Refund: " + reservation.getBills()/2);
                                 customer.addRefund(reservation.getBills()/2);
                                 reservations.remove(reservation);
                                 System.out.println("Cancel of reservation is successful");
-                                isCancel=false;
                                 isRoom = false;
+                                isCancel=false;
+                                break;
                             } else {
                                 System.out.println("Cancel of reservation is unsuccessful");
-                                isCancel=false;
                                 isRoom = false;
+                                isCancel=false;
+                                break;
                             }
-                        }
+                        }//End of isRoom loop
+
                         while(isAmenity==true) {
                             reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
                             if(reservation==null) {     //No reservation is found with the roomNum
                                 System.out.println("\nINVALID: No reservation found with the amenity code");
-                                isRoom = false;
+                                isAmenity = false;
                                 isCancel = false;
                             }
                             boolean isCont = method.isContinue("Do you want to cancel reservation?");
@@ -1712,15 +1731,15 @@ public class Admin {
                                 Customer customer = reservation.getCustomer();
                                 customer.addRefund(reservation.getBills()/2);
                                 reservations.remove(reservation);
-                                System.out.println("Cancel of reservation is successful");
+                                System.out.println("\nCancel of reservation is successful");
                                 isCancel=false;
-                                isRoom = false;
+                                isAmenity = false;
                             } else {
-                                System.out.println("Cancel of reservation is unsuccessful");
+                                System.out.println("\nCancel of reservation is unsuccessful");
                                 isCancel=false;
-                                isRoom = false;
+                                isAmenity = false;
                             }
-                        }
+                        }//End of isAmenity loop
                     }//End of isCancel loop
                     break;
                 case 0:
@@ -1738,8 +1757,9 @@ public class Admin {
             System.out.println("\n=====REPORTS=====");
             System.out.println("[1] Accounts");
             System.out.println("[2] Rooms");
-            System.out.println("[3] Reservations");
-            System.out.println("[4] Sales");
+            System.out.println("[3] Amenity");
+            System.out.println("[4] Reservations");
+            System.out.println("[5] Sales");
             System.out.println("[0] Back");
             int choice = method.inputInt("Enter choice: ");
 
@@ -1791,15 +1811,111 @@ public class Admin {
                 case 2:     //ROOMS-REPORTS
                     boolean isRooms = true;
                     while(isRooms==true){
-                        StaffPage staffP = new StaffPage();
-                        staffP.goManageRoom(Main.rooms);
+                        ArrayList<Room> rooms = Main.rooms;
+                        boolean isManage = true;
+                        ArrayList<Room> occupiedRoom = new ArrayList<>();
+                        ArrayList<Room> availRoom = new ArrayList<>();
+                        ArrayList<Room> disableRoom = new ArrayList<>();
+
+                        if(rooms.size()!=0) {
+                            for(int i = 0; i<rooms.size(); i++) {
+                                Room room = rooms.get(i);
+                                if(room.getIsOccupied()==true) {
+                                    occupiedRoom.add(room);
+                                }else if(room.getIsOccupied()==false) availRoom.add(room);
+                                if(room.getIsDisabled()==true) disableRoom.add(room);
+                            }
+                        }
+
+                        while(isManage==true) {
+                            System.out.println("\n=====ROOMS=====");
+                            System.out.println("[1] Display occupied rooms");
+                            System.out.println("[2] Display available rooms");
+                            System.out.println("[3] Display disabled rooms");
+                            System.out.println("[4] View category");
+                            System.out.println("[0] Back");
+                            choice = method.inputInt("Enter choice: ");
+
+                            switch(choice) {
+                                case 1:     //display occupied rooms
+                                    System.out.println("\n=====OCCUPIED-ROOM=====");
+                                    if(occupiedRoom.size()==0) {
+                                        System.out.println("\nThere are no rooms occupied");
+                                    }else {
+                                        System.out.println("\n=====OCCUPIED-ROOM=====");
+                                        for(int i = 0; i<occupiedRoom.size(); i++) {
+                                            Room room = occupiedRoom.get(i);
+                                            System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
+                                                    room.getRoomNum() + " || Customer: ");
+                                        }
+                                        method.isGoBack();
+                                    }
+                                    break;
+                                case 2:     //display available roos
+                                    System.out.println("\n=====AVAILABLE-ROOMS=====");
+                                    if(rooms.size()==0) {
+                                        System.out.println("\nThere are no available rooms");
+                                    }else {
+                                        for(int i = 0; i<availRoom.size(); i++) {
+                                            Room room = availRoom.get(i);
+                                            System.out.println((i+1) + " Room: " + room.getRoomType() + " " +
+                                                    room.getRoomNum());
+                                        }
+                                        method.isGoBack();
+                                    }
+                                    break;
+                                case 3:
+                                    System.out.println("\n=====DISABLED-ROOMS=====");
+                                    if(disableRoom.size()==0) {
+                                        System.out.println("\nThere are no disabled rooms");
+                                    }else {
+                                        for(int i = 0; i<disableRoom.size(); i++) {
+                                            Room room = disableRoom.get(i);
+                                            System.out.println((i+i) + "Room: " + room.getRoomType() + " " +
+                                                    room.getRoomNum() + "|| Customer: ");
+                                        }
+                                        method.isGoBack();
+                                    }
+                                    break;
+                                case 4:
+                                    method.displayRoomCategory(rooms);
+                                    break;
+                                case 0:
+                                    isRooms=false;
+                                    isManage=false;
+                                    break;
+                                default:
+                                    System.out.println("INVALID: Use indicated number only!");
+                            }
+                        }
                     }
                     break;
-                case 3:     //RESERVATION-REPORTS
+                case 3:
+                    boolean isAmenity = true;
+                    while(isAmenity==true) {
+                        System.out.println("\n=====AMENITIES=====");
+                        System.out.println("[1] Display amenities");
+                        System.out.println("[0] Back");
+                        System.out.print("Enter choice: ");
+                        choice = method.inputInt();
+
+                        switch (choice) {
+                            case 1:     //DISPLAY AMENITIES
+                                method.displayAmenities(Main.amenities);
+                                break;
+                            case 0:
+                                isAmenity=false;
+                                break;
+                            default:
+                                System.out.println("INVALID: Use indicated number only!");
+                        }
+                    }
+                    break;
+                case 4:     //RESERVATION-REPORTS
                     boolean isReservation = true;
                     while(isReservation==true) {
                         ArrayList<ReserveTransact> reserveTransacts = Main.reserveTransacts;
-                        System.out.println("=====RESERVATIONS=====");
+                        System.out.println("\n=====RESERVATIONS=====");
                         System.out.println("[1] Pending reservation");
                         System.out.println("[2] Reservation history");
                         System.out.println("[0] Back");
@@ -1833,7 +1949,7 @@ public class Admin {
                         break;
                     }
                     break;
-                case 4:     //SALES-REPORTS
+                case 5:     //SALES-REPORTS
                     boolean isSales = true;
                     while(isSales==true) {
                         System.out.println("\n=====SALES=====");

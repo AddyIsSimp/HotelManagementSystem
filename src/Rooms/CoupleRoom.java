@@ -20,7 +20,7 @@ public class CoupleRoom extends Room{
 
     public void setRoomType() {
         this.roomType = "Couple";
-        this.ratePerDay = 200;
+        this.ratePerDay = 250;
     }
 
     public void setRatePerDay(double rate) {super.ratePerDay = rate;}

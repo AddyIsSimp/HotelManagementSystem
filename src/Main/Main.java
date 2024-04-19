@@ -108,7 +108,6 @@ public class Main {
                 rooms.add(new VIPRoom(101));
 
                 staffsList.get(0).addSales(new Transact(dateNow, customersList.get(0), dateThen, 1500));
-                staffsList.get(0).addSales(new Transact(new Date(6, 4, 2024), customersList.get(0), dateThen, 700));
                 staffsList.get(0).addSales(new Transact(new Date(14, 4, 2024), customersList.get(0), dateThen, 200));
                 staffsList.get(0).addSales(new Transact(new Date(6, 5, 2024), customersList.get(0), dateThen, 100));
                 staffsList.get(0).addSales(new Transact(new Date(6, 8, 2024), customersList.get(0), dateThen, 3500));
@@ -365,6 +364,7 @@ public class Main {
                 boolean isCustomerPage = true;
 
                 while (isCustomerPage == true) {
+                    System.out.println("Customer refund: " + customer.getRefunds());
                     if(customer.getRefunds()!=0) {
                         System.out.println("\nYou have refunds from cancelled reservations: " + customer.getRefunds());
                         System.out.println("Press 1 to accept refund: \n-" );

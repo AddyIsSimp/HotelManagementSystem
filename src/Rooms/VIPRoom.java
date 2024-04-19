@@ -1,7 +1,7 @@
 package Rooms;
 
 public class VIPRoom extends Room{
-    private double reservationCost = 850;
+    private double reservationCost = 800;
 
     public VIPRoom() {
         super();

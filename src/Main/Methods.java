@@ -171,7 +171,7 @@ public class Methods{
         Amenity amenity = null;
         for(int i = 0; i<amenities.size(); i++) {
             Amenity amenity1 = amenities.get(i);
-            if(amenity1.getAmenityCode().equals(amenityCode)) {
+            if(amenity1.getAmenityCode().equalsIgnoreCase(amenityCode)) {
                 amenity = amenity1;
                 break;
             }
@@ -1847,14 +1847,24 @@ public class Methods{
         for(int i = 0; i< reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
             if(reservation.getRoom()!=null) {
-                if (reservation.getRoom().getRoomNum() == roomNum) {
+                if (reservation.getRoom().getRoomNum()==roomNum) {
                     isExist = true;
                     break;
                 }
             }
         }
-
         return isExist;
+    }
+
+    public ArrayList<Reservation> getReservations(ArrayList<ReserveTransact> reserveTransacts) {
+        ArrayList<Reservation> reservationsList = new ArrayList<>();
+
+        for(int i = 0; i<reserveTransacts.size(); i++) {
+            ReserveTransact reserveTransact = reserveTransacts.get(i);
+            Reservation reservation = reserveTransact.getReservation();
+            reservationsList.add(reservation);
+        }
+        return reservationsList;
     }
 
     public boolean isReservationAmenityCodeExist(ArrayList<Reservation> reservations, String amenityCode) {
@@ -2138,8 +2148,8 @@ public class Methods{
 
         //Merging of transacts by daily
         if(transacts.size() != 0) {
-            for (int i = 0; i < transacts.size(); i++) {                //Iterate the transacts
-                Transact transact = new Transact(transacts.get(i));                                  //Get the bill object
+            for (int i = 0; i < transacts.size(); i++) {                               //Iterate the transacts
+                Transact transact = new Transact(transacts.get(i));                    //Get the bill object
                 double bills = transact.getBills();                                    //Save first the bill
                 Date dateOfTrans = transact.getDateOfTrans();                          //Date of transaction
                 boolean haveDup = false;                                               //If date have duplicate date in transacts

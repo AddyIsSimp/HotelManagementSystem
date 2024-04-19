@@ -548,7 +548,7 @@ public class CustomerPage {
                                     Date start = null;
                                     int duration = 0;
 
-                                    System.out.println("\n===SELECT-AMENITY===");
+                                    System.out.print("\n===SELECT-AMENITY===");
                                     amenity = method.selectAmenity(amenities);
                                     if(amenity==null) break;
                                     start = method.inputDate();     //Set the date

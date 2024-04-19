@@ -21,7 +21,7 @@ public class SingleRoom extends Room {
 
     public void setRoomType() {
         this.roomType = "Single";
-        this.ratePerDay = 100;
+        this.ratePerDay = 150;
     }
 
     public void setRatePerDay(double rate) {super.ratePerDay = rate;}

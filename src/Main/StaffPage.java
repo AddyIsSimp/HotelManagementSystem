@@ -234,66 +234,48 @@ public class StaffPage {
                 listOfPayment.add(method.IntToStr(i+1));
             }
 
-            System.out.println("[a] Accept all");
             System.out.print("Enter choice: ");
             choice = sc.nextLine();
 
             if(choice.equals("0")) break;       //Exit clause
 
-            //ACCEPT ALL SALES
-            if(choice.equalsIgnoreCase("a")) {
-                int saleTransactCount=0;
-                for(int i = 0; i<sales2.size(); i++) {
-                    Transact transact1 = sales2.get(i);
+            //ACCEPT BY INDEX
 
-                    transact1.setStaff(staffAcct);       //Set the transaction owner to this staff
-                    staffAcct.addSales(transact1);       //Add the transact in staff sale list
-                    Main.pastTransacts.add(transact1);   //Save this transact in pastTransacts
-                    sales.remove(transact1);
-                    System.out.println("Accepted index: " + i);
-                    saleTransactCount++;
+            //GET THE PAYMENT INDEX
+            boolean isPaymentFound = false;
+            int indexPayment = 0;       //index of payment if found
+            for (int i = 0; i < listOfPayment.size(); i++) {      //Finds the index of payment
+                if (choice.equalsIgnoreCase(listOfPayment.get(i))) {     //Get the index of
+                    indexPayment = i + 1;
+                    isPaymentFound = true;
+                    break;
                 }
-                System.out.println("\nSuccessfully accepted " + saleTransactCount + " payment!");
-                break;
-
-            }else {     //ACCEPT BY INDEX
-
-                //GET THE PAYMENT INDEX
-                boolean isPaymentFound = false;
-                int indexPayment = 0;       //index of payment if found
-                for (int i = 0; i < listOfPayment.size(); i++) {      //Finds the index of payment
-                    if (choice.equalsIgnoreCase(listOfPayment.get(i))) {     //Get the index of
-                        indexPayment = i + 1;
-                        isPaymentFound = true;
-                        break;
-                    }
-                }
-
-                if (isPaymentFound == false) {     //If choice is not on the given list
-                    System.out.println("INVALID: Payment number is not found!");
-                    boolean isCont = method.isContinue();
-                    if (isCont == true) continue;
-                    else break;
-                }
-
-                //GET THE TRANSACT OBJECT
-                Transact transact = sales.get(indexPayment - 1);
-
-                if(transact.getClass()== HotelTransact.class) {             //If the sale is a roomTransact
-                    HotelTransact transact1 = (HotelTransact) transact;
-                    if (transact1.getBills() == 0 && transact1.getRoomCost() > 0) {
-                        transact.setBills(transact1.getRoomCost());
-                    }
-                }
-
-                transact.setStaff(staffAcct);       //Set the transaction owner to this staff
-                staffAcct.addSales(transact);       //Add the transact in staff sale list
-                Main.pastTransacts.add(transact);   //Save this transact in pastTransacts
-                sales.remove(transact);
-                System.out.println("\nSuccesfully accepted payment number " + indexPayment);
-                break;
             }
-        }//end of AcceptMain loop
+
+            if (isPaymentFound == false) {     //If choice is not on the given list
+                System.out.println("INVALID: Payment number is not found!");
+                boolean isCont = method.isContinue();
+                if (isCont == true) continue;
+                else break;
+            }
+
+            //GET THE TRANSACT OBJECT
+            Transact transact = sales.get(indexPayment - 1);
+
+            if (transact.getClass() == HotelTransact.class) {             //If the sale is a roomTransact
+                HotelTransact transact1 = (HotelTransact) transact;
+                if (transact1.getBills() == 0 && transact1.getRoomCost() > 0) {
+                    transact.setBills(transact1.getRoomCost());
+                }
+            }
+
+            transact.setStaff(staffAcct);       //Set the transaction owner to this staff
+            staffAcct.addSales(transact);       //Add the transact in staff sale list
+            Main.pastTransacts.add(transact);   //Save this transact in pastTransacts
+            sales.remove(transact);
+            System.out.println("\nSuccesfully accepted payment number " + indexPayment);
+            break;
+        }
     }
 
     public void goSales() {
