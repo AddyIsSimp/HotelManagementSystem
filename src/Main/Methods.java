@@ -589,6 +589,179 @@ public class Methods{
         return room;
     }
 
+    public Room displaySelectRoomCategoryReservation(ArrayList<Room> rooms) {    //Display all room in category
+        ArrayList<SingleRoom> snRooms = new ArrayList<SingleRoom>();
+        ArrayList<CoupleRoom> cpRooms = new ArrayList<CoupleRoom>();
+        ArrayList<FamilyRoom> fmRooms = new ArrayList<FamilyRoom>();
+        ArrayList<VIPRoom> vpRooms = new ArrayList<VIPRoom>();
+        Room room = null;
+
+        sortRooms(rooms);
+
+        for (int i = 0; i< rooms.size(); i++) {     // To separate each subclasses
+            Room room1 = rooms.get(i);
+            if(room1.getIsOccupied()==true) continue;
+            if(room1.getIsDisabled()==true) continue;
+            if(room1.getRoomType().equals("Single")==true) {snRooms.add((SingleRoom) room1);}
+            else if(room1.getRoomType().equals("Couple")==true) {cpRooms.add((CoupleRoom) room1);}
+            else if(room1.getRoomType().equals("Family")==true) fmRooms.add((FamilyRoom) room1);
+            else if(room1.getRoomType().equals("VIP")==true) vpRooms.add((VIPRoom) room1);
+        }
+
+        boolean isCategory = true;
+        while(isCategory==true) {
+            if (rooms.size() != 0) System.out.println("\n===ROOMS-IN-CATEGORY===");
+            else {
+                System.out.println("\nThere is no room found!\n");
+                return room;
+            }
+
+            System.out.println("[1]Single room");
+            System.out.println("[2]Couple room");
+            System.out.println("[3]Family room");
+            System.out.println("[4]VIP room");
+            System.out.println("[0]Back");
+            System.out.print("Enter choice: ");
+            pick = inputInt();
+
+            switch (pick) {
+                case 1:     //Single room
+                    if (snRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===SINGLE-ROOMS===");
+                            for (SingleRoom snRoom : snRooms) {
+                                System.out.println("Room Number: " + snRoom.getRoomNum() + " || Room cost: " + snRoom.getReservationPrice());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(SingleRoom snRoom : snRooms) {      //Find the room with room number inputted
+                                if(snRoom.getRoomNum()==pick) {
+                                    room=snRoom;
+                                    isFound = true;
+                                    return snRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    } else {
+                        System.out.println("\nThere is no single room");
+                        continue;
+                    }
+                    break;
+                case 2:     //couple room
+                    if (cpRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===COUPLE-ROOMS===");
+                            for (CoupleRoom cpRoom : cpRooms) {
+                                System.out.println("Room Number: " + cpRoom.getRoomNum() + " || Room cost: " + cpRoom.getReservationPrice());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(CoupleRoom cpRoom : cpRooms) {      //Find the room with room number inputted
+                                if(cpRoom.getRoomNum()==pick) {
+                                    room=cpRoom;
+                                    isFound = true;
+                                    return cpRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no couple room");
+                        continue;
+                    }
+                    break;
+                case 3:     //Family room
+                    if (fmRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===FAMILY-ROOMS===");
+                            for (FamilyRoom fmRoom : fmRooms) {
+                                System.out.println("Room Number: " + fmRoom.getRoomNum() + " || Room cost: " + fmRoom.getReservationPrice());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(FamilyRoom fmRoom : fmRooms) {      //Find the room with room number inputted
+                                if(fmRoom.getRoomNum()==pick) {
+                                    room=fmRoom;
+                                    isFound = true;
+                                    return fmRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                boolean isCont = isContinue();
+                                if(isCont==true) continue;
+                                else break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no family rooms");
+                        continue;
+                    }
+
+                    break;
+                case 4:     //vip room
+                    if (vpRooms.size() != 0) {
+                        boolean isFound = false;
+                        while(isFound==false) {
+                            System.out.println("\n===VIP-ROOMS===");
+                            for (VIPRoom vpRoom : vpRooms) {
+                                System.out.println("Room Number: " + vpRoom.getRoomNum() +" || Room cost: " + vpRoom.getReservationPrice());
+                            }
+                            System.out.print("Select room number: ");
+                            pick = inputInt();
+
+                            if(pick==0) break;
+                            for(VIPRoom vpRoom : vpRooms) {      //Find the room with room number inputted
+                                if(vpRoom.getRoomNum()==pick) {
+                                    room=vpRoom;
+                                    isFound = true;
+                                    return vpRoom;
+                                }
+                            }
+
+                            if(isFound==false)  {           //If room number is not found
+                                System.out.println("\nINVALID: Room is not found");
+                                break;
+                            }
+                        }
+                    }else {
+                        System.out.println("\nThere is no VIP rooms");
+                        continue;
+                    }
+                    break;
+                case 0:
+                    isCategory = false;
+                    break;
+                default:
+                    System.out.println("INVALID: Use indicated number only!");
+            }
+        }
+        return room;
+    }
+
     public void displayRoomByNum(ArrayList<Room> rooms) {       //Display room by sorted room number
         sortRoomByNum(rooms);
         for(Room room : rooms) {
@@ -1323,6 +1496,52 @@ public class Methods{
                 Room room1 = roomAvailable.get(i);
                 System.out.println((i + 1) + ". Room Number: " + room1.getRoomNum() + " || Room Type: " + room1.getRoomType()
                             + " || Cost: " + room1.getRatePerDay());
+            }
+        }else System.out.println("\nThere is no room found\n");
+
+        while(isFound==false) {
+            int roomNum = 0;
+            System.out.print("Enter room number: ");
+            roomNum = inputInt();
+
+            for(int i = 0; i<roomAvailable.size(); i++) {
+                Room temp = roomAvailable.get(i);
+                if(temp.getRoomNum()==roomNum) {
+                    room = temp;
+                    isFound=true;
+                    break;
+                }
+            }
+
+            if(isFound==false) {
+                System.out.println("INVALID: Room not found with the specified room number");
+                boolean isCont = isContinue();
+                if(isCont==true) continue;
+                else break;
+            }
+        }
+        return room;
+    }
+
+    public Room selectRoomReservation(ArrayList<Room> rooms) {     //select Room and check if it is vacant
+        Room room = null;
+        boolean isFound = false;                            //True if the room is found with same roomNum
+        ArrayList<Room> roomAvailable = new ArrayList<>();  //Store the not occupied and not disabled room
+
+        for(int i = 0; i<rooms.size(); i++) {                               //Add the available room in roomAvailable list
+            Room room2 = rooms.get(i);
+            if(room2.getIsOccupied()==true || room2.getIsDisabled()==true) {        //Skip the unavailable rooms
+                continue;
+            }
+            roomAvailable.add(room2);
+        }
+
+        if(roomAvailable.size()!=0) {       //If there is room existing
+            System.out.println("\n===ROOMS-LIST===");
+            for (int i = 0; i < roomAvailable.size(); i++) {
+                Room room1 = roomAvailable.get(i);
+                System.out.println((i + 1) + ". Room Number: " + room1.getRoomNum() + " || Room Type: " + room1.getRoomType()
+                        + " || Cost: " + room1.getReservationPrice());
             }
         }else System.out.println("\nThere is no room found\n");
 

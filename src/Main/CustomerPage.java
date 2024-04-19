@@ -386,7 +386,7 @@ public class CustomerPage {
 
                                                 while(true) {   //Select room loop
                                                     System.out.print("\n===SELECT-ROOM===");
-                                                    room = method.selectRoom(rooms);
+                                                    room = method.selectRoomReservation(rooms);
                                                     if(room==null) {    //if there is no room selected/invalid
                                                         displayAll=false;
                                                     }
