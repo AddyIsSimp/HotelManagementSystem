@@ -1649,98 +1649,168 @@ public class Admin {
                     break;
                 case 3:     //Cancel reservation
                     boolean isCancel = true;
-                    while(isCancel==true) {
+//                    while(isCancel==true) {
+//
+//                        ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();
+//                        for(int i = 0; i<Main.reserveSales.size(); i++) {
+//                            ReserveTransact reserveTransact = (ReserveTransact) Main.reserveSales.get(i);
+//                            reserveTransacts.add(reserveTransact);
+//                        }
+//                        ArrayList<Reservation> allReservations = method.getReservations(reserveTransacts);
+//                        Reservation reservation = null;
+//
+//                        int roomNum = 0;
+//                        boolean isRoom = false;
+//                        boolean isAmenity = false;
+//
+//                        System.out.println("\n=====CANCEL-RESERVATIONS=====");
+//                        method.displayReservations(reservations);
+//                        System.out.print("Enter reservation room number/amenity code to cancel: ");
+//                        String code = method.inputString();
+//
+//                        if(code.equals("")) {
+//                            System.out.println("\nINVALID: Use room number/amenity code only!");
+//                            continue;
+//                        }
+//                        if(method.digitChecker(code)==true) {       //Check if it is a room
+//                            roomNum = method.StrToInt(code);
+//                            boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
+//                            if(isExist==false) {
+//                                System.out.println("\nINVALID: Room number do not have a reservation");
+//                                break;
+//                            }else {
+//                                isRoom = true;
+//                            }
+//                        }else {
+//                            boolean isExist = method.isReservationAmenityCodeExist(reservations, code);
+//                            if(isExist==false) {
+//                                System.out.println("\nINVALID: Amenity code do not have a reservation");
+//                                break;
+//                            }else {
+//                                isAmenity = true;
+//                            }
+//                        }
+//
+//                        while(isRoom==true) {
+//                            int roomIndex = method.getReservationRoomIndex(reservations, roomNum);
+//
+//                            reservation = Main.reservations.get(roomIndex);
+//                            if(reservation==null) {     //No reservation is found with the roomNum
+//                                System.out.println("\nINVALID: No reservation found with the room number");
+//                                isRoom = false;
+//                                isCancel = false;
+//                            }
+//                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
+//                            if (isCont == true) {
+//                                Customer customer = reservation.getCustomer();
+//                                System.out.println("Bills: " + reservation.getBills());
+//                                System.out.println("Refund: " + reservation.getBills()/2);
+//                                customer.addRefund(reservation.getBills()/2);
+//                                reservations.remove(reservation);
+//                                System.out.println("Cancel of reservation is successful");
+//                                isRoom = false;
+//                                isCancel=false;
+//                                break;
+//                            } else {
+//                                System.out.println("Cancel of reservation is unsuccessful");
+//                                isRoom = false;
+//                                isCancel=false;
+//                                break;
+//                            }
+//                        }//End of isRoom loop
+//
+//                        while(isAmenity==true) {
+//                            reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
+//                            if(reservation==null) {     //No reservation is found with the roomNum
+//                                System.out.println("\nINVALID: No reservation found with the amenity code");
+//                                isAmenity = false;
+//                                isCancel = false;
+//                            }
+//                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
+//                            if (isCont == true) {
+//                                Customer customer = reservation.getCustomer();
+//                                customer.addRefund(reservation.getBills()/2);
+//                                reservations.remove(reservation);
+//                                System.out.println("\nCancel of reservation is successful");
+//                                isCancel=false;
+//                                isAmenity = false;
+//                            } else {
+//                                System.out.println("\nCancel of reservation is unsuccessful");
+//                                isCancel=false;
+//                                isAmenity = false;
+//                            }
+//                        }//End of isAmenity loop
+//                    }//End of isCancel loop
 
+                    int reserveIndexToCancel = 0;
+                    while(isCancel==true) {
+                        Reservation reservationDel = null;     //Reservation to cancel
+
+                        System.out.println("\n=====CANCEL-RESERVATION=====");
+                        ArrayList<Transact> transacts = Main.reserveSales;
                         ArrayList<ReserveTransact> reserveTransacts = new ArrayList<>();
-                        for(int i = 0; i<Main.reserveSales.size(); i++) {
-                            ReserveTransact reserveTransact = (ReserveTransact) Main.reserveSales.get(i);
+
+                        for(int i = 0; i<transacts.size(); i++) {
+                            ReserveTransact reserveTransact = (ReserveTransact) transacts.get(i);
                             reserveTransacts.add(reserveTransact);
                         }
-                        ArrayList<Reservation> allReservations = method.getReservations(reserveTransacts);
-                        Reservation reservation = null;
 
-                        int roomNum = 0;
-                        boolean isRoom = false;
-                        boolean isAmenity = false;
-
-                        System.out.println("\n=====CANCEL-RESERVATIONS=====");
-                        method.displayReservations(reservations);
-                        System.out.print("Enter reservation room number/amenity code to cancel: ");
-                        String code = method.inputString();
-
-                        if(code.equals("")) {
-                            System.out.println("\nINVALID: Use room number/amenity code only!");
-                            continue;
+                        if(reserveTransacts.size()==0) {
+                            System.out.println("There is no reservation");
+                            method.isGoBack();
+                            break;
                         }
-                        if(method.digitChecker(code)==true) {       //Check if it is a room
-                            roomNum = method.StrToInt(code);
-                            boolean isExist = method.isReservationRoomNumExist(reservations, roomNum);
-                            if(isExist==false) {
-                                System.out.println("\nINVALID: Room number do not have a reservation");
-                                break;
-                            }else {
-                                isRoom = true;
-                            }
-                        }else {
-                            boolean isExist = method.isReservationAmenityCodeExist(reservations, code);
-                            if(isExist==false) {
-                                System.out.println("\nINVALID: Amenity code do not have a reservation");
-                                break;
-                            }else {
-                                isAmenity = true;
+
+                        for(int i = 0; i<reserveTransacts.size(); i++) {        //Display reservations
+                            ReserveTransact reserve = reserveTransacts.get(i);      //Get the transaction
+                            Reservation reservation = reserve.getReservation();     //Get the reservation info
+                            if(reservation.getRoom()!=null) {
+                                Room room = reservation.getRoom();
+                                Date start = reservation.getStartDate();
+                                System.out.print((i + 1) + " Room: " + room.getRoomType() + " #" +
+                                        room.getRoomNum());
+                                System.out.print(" || Start: ");
+                                start.displayDate2();
+                                System.out.println(" || Duration: " + reservation.getDuration() + "day");
+                            }else if(reservation.getAmenity()!=null) {
+                                Amenity amenity = reservation.getAmenity();
+                                Date start = reservation.getStartDate();
+
+                                System.out.print((i + 1) + " Amenity: " + amenity.getAmenityType() + " " +
+                                        amenity.getAmenityCode());
+                                System.out.print(" || Start: ");
+                                start.displayDate2();
+                                System.out.println(" || Duration: " + reservation.getDuration() + "day");
                             }
                         }
 
-                        while(isRoom==true) {
-                            int roomIndex = method.getReservationRoomIndex(reservations, roomNum);
+                        System.out.print("Select reservation number to delete: ");
+                        reserveIndexToCancel = method.inputInt();
 
-                            reservation = Main.reservations.get(roomIndex);
-                            if(reservation==null) {     //No reservation is found with the roomNum
-                                System.out.println("\nINVALID: No reservation found with the room number");
-                                isRoom = false;
-                                isCancel = false;
-                            }
-                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
-                            if (isCont == true) {
-                                Customer customer = reservation.getCustomer();
-                                System.out.println("Bills: " + reservation.getBills());
-                                System.out.println("Refund: " + reservation.getBills()/2);
-                                customer.addRefund(reservation.getBills()/2);
-                                reservations.remove(reservation);
-                                System.out.println("Cancel of reservation is successful");
-                                isRoom = false;
-                                isCancel=false;
-                                break;
-                            } else {
-                                System.out.println("Cancel of reservation is unsuccessful");
-                                isRoom = false;
-                                isCancel=false;
-                                break;
-                            }
-                        }//End of isRoom loop
+                        if(reserveIndexToCancel>reserveTransacts.size() || reserveIndexToCancel<=0) {
+                            System.out.println("INVALID: Reservation with the reservation number is not found!");
+                            break;
+                        }
 
-                        while(isAmenity==true) {
-                            reservation = Main.reservations.get(method.getReservationAmenityIndex(reservations, code));
-                            if(reservation==null) {     //No reservation is found with the roomNum
-                                System.out.println("\nINVALID: No reservation found with the amenity code");
-                                isAmenity = false;
-                                isCancel = false;
-                            }
-                            boolean isCont = method.isContinue("Do you want to cancel reservation?");
-                            if (isCont == true) {
-                                Customer customer = reservation.getCustomer();
-                                customer.addRefund(reservation.getBills()/2);
-                                reservations.remove(reservation);
-                                System.out.println("\nCancel of reservation is successful");
-                                isCancel=false;
-                                isAmenity = false;
-                            } else {
-                                System.out.println("\nCancel of reservation is unsuccessful");
-                                isCancel=false;
-                                isAmenity = false;
-                            }
-                        }//End of isAmenity loop
-                    }//End of isCancel loop
+                        //Ask if still continue cancel the reservations
+                        boolean isCont = method.isContinue("\nDo you want to continue cancel the reservation! Only half will be repayed!");
+                        if(isCont==false) {     //If not continue
+                            System.out.println("Cancelling of reservation is unsuccessful!");
+                            break;
+                        }
+
+                        ReserveTransact reserveTransact = reserveTransacts.get(reserveIndexToCancel-1);
+                        Reservation reservation = reserveTransact.getReservation();
+                        Customer customer = reserveTransact.getCustomer();
+                        customer.addRefund(reserveTransact.getBills()/2);
+                        reserveTransact.setBills(reserveTransact.getBills()/2);                         //The sales is only halp of the paid bills
+                        reserveTransact.setRsrvEnded(true);                                             //For it can be accepted by the staff
+                        customer.getTransact().remove(reserveTransact);                                       //Remove the reserveTransact in Customer account transaction
+                        Main.reserveTransacts.remove(reserveTransact);                                  //Remove the reserveTransact in reserveTransacts
+                        Main.reservations.remove(reservation);                                          //Remove the reservation in Main
+                        System.out.println("\nReservation is cancelled successfully!");
+                        break;
+                    }
                     break;
                 case 0:
                     isReservation=false;

@@ -70,7 +70,9 @@ public class Main {
                 //SAMPLE CREDENTIALS
                 //Main.AdminPage(); Username = Admin123, Password = admin123
                 customersList.add(new Customer("Beth", "Sophia", "Tajale"));
+                customersList.add(new Customer("Andrea", "Payot", "Jandog"));
                 staffsList.add(new Staff("Dave", "Gaga-a", "Gaga-a"));
+                staffsList.add(new Staff("Andrea", "B", "Brillantes"));
 
                 //Add all arraylist in all
                 all.add(customersList);
@@ -140,6 +142,9 @@ public class Main {
                         (reservations.get(2)));
                 customersList.get(0).addTransact(res1);
                 reserveTransacts.add(res1);
+
+                reserveSales.add(new ReserveTransact(dateNow, customersList.get(0), dateThen, 300, reservations.get(2)));
+                reserveSales.add(new ReserveTransact(dateNow, customersList.get(0), dateThen, 500, reservations.get(2)));
 
                 System.out.println("HOTEL MANAGEMENT SYSTEM");
 
@@ -367,7 +372,7 @@ public class Main {
                     System.out.println("Customer refund: " + customer.getRefunds());
                     if(customer.getRefunds()!=0) {
                         System.out.println("\nYou have refunds from cancelled reservations: " + customer.getRefunds());
-                        System.out.println("Press 1 to accept refund: \n-" );
+                        System.out.print("Press 1 to accept refund: \n-");
                         choice = method.inputInt();
                         if(choice==1) {
                             System.out.println("\nYou have accepted the refund " + customer.getRefunds());

@@ -464,7 +464,7 @@ public class CustomerPage {
                                                 Room room = null;
                                                 int duration = 0;
 
-                                                room = method.displaySelectRoomCategory(rooms);
+                                                room = method.displaySelectRoomCategoryReservation(rooms);
                                                 if(room==null) {
                                                     System.out.println("You do not select a room");
                                                     boolean isCont = method.isContinue();
